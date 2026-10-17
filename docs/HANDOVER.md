@@ -2,7 +2,7 @@
 ## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Comprehensive Multi-Page Platform & Feature Suite)
 Done:
 - Completed the full multi-page web platform and design system:
-  - `app/page.jsx`: Polished landing page with hero illustration (`/assets/herosec.gif`), live counter stats (`AboutDataCard`), dedicated role portals (`LoginCard`), 3D depth thela scene, and verified customer feedback carousel (`ReviewCarousel`).
+  - `app/page.jsx`: Polished landing page with hero illustration (`/assets/herosec.gif`), live counter stats (`AboutDataCard`), dedicated role portals (`LoginCard`), and customer feedback carousel (`ReviewCarousel`). Removed duplicate standalone depth engine card per user request.
   - `app/aboutus/page.jsx`: Dedicated platform story and mission view with `/assets/about.gif`.
   - `app/pricing/page.jsx`: Multi-tier pricing and fair street commerce plans.
   - `app/customer/page.jsx`: Interactive OpenStreetMap Leaflet live tracking, product filters, 2-tap doorstep basket pre-ordering, and "Bulao Thela" demand ping radar.

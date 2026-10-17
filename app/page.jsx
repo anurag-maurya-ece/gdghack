@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import AboutDataCard from "../components/AboutDataCard";
 import LoginCard from "../components/LoginCards";
 import ReviewCarousel from "../components/ReviewCarousel";
-import ThelaScene from "./thela-scene";
 import { ArrowRight, MapPin, Store } from "lucide-react";
 
 const statsData = [
@@ -134,35 +133,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. Interactive 3D Thela Scene Teaser with Green Touches */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
-        <div className="p-8 sm:p-12 rounded-3xl bg-emerald-50/60 border-2 border-emerald-200/80 hover:border-[#16A34A] shadow-lg shadow-emerald-500/10 flex flex-col md:flex-row items-center justify-between gap-8 transition-colors">
-          <div className="max-w-md">
-            <span className="text-xs font-black uppercase tracking-wider text-[#16A34A] bg-[#DCFCE7] px-3.5 py-1 rounded-full border border-emerald-200">
-              Realtime Depth Engine
-            </span>
-            <h3 className="text-3xl font-extrabold text-gray-950 mt-3 mb-2">
-              Chalta Thela, <span className="text-[#16A34A]">Jeevant Nakshe Par</span>
-            </h3>
-            <p className="text-sm text-gray-700 leading-relaxed mb-6">
-              Every pushcart moves smoothly across OpenStreetMap with real-time GPS coordinates. Tap below to test the full live tracking system.
-            </p>
-            <Link
-              href="/customer"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#16A34A] hover:bg-[#15803d] text-white font-extrabold shadow-md shadow-[#16A34A]/30 hover:shadow-lg transition-all"
-            >
-              <span>Open Customer Discovery Map</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          <div className="w-full md:w-80">
-            <ThelaScene />
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Customer Feedback Carousel */}
+      {/* 4. Customer Feedback Carousel */}
       <section className="flex flex-col gap-6 w-full py-12 mx-auto relative">
         <div className="flex flex-col gap-2">
           <h2 className="text-center text-3xl sm:text-5xl font-extrabold text-gray-950">
