@@ -1,87 +1,92 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Heart, PhoneCall, Sparkles } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#0F172A] border-t-2 border-[#111111] text-white pt-14 pb-10">
-      <div className="shell px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-gray-800">
-          {/* Col 1: Brand Info */}
-          <div className="md:col-span-2 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#22C55E] border-2 border-[#111111] flex items-center justify-center text-xl font-black text-[#111111]">
-                🛒
-              </div>
-              <span className="font-extrabold text-2xl tracking-tight">
-                WEkreta <span className="text-[#22C55E]">Tech Thela</span>
-              </span>
-            </div>
-            <p className="text-gray-400 text-sm max-w-md leading-relaxed">
-              Bridging the gap between hardworking Indian street vendors (*thela wale*) and modern urban households. Realtime live mapping, voice-assisted stock updates, and door-to-door fresh supply.
-            </p>
-            <div className="flex flex-wrap items-center gap-2 pt-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E293B] border border-gray-700 text-xs font-semibold text-gray-300">
-                <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
-                GDG Hackathon 2026: Bridge the Gap
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E293B] border border-gray-700 text-xs font-semibold text-gray-300">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                Zero-Commission Platform
-              </span>
-            </div>
-          </div>
+    <footer className="p-6 sm:p-12 bg-gray-950 text-white border-t border-gray-800">
+      <div className="max-w-screen-xl mx-auto md:flex md:justify-between items-start gap-10">
+        <div className="mb-8 md:mb-0 max-w-sm">
+          <Link href="/" className="flex items-center">
+            <span className="self-center text-4xl font-extrabold whitespace-nowrap text-white">
+              <span className="text-green-500">WE</span>kreta
+            </span>
+          </Link>
+          <p className="mt-3 text-sm text-gray-400 leading-relaxed">
+            Empowering street vendors (*thela wale*) with modern technology, live mapping, and voice-assisted commerce. Restoring the connection between vendors and consumers.
+          </p>
+        </div>
 
-          {/* Col 2: Quick Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="font-bold text-base text-[#22C55E] uppercase tracking-wider text-xs">Platform Links</h4>
-            <ul className="flex flex-col gap-2 text-sm text-gray-300">
+        <div className="grid grid-cols-2 gap-8 sm:gap-12 sm:grid-cols-3 text-sm">
+          <div>
+            <h2 className="mb-4 text-xs font-bold text-gray-300 uppercase tracking-wider">
+              Quick Links
+            </h2>
+            <ul className="text-gray-400 flex flex-col gap-2.5">
               <li>
-                <Link href="/customer" className="hover:text-[#22C55E] transition-colors">
-                  📍 Live Thela Map & Orders
+                <Link href="/customer" className="hover:text-green-400 transition-colors">
+                  Live Thela Map
                 </Link>
               </li>
               <li>
-                <Link href="/vendor" className="hover:text-[#22C55E] transition-colors">
-                  🏪 Vendor Portal & Voice Listing
+                <Link href="/vendor" className="hover:text-green-400 transition-colors">
+                  Vendor Portal
                 </Link>
               </li>
               <li>
-                <Link href="/rewards" className="hover:text-[#22C55E] transition-colors">
-                  🏆 Community Leaderboard & Rewards
-                </Link>
-              </li>
-              <li>
-                <Link href="/#about" className="hover:text-[#22C55E] transition-colors">
-                  ℹ️ About WEkreta Mission
+                <Link href="/rewards" className="hover:text-green-400 transition-colors">
+                  Reviews & Leaderboard
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Vendor Support & Trust */}
-          <div className="flex flex-col gap-3">
-            <h4 className="font-bold text-base text-[#22C55E] uppercase tracking-wider text-xs">Vendor Saathi Helpline</h4>
-            <p className="text-xs text-gray-400">
-              Need assistance setting up your thela on WhatsApp or live web? Our community volunteers are ready to help.
-            </p>
-            <div className="p-3 bg-[#1E293B] rounded-2xl border border-gray-700 flex items-center gap-3 mt-1">
-              <PhoneCall className="w-5 h-5 text-[#22C55E] shrink-0" />
-              <div>
-                <p className="text-xs text-gray-400 font-medium">Toll-Free Vendor Support</p>
-                <p className="text-sm font-bold text-white">1800-THELA-WALE</p>
-              </div>
-            </div>
+          <div>
+            <h2 className="mb-4 text-xs font-bold text-gray-300 uppercase tracking-wider">
+              Information
+            </h2>
+            <ul className="text-gray-400 flex flex-col gap-2.5">
+              <li>
+                <Link href="/aboutus" className="hover:text-green-400 transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="hover:text-green-400 transition-colors">
+                  Pricing Plans
+                </Link>
+              </li>
+              <li>
+                <a href="#cardssection" className="hover:text-green-400 transition-colors">
+                  Join as Vendor
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="mb-4 text-xs font-bold text-gray-300 uppercase tracking-wider">
+              Hackathon
+            </h2>
+            <ul className="text-gray-400 flex flex-col gap-2.5">
+              <li>
+                <span className="text-green-400 font-semibold">GDG Hackathon 2026</span>
+              </li>
+              <li>
+                <span className="text-gray-400">Theme: Bridge the Gap</span>
+              </li>
+              <li>
+                <span className="text-gray-500 text-xs">Zero-Commission Initiative</span>
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        {/* Bottom bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
-          <p>© 2026 WEkreta / Tech Thela. Built with pride for Indian Street Commerce.</p>
-          <p className="flex items-center gap-1">
-            Made with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for the unsung heroes of daily fresh food.
-          </p>
-        </div>
+      <hr className="my-8 border-gray-800" />
+
+      <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+        <span>© 2026 WEkreta™. All Rights Reserved.</span>
+        <span>Built with pride for street vendors and local communities.</span>
       </div>
     </footer>
   );

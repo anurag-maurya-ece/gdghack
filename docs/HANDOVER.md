@@ -1,28 +1,26 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Website Full Feature Suite)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (SIH-Wekreta UI Alignment & Feature Suite)
 Done:
-- User prioritized website first (deferring WhatsApp bot) and provided reference repos `tech-thela` and `SIH-Wekreta`.
-- Created original, accessible design following `docs/UI-DESIGN.md`:
-  - `app/page.jsx`: Revamped landing page with moving ThelaScene, verified stats counters, 3D tilt role cards (`components/TiltCard.jsx`), 4 core feature pillars, testimonials, and mission statement.
-  - `app/customer/page.jsx`: Customer portal with Leaflet OpenStreetMap, custom animated SVG thela pins (`L.divIcon`), category filtering, doorstep basket pre-ordering, and "Bulao Thela" reverse-demand radar.
-  - `app/vendor/page.jsx`: Vendor operations dashboard with giant "Thela ON / OFF" switch, GPS movement simulation, voice-to-inventory listing with 2-tap "Sahi Hai" confirmation, order acceptance, and predictive demand heatmap.
-  - `app/rewards/page.jsx`: Community rewards & reviews hub with coin wallet, Mohalla Leaderboard, review submission (+25 coins), and coupon store.
-  - `components/Navbar.jsx` & `components/Footer.jsx`: Responsive bilingual header and brand footer.
-  - `lib/mock-data.js`: Authentic demo dataset for Delhi/NCR vendors, items, demand zones, reviews, and coupons.
-- Installed pre-approved `leaflet@1.9.4`.
-- Real build & test passes: `npm run build` compiled 5 static routes in 2.0s; `node scripts/smoke.mjs` verified all routes (200), CSS tokens, and 404 recovery.
+- User instructed to directly mirror the UI of SIH-Wekreta (`ui copy kro sih wekreata ka copy kro`).
+- Extracted and populated authentic SIH-Wekreta public assets (`public/assets/herosec.gif`, `vendor.svg`, `consumer.svg`, `scholarship.svg`, `people.svg`, `vidcam.svg`, `audience.svg`, `about.gif`, `public/reviews/*`).
+- Re-implemented exact SIH-Wekreta UI components and pages:
+  - `app/page.jsx`: Exact SIH-Wekreta hero section ("START TO SUCCESS", trust/technology/love, herosec.gif), dark stats counter section (`AboutDataCard`), black callout with overlapping purple `LoginCards` for Vendor & Consumer, and customer feedback carousel (`ReviewCarousel`).
+  - `app/aboutus/page.jsx`: Exact SIH-Wekreta About Us page with `about.gif` and platform mission statement.
+  - `app/pricing/page.jsx`: Exact SIH-Wekreta Pricing page (Customer Free vs Pro, Street Vendor plan).
+  - Maintained live interactive feature routes: Customer discovery & live Leaflet map (`/customer`), Vendor operations dashboard with voice listing & demand heatmap (`/vendor`), and community rewards & leaderboard (`/rewards`).
+- Production build & tests: `npm run build` compiled 8 static routes in 1997ms; `node scripts/smoke.mjs` passed on all 8 routes, stylesheets, and 404 recovery.
 In progress:
-- Web features complete and active on http://127.0.0.1:3000.
+- Web UI and features running on http://127.0.0.1:3000.
 Broken/risky:
-- WhatsApp Cloud API webhook deferred per user instruction. Real microphone browser permissions depend on user environment (presets provided for instant verification).
+- WhatsApp Cloud API webhook deferred per user instruction.
 Next:
-- Review UI in browser, or proceed to WhatsApp webhook / live Firestore sync when ready.
+- User visual review or proceed with backend / cloud deployment when requested.
 Do not touch:
 - Secrets, .env, live deployment, location OFF privacy boundaries.
 Run/test:
 - `npm run build; npm test` (with server on http://127.0.0.1:3000).
 Unverified assumptions:
-- Delhi NCR coordinates used as demo location anchor; simulated voice intent mimics Gemini model.
+- SIH-Wekreta branding (`WEkreta`) used as primary visual identity across screens.
 
 ## Previous progress: 2026-10-17 — Firebase foundation
 Done: official Auth/Firestore/Functions emulators running on localhost; default-deny rules verified for unauthenticated and authenticated callers; Node 22 and Java 21 workspace runtimes installed. Meta + Gemini selected by user.

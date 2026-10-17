@@ -80,3 +80,13 @@ Why: Satisfies all Section 9 feature specs (F2 voice listing, F3 live location, 
 Trade-off: WhatsApp Cloud API webhook is deferred; live coordinates use mock simulation.
 Revisit if: live Meta WhatsApp credentials or cloud hosting are configured.
 
+## D-010: Direct adoption of SIH-Wekreta UI layout and assets
+Date: 2026-10-17 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User explicitly requested "ui copy kro sih wekreata ka copy kro" to match the visual design of SIH-Wekreta.
+Options: 1) Implement exact SIH-Wekreta UI components and layout with authentic assets (herosec.gif, vendor.svg, consumer.svg, stats cards, review carousel) in modern App Router 2) Keep the neo-brutalist theme.
+Chosen: 1. Copied and structured public assets (assets/, reviews/), mirrored the SIH-Wekreta hero section ("START TO SUCCESS", trust/technology/love), dark stats counter bar, black rounded callout with overlapping purple/black login cards, customer feedback carousel, About Us (/aboutus), and Pricing (/pricing), while retaining live functional map discovery and vendor portal routes.
+Why: User specifically prioritized reproducing the exact SIH-Wekreta visual presentation.
+Trade-off: The UI now follows SIH-Wekreta's signature purple/green/black aesthetic.
+Revisit if: user requests additional screens or revisions.
+
+

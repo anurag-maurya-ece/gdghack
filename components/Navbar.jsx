@@ -3,152 +3,102 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart, Store, Award, MapPin, Menu, X, Globe, Radio } from "lucide-react";
+import { Menu, X, MapPin, Store, Award, Info, Tag } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState("hi"); // 'hi' | 'en' | 'hinglish'
 
-  const navLinks = [
-    { href: "/customer", label: "Live Map & Order", hindiLabel: "लाइव ठेला नक्शा", icon: MapPin },
-    { href: "/vendor", label: "Vendor Portal", hindiLabel: "ठेला वाला पोर्टल", icon: Store },
-    { href: "/rewards", label: "Rewards & Reviews", hindiLabel: "इनाम व रिव्यु", icon: Award },
+  const links = [
+    { href: "/", label: "Home" },
+    { href: "/customer", label: "Live Thela Map", icon: MapPin },
+    { href: "/vendor", label: "Vendor Portal", icon: Store },
+    { href: "/rewards", label: "Rewards & Reviews", icon: Award },
+    { href: "/aboutus", label: "About Us", icon: Info },
+    { href: "/pricing", label: "Pricing", icon: Tag },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0F172A] border-b-2 border-[#111111] text-white shadow-md">
-      <div className="shell flex items-center justify-between h-20 px-4 sm:px-6">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group focus:outline-none">
-          <div className="w-12 h-12 rounded-2xl bg-[#22C55E] border-2 border-[#111111] flex items-center justify-center text-[#111111] font-extrabold text-2xl shadow-[2px_2px_0_#111111] group-hover:rotate-6 transition-transform">
-            🛒
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-xl sm:text-2xl tracking-tight text-white">
-                WEkreta <span className="text-[#22C55E]">Tech Thela</span>
-              </span>
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-[#22C55E]/20 text-[#22C55E] px-2 py-0.5 rounded-full border border-[#22C55E]/40">
-                <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-ping" />
-                LIVE
-              </span>
-            </div>
-            <p className="text-[12px] text-gray-300 font-medium hidden sm:block">
-              {language === "hi" ? "आपका ठेला, अब सबकी नज़र में" : "Connecting Street Carts to Your Doorstep"}
-            </p>
-          </div>
+    <nav className="relative border-b border-gray-800 z-50 bg-gray-900 text-white">
+      <div className="flex flex-wrap h-20 justify-between items-center mx-auto max-w-screen-xl px-4 md:px-8">
+        {/* Brand Logo matching SIH-Wekreta */}
+        <Link href="/" className="flex items-center gap-2">
+          <span className="self-center text-3xl sm:text-4xl font-extrabold whitespace-nowrap text-white tracking-tight">
+            <span className="text-green-500">WE</span>kreta
+          </span>
+          <span className="text-[11px] font-bold bg-green-500/20 text-green-400 border border-green-500/40 px-2 py-0.5 rounded-full ml-1 hidden sm:inline-block">
+            Tech Thela
+          </span>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-[#1E293B] p-1.5 rounded-full border border-gray-700">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center space-x-6 lg:space-x-8 text-base font-medium">
+          {links.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                className={`transition-colors py-1 ${
                   isActive
-                    ? "bg-[#22C55E] text-[#111111] shadow-[2px_2px_0_#111111]"
-                    : "text-gray-300 hover:text-white hover:bg-gray-800"
+                    ? "text-green-400 font-bold border-b-2 border-green-500"
+                    : "text-gray-300 hover:text-white"
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                <span>{language === "hi" ? link.hindiLabel : link.label}</span>
+                {link.label}
               </Link>
             );
           })}
-        </nav>
+        </div>
 
-        {/* Action Controls & Language Selector */}
+        {/* CTA Button */}
         <div className="hidden lg:flex items-center gap-3">
-          <div className="flex items-center gap-1.5 bg-[#1E293B] border border-gray-700 px-3 py-1.5 rounded-full text-xs font-bold text-gray-200">
-            <Globe className="w-3.5 h-3.5 text-[#22C55E]" />
-            <select
-              value={language}
-              aria-label="Select Language"
-              onChange={(e) => setLanguage(e.target.value)}
-              className="bg-transparent text-white focus:outline-none cursor-pointer"
-            >
-              <option value="hi" className="bg-[#0F172A] text-white">हिंदी (Hindi)</option>
-              <option value="hinglish" className="bg-[#0F172A] text-white">Hinglish</option>
-              <option value="en" className="bg-[#0F172A] text-white">English</option>
-            </select>
-          </div>
-
           <Link
             href="/customer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#22C55E] text-[#111111] font-bold text-sm border-2 border-[#111111] shadow-[3px_3px_0_#111111] hover:shadow-[1px_1px_0_#111111] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-y-[3px] active:shadow-none transition-all"
+            className="text-sm font-bold bg-green-500 hover:bg-green-600 text-black px-5 py-2.5 rounded-xl border border-black shadow-[2px_2px_0_#000000] active:translate-y-[1px] transition-all flex items-center gap-1.5"
           >
-            <Radio className="w-4 h-4 animate-pulse" />
-            <span>{language === "hi" ? "ठेला देखें" : "Track Thela"}</span>
+            <MapPin className="w-4 h-4" />
+            <span>Track Thela Live</span>
           </Link>
         </div>
 
-        {/* Mobile Hamburger Button */}
+        {/* Mobile menu toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-xl bg-[#1E293B] text-white border border-gray-700 focus:outline-none"
+          className="md:hidden p-2 rounded-lg text-gray-400 hover:bg-gray-800 focus:outline-none"
           aria-label="Toggle menu"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0F172A] border-b-2 border-[#111111] px-6 py-6 flex flex-col gap-4 animate-in slide-in-from-top-4 duration-200">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Navigation</span>
-            <div className="flex items-center gap-2 text-xs font-bold bg-[#1E293B] px-3 py-1.5 rounded-full">
-              <Globe className="w-3.5 h-3.5 text-[#22C55E]" />
-              <select
-                value={language}
-                aria-label="Select Language Mobile"
-                onChange={(e) => setLanguage(e.target.value)}
-                className="bg-transparent text-white focus:outline-none"
+        <div className="md:hidden bg-gray-900 border-t border-gray-800 px-6 py-6 flex flex-col gap-3 animate-in slide-in-from-top-2">
+          {links.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`py-2 px-3 rounded-lg text-base font-semibold ${
+                  isActive ? "bg-green-500/20 text-green-400" : "text-gray-300 hover:text-white"
+                }`}
               >
-                <option value="hi" className="bg-[#0F172A]">हिंदी</option>
-                <option value="hinglish" className="bg-[#0F172A]">Hinglish</option>
-                <option value="en" className="bg-[#0F172A]">English</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-base border-2 transition-all ${
-                    isActive
-                      ? "bg-[#22C55E] text-[#111111] border-[#111111] shadow-[3px_3px_0_#111111]"
-                      : "bg-[#1E293B] text-gray-200 border-gray-700 hover:border-[#22C55E]"
-                  }`}
-                >
-                  <Icon className="w-5 h-5 text-current" />
-                  <span>{language === "hi" ? link.hindiLabel : link.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-
+                {link.label}
+              </Link>
+            );
+          })}
           <Link
             href="/customer"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full mt-2 py-4 rounded-2xl bg-[#22C55E] text-[#111111] font-extrabold text-center border-2 border-[#111111] shadow-[4px_4px_0_#111111] flex items-center justify-center gap-2"
+            className="w-full mt-2 text-center py-3 bg-green-500 text-black font-bold rounded-xl"
           >
-            <Radio className="w-5 h-5" />
-            <span>{language === "hi" ? "आसपास के ठेले ढूंढें" : "Find Nearby Thelas"}</span>
+            Track Thela Live
           </Link>
         </div>
       )}
-    </header>
+    </nav>
   );
 }
