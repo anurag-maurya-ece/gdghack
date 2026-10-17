@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#0F172A] text-gray-300 pt-16 pb-8 overflow-hidden border-t border-white/10">
+    <footer className="relative bg-gray-50 text-gray-700 pt-16 pb-8 overflow-hidden border-t border-gray-200">
       {/* Decorative gradient line */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-[#16A34A] to-transparent opacity-50" />
 
@@ -23,14 +23,14 @@ export default function Footer() {
                 className="h-10 w-auto object-contain"
               />
             </Link>
-            <p className="text-sm leading-relaxed text-gray-400 max-w-xs">
+            <p className="text-sm leading-relaxed text-gray-600 max-w-xs">
               Revolutionizing the street vendor ecosystem with real-time tracking, AI inventory, and seamless digital connectivity. Empowering micro-entrepreneurs across India.
             </p>
           </div>
 
           {/* Solution Column */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg">Solution</h3>
+            <h3 className="text-gray-900 font-bold mb-6 text-lg">Solution</h3>
             <ul className="space-y-4">
               {[
                 { name: "Live Thela Map", href: "/customer" },
@@ -41,7 +41,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="hover:text-[#16A34A] transition-colors duration-200 flex items-center group text-sm"
+                    className="hover:text-[#16A34A] text-gray-600 transition-colors duration-200 flex items-center group text-sm"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]/40 mr-2 group-hover:bg-[#16A34A] transition-colors" />
                     {item.name}
@@ -53,7 +53,7 @@ export default function Footer() {
 
           {/* Company Column */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg">Company</h3>
+            <h3 className="text-gray-900 font-bold mb-6 text-lg">Company</h3>
             <ul className="space-y-4">
               {[
                 { name: "About Us", href: "/aboutus" },
@@ -64,7 +64,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="hover:text-[#16A34A] transition-colors duration-200 flex items-center group text-sm"
+                    className="hover:text-[#16A34A] text-gray-600 transition-colors duration-200 flex items-center group text-sm"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]/40 mr-2 group-hover:bg-[#16A34A] transition-colors" />
                     {item.name}
@@ -76,15 +76,15 @@ export default function Footer() {
 
           {/* Newsletter Column */}
           <div className="space-y-6">
-            <h3 className="text-white font-bold mb-2 text-lg">Join the Movement</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="text-gray-900 font-bold mb-2 text-lg">Join the Movement</h3>
+            <p className="text-sm text-gray-600">
               Stay updated with the latest in street-tech innovation.
             </p>
             <div className="relative group">
               <input
                 type="email"
                 placeholder="Enter email"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] transition-all text-white placeholder-gray-500"
+                className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] transition-all text-gray-900 placeholder-gray-400"
               />
               <button className="absolute right-2 top-2 bg-[#16A34A] text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#15803d] transition-colors">
                 Send
@@ -97,7 +97,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
           <div>Empowering street vendors across India with zero-typing technology.</div>
           <div className="flex items-center space-x-1">
             <span>Made with</span>

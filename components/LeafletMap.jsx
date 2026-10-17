@@ -80,16 +80,16 @@ export default function LeafletMap({
               <div class="absolute -top-1 w-10 h-10 rounded-full bg-[#22C55E]/20 animate-ping pointer-events-none"></div>
 
               <!-- Cart Badge -->
-              <div class="relative px-2.5 py-1 rounded-2xl bg-[#0F172A] border-2 ${isSelected ? "border-[#22C55E] ring-4 ring-[#22C55E]/30" : "border-[#111111]"} shadow-[2px_2px_0_#111111] flex items-center gap-1.5 text-white">
+              <div class="relative px-2.5 py-1 rounded-2xl bg-white border-2 ${isSelected ? "border-[#22C55E] ring-4 ring-[#22C55E]/30" : "border-[#111111]"} shadow-[2px_2px_0_#111111] flex items-center gap-1.5 text-gray-900 font-bold">
                 <span class="text-base">${vendor.avatar || "🛒"}</span>
                 <div class="flex flex-col text-left leading-none">
-                  <span class="text-[10px] font-black tracking-wide text-[#22C55E] truncate max-w-[80px]">${vendor.name.split(" ")[0]}</span>
-                  <span class="text-[8px] font-bold text-gray-300">${vendor.distanceMeters}m</span>
+                  <span class="text-[10px] font-black tracking-wide text-[#16A34A] truncate max-w-[80px]">${vendor.name.split(" ")[0]}</span>
+                  <span class="text-[8px] font-bold text-gray-600">${vendor.distanceMeters}m</span>
                 </div>
               </div>
 
               <!-- Pin pointer arrow -->
-              <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[7px] border-t-[#0F172A] -mt-[1px]"></div>
+              <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[7px] border-t-[#111111] -mt-[1px]"></div>
             </div>
           </div>
         `;
@@ -133,8 +133,8 @@ export default function LeafletMap({
 
       {/* Floating Map Badges */}
       <div className="absolute top-4 left-4 z-[400] flex flex-wrap items-center gap-2 pointer-events-none">
-        <div className="pointer-events-auto bg-[#0F172A]/90 backdrop-blur-md border border-gray-700 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse"></span>
+        <div className="pointer-events-auto bg-white/95 backdrop-blur-md border border-gray-300 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-2 shadow-md">
+          <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse"></span>
           <span>{vendors.filter((v) => v.isOnline).length} Thelas Active Nearby</span>
         </div>
       </div>

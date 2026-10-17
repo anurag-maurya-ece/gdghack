@@ -330,7 +330,7 @@ export default function VendorDashboard() {
                     className={`px-6 py-4 rounded-2xl font-black text-sm flex items-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer ${
                       isThelaOnline
                         ? "bg-[#16A34A] hover:bg-[#15803D] text-white shadow-green-900/20"
-                        : "bg-gray-800 hover:bg-gray-900 text-white"
+                        : "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/20"
                     }`}
                   >
                     <Power className="w-5 h-5" />

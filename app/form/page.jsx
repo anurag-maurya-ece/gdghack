@@ -26,8 +26,8 @@ export default function PreferencesFormPage() {
       setSubmitted(true);
       setTimeout(() => {
         router.push("/customer");
-      }, 1000);
-    }, 600);
+      }, 700);
+    }, 500);
   };
 
   const isFormValid =
@@ -39,26 +39,22 @@ export default function PreferencesFormPage() {
     /^\d+$/.test(oldestAge);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FDFCFB] text-gray-900 flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative overflow-hidden">
-        {/* Ambient green glows */}
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 right-1/4 w-80 h-80 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="w-full max-w-xl bg-zinc-900/80 border border-zinc-800 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-xl relative z-10">
+      <main className="flex-1 flex items-center justify-center px-4 py-16 pt-28">
+        <div className="w-full max-w-xl bg-white border border-gray-200/90 rounded-3xl p-8 sm:p-12 shadow-xl relative z-10">
           <div className="text-center space-y-3 mb-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 border border-emerald-200 text-[#16A34A] text-xs font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Smart Recommendation Profile</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
               Let us know something about you!
             </h1>
 
-            <p className="text-sm sm:text-base text-zinc-400 max-w-md mx-auto">
+            <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto">
               Help Tech Thela tailor daily cart alerts and fresh seasonal produce suited for your household.
             </p>
           </div>
@@ -66,26 +62,26 @@ export default function PreferencesFormPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Field 1: Family members */}
             <div className="space-y-2">
-              <label className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                <Users className="w-4 h-4 text-emerald-400" />
+              <label className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#16A34A]" />
                 <span>How many members are there in your family?</span>
               </label>
               <input
                 type="number"
                 min="1"
-                max="30"
+                max="25"
                 value={familyMembers}
                 onChange={(e) => setFamilyMembers(e.target.value)}
                 required
-                className="w-full px-5 py-3.5 rounded-2xl bg-zinc-950 border border-zinc-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none text-white font-medium text-lg transition-all"
                 placeholder="e.g. 4"
+                className="w-full px-5 py-3.5 bg-gray-50 border border-gray-300 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 text-base font-semibold transition-all"
               />
             </div>
 
             {/* Field 2: Youngest age */}
             <div className="space-y-2">
-              <label className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                <Heart className="w-4 h-4 text-emerald-400" />
+              <label className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                <Heart className="w-4 h-4 text-[#16A34A]" />
                 <span>Mention the age of the youngest member in your family:</span>
               </label>
               <input
@@ -95,15 +91,15 @@ export default function PreferencesFormPage() {
                 value={youngestAge}
                 onChange={(e) => setYoungestAge(e.target.value)}
                 required
-                className="w-full px-5 py-3.5 rounded-2xl bg-zinc-950 border border-zinc-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none text-white font-medium text-lg transition-all"
                 placeholder="e.g. 8"
+                className="w-full px-5 py-3.5 bg-gray-50 border border-gray-300 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 text-base font-semibold transition-all"
               />
             </div>
 
             {/* Field 3: Oldest age */}
             <div className="space-y-2">
-              <label className="text-sm font-bold text-zinc-300 flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-emerald-400" />
+              <label className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-[#16A34A]" />
                 <span>Mention the age of the oldest member in your family:</span>
               </label>
               <input
@@ -113,23 +109,22 @@ export default function PreferencesFormPage() {
                 value={oldestAge}
                 onChange={(e) => setOldestAge(e.target.value)}
                 required
-                className="w-full px-5 py-3.5 rounded-2xl bg-zinc-950 border border-zinc-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none text-white font-medium text-lg transition-all"
                 placeholder="e.g. 64"
+                className="w-full px-5 py-3.5 bg-gray-50 border border-gray-300 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 text-base font-semibold transition-all"
               />
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              disabled={!isFormValid || loading || submitted}
-              className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-extrabold tracking-wide uppercase shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-4 text-base"
+              disabled={loading || submitted || !isFormValid}
+              className="w-full py-4 rounded-2xl bg-[#16A34A] hover:bg-[#15803D] active:scale-[0.98] text-white font-black tracking-wide uppercase shadow-lg shadow-green-700/20 transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
-                <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : submitted ? (
                 <>
                   <CheckCircle2 className="w-5 h-5 text-white" />
-                  <span>Profile Saved! Opening Live Thela Map...</span>
+                  <span>Profile Saved! Loading Thela Map...</span>
                 </>
               ) : (
                 <>
@@ -140,13 +135,12 @@ export default function PreferencesFormPage() {
             </button>
           </form>
 
-          {/* Quick Skip Option */}
-          <div className="mt-6 text-center">
+          <div className="text-center mt-6">
             <Link
               href="/customer"
-              className="text-xs font-semibold text-zinc-500 hover:text-emerald-400 transition-colors"
+              className="text-xs font-extrabold text-gray-500 hover:text-[#16A34A] transition-colors"
             >
-              Skip for now and open map directly &rarr;
+              Skip setup and go to map &rarr;
             </Link>
           </div>
         </div>

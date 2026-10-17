@@ -51,29 +51,29 @@ export default function RewardsPage() {
 
       <main className="flex-1 shell px-4 sm:px-6 py-8 pt-28">
         {/* Header & Wallet Banner */}
-        <div className="outline-card p-6 sm:p-8 bg-[#0F172A] text-white border-2 border-[#111111] shadow-[4px_4px_0_#111111] mb-10">
+        <div className="outline-card p-6 sm:p-8 bg-emerald-50/70 text-gray-900 border-2 border-[#111111] shadow-[4px_4px_0_#111111] mb-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <span className="text-xs font-black uppercase tracking-wider text-[#22C55E] bg-[#22C55E]/15 px-3 py-1 rounded-full border border-[#22C55E]/30">
+              <span className="text-xs font-black uppercase tracking-wider text-[#15803d] bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
                 Community Trust & Rewards
               </span>
-              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-3">
-                Review Thelas, <mark className="bg-[#22C55E] text-[#111111]">Earn Daily Savings</mark>
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-3 text-gray-900">
+                Review Thelas, <mark className="bg-[#22C55E] text-[#111111] px-1.5 py-0.5 rounded-md">Earn Daily Savings</mark>
               </h1>
-              <p className="text-sm text-gray-300 mt-1 max-w-lg">
+              <p className="text-sm text-gray-700 mt-1 max-w-lg">
                 Every genuine review empowers your local street vendors with better platform visibility and rewards you with instant discount coupons!
               </p>
             </div>
 
             {/* Wallet Box */}
-            <div className="bg-[#1E293B] border-2 border-[#22C55E] p-5 rounded-3xl flex items-center gap-4 shadow-inner min-w-[220px]">
+            <div className="bg-white border-2 border-[#22C55E] p-5 rounded-3xl flex items-center gap-4 shadow-md min-w-[220px]">
               <div className="w-14 h-14 rounded-2xl bg-[#22C55E] text-[#111111] flex items-center justify-center text-3xl font-black shadow-[2px_2px_0_#111111]">
                 🪙
               </div>
               <div>
-                <span className="text-xs font-bold text-gray-400 uppercase">Aapke Coins</span>
-                <p className="text-3xl font-black text-white">{userCoins}</p>
-                <span className="text-[11px] font-bold text-[#22C55E]">+25 per review</span>
+                <span className="text-xs font-bold text-gray-500 uppercase">Aapke Coins</span>
+                <p className="text-3xl font-black text-gray-900">{userCoins}</p>
+                <span className="text-[11px] font-bold text-[#15803d]">+25 per review</span>
               </div>
             </div>
           </div>
