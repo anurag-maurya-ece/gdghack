@@ -3,82 +3,60 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, LogOut, Sparkles, MapPin, Store, ShoppingBag, ShieldCheck, ArrowRight } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, X, LogOut, Store, ShoppingBag } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
-  // Sync auth state from localStorage or route
+  // Sync auth state from localStorage
   useEffect(() => {
-    try {
-      if (typeof window !== "undefined") {
-        const stored = localStorage.getItem("tech_thela_user");
-        if (stored) {
-          setUser(JSON.parse(stored));
-        }
-      }
-    } catch (err) {
-      console.error("Auth sync error:", err);
-    }
-
-    const handleAuthChange = () => {
+    const syncAuth = () => {
       try {
-        const stored = localStorage.getItem("tech_thela_user");
-        setUser(stored ? JSON.parse(stored) : null);
-      } catch (e) {}
+        if (typeof window !== "undefined") {
+          const stored = localStorage.getItem("tech_thela_user");
+          setUser(stored ? JSON.parse(stored) : null);
+        }
+      } catch (err) {
+        console.error("Auth sync error:", err);
+      }
     };
 
-    window.addEventListener("auth_change", handleAuthChange);
-    window.addEventListener("storage", handleAuthChange);
+    syncAuth();
+    window.addEventListener("auth_change", syncAuth);
+    window.addEventListener("storage", syncAuth);
     return () => {
-      window.removeEventListener("auth_change", handleAuthChange);
-      window.removeEventListener("storage", handleAuthChange);
+      window.removeEventListener("auth_change", syncAuth);
+      window.removeEventListener("storage", syncAuth);
     };
   }, [pathname]);
 
-  // Determine portal scope strictly
-  const isVendorPortal = pathname.startsWith("/vendor") || pathname === "/Vendorlogin";
-  const isCustomerPortal = pathname.startsWith("/customer") || pathname === "/Customerlogin" || pathname === "/form";
-
-  // If on rewards page, check stored role
-  const isRewardsPage = pathname === "/rewards";
-  const effectiveRole = isVendorPortal
-    ? "vendor"
-    : isCustomerPortal
-    ? "customer"
-    : isRewardsPage
-    ? user?.role || "customer"
-    : user?.role || null;
-
-  // Handle distinct logouts
-  const handleVendorLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("tech_thela_user");
-      window.dispatchEvent(new Event("auth_change"));
+  // Universal Logout: Purges session and returns to normal public homepage
+  const handleLogout = () => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("tech_thela_user");
+        sessionStorage.clear();
+        window.dispatchEvent(new Event("auth_change"));
+        setUser(null);
+        setMobileMenuOpen(false);
+        window.location.href = "/";
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
     }
-    setUser(null);
-    setMobileMenuOpen(false);
-    window.location.href = "/Vendorlogin";
   };
 
-  const handleCustomerLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("tech_thela_user");
-      window.dispatchEvent(new Event("auth_change"));
-    }
-    setUser(null);
-    setMobileMenuOpen(false);
-    window.location.href = "/Customerlogin";
-  };
+  // Determine active authenticated role strictly when logged in
+  const isVendorLoggedIn = user?.role === "vendor" && (pathname === "/vendor" || pathname === "/rewards");
+  const isCustomerLoggedIn = user?.role === "customer" && (pathname === "/customer" || pathname === "/form" || pathname === "/rewards");
 
   // ==========================================
-  // 1. VENDOR NAVBAR (Only Vendor Dashboard & Tools)
+  // 1. VENDOR NAVBAR (Only for logged-in Vendor)
   // ==========================================
-  if (isVendorPortal || effectiveRole === "vendor") {
+  if (isVendorLoggedIn) {
     const vendorLinks = [
       { href: "/vendor", label: "Smart Routing & Map" },
       { href: "/rewards", label: "Mohalla Leaderboard" },
@@ -132,7 +110,7 @@ export default function Navbar() {
                 <span className="text-base">👨‍🌾</span>
                 <div className="hidden sm:flex flex-col text-left leading-none">
                   <span className="text-xs font-black text-gray-900">
-                    {user?.role === "vendor" ? user.name : "Ramesh Bhaiya"}
+                    {user?.name || "Ramesh Bhaiya"}
                   </span>
                   <span className="text-[10px] font-extrabold text-[#16A34A] flex items-center gap-1 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
@@ -142,7 +120,7 @@ export default function Navbar() {
               </div>
 
               <button
-                onClick={handleVendorLogout}
+                onClick={handleLogout}
                 className="p-1.5 sm:px-3 sm:py-1.5 text-xs font-bold text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-200 rounded-full transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
                 title="Vendor Logout"
               >
@@ -206,7 +184,7 @@ export default function Navbar() {
             ))}
             <div className="mt-auto pt-4 border-t border-gray-100">
               <button
-                onClick={handleVendorLogout}
+                onClick={handleLogout}
                 className="w-full text-center py-3 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-2xl border border-red-200 transition-all flex items-center justify-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
@@ -220,9 +198,9 @@ export default function Navbar() {
   }
 
   // ==========================================
-  // 2. CUSTOMER NAVBAR (Only Customer Discovery & Coins)
+  // 2. CUSTOMER NAVBAR (Only for logged-in Customer)
   // ==========================================
-  if (isCustomerPortal || effectiveRole === "customer") {
+  if (isCustomerLoggedIn) {
     const customerLinks = [
       { href: "/customer", label: "Live Thela Map", badge: "GPS" },
       { href: "/rewards", label: "Mohalla Rewards", badge: "🪙 125 Coins" },
@@ -283,7 +261,7 @@ export default function Navbar() {
                 </div>
                 <div className="hidden sm:flex flex-col text-left leading-none">
                   <span className="text-xs font-black text-gray-900">
-                    {user?.role === "customer" ? user.name : "Mr. Oberoi"}
+                    {user?.name || "Mr. Oberoi"}
                   </span>
                   <span className="text-[10px] font-extrabold text-amber-600 mt-0.5">
                     🪙 125 Coins
@@ -292,7 +270,7 @@ export default function Navbar() {
               </div>
 
               <button
-                onClick={handleCustomerLogout}
+                onClick={handleLogout}
                 className="p-1.5 sm:px-3 sm:py-1.5 text-xs font-bold text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-200 rounded-full transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
                 title="Customer Logout"
               >
@@ -363,7 +341,7 @@ export default function Navbar() {
             ))}
             <div className="mt-auto pt-4 border-t border-gray-100">
               <button
-                onClick={handleCustomerLogout}
+                onClick={handleLogout}
                 className="w-full text-center py-3 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-2xl border border-red-200 transition-all flex items-center justify-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
@@ -377,7 +355,7 @@ export default function Navbar() {
   }
 
   // ==========================================
-  // 3. PUBLIC WEBSITE NAVBAR (Landing Page, About, Pricing)
+  // 3. PUBLIC WEBSITE NAVBAR (Home, About, Pricing, Login Pages)
   // ==========================================
   const publicLinks = [
     { href: "/", label: "Home" },

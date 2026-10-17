@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -45,6 +46,19 @@ const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
 });
 
 export default function VendorDashboard() {
+  const router = useRouter();
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("tech_thela_user");
+        if (!stored) {
+          router.push("/Vendorlogin");
+        }
+      }
+    } catch (e) {}
+  }, [router]);
+
   const [activeTab, setActiveTab] = useState("locate_customer");
   const [isThelaOnline, setIsThelaOnline] = useState(true);
   const [vendorLocation, setVendorLocation] = useState({ lat: 28.6315, lng: 77.2185 });

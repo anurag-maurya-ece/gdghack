@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -41,6 +42,19 @@ const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
 });
 
 export default function CustomerPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("tech_thela_user");
+        if (!stored) {
+          router.push("/Customerlogin");
+        }
+      }
+    } catch (e) {}
+  }, [router]);
+
   const [activeTab, setActiveTab] = useState("vendors");
   const [vendors, setVendors] = useState(INITIAL_VENDORS);
   const [selectedCategory, setSelectedCategory] = useState("All");
