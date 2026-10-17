@@ -131,3 +131,11 @@ Why: Client-side guards are trivially bypassable; edge middleware enforces secur
 Trade-off: Edge middleware inspects cookie presence and Origin on mutating routes; external webhooks (e.g. WhatsApp) are safely bypassed from CSRF origin checks.
 Revisit if: Granular permission flags (beyond role enums) are introduced.
 
+## D-017: Phase 4 Domain Feature Services Replacing Firestore with PostgreSQL Prisma
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested migrating all core business features (Vendors, Live GPS Locations, Products/Voice Listing, Orders State Machine, Demand Routing) off Firebase Firestore onto self-owned domain services with transaction safety.
+Options: 1) Direct raw SQL queries inside route handlers 2) Dedicated domain service layer in `src/server/services/` with thin API route handlers in `app/api/`.
+Chosen: 2. Built `VendorService`, `LocationService`, `ProductService`, `OrderService`, and `DemandService`.
+Why: Isolates business invariants, state transition rules (`PLACED` -> `ACCEPTED` -> `ENROUTE` -> `DELIVERED`), Haversine distance computations, automatic offline location decay (satisfying AGENTS.md Hard Constraint: "Mark vendor offline if no update for N minutes"), idempotency caching, and transaction boundaries from HTTP transport.
+Trade-off: Route handlers remain thin adapters while all domain logic is 100% unit and integration testable.
+Revisit if: PostGIS extension is added for complex polygon spatial indexing.

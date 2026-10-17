@@ -1,5 +1,53 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 3: Authorization Matrix, RBAC, IDOR Protection, Edge Middleware & REST Auth Handlers)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 4: Domain Feature Services Replacing Firestore with PostgreSQL Prisma)
+Done:
+- **Phase 4 Domain Feature Services & API Routes Complete**:
+  - `src/server/services/vendor.service.ts`:
+    - Full profile CRUD, active state toggle, phone-based identity resolution.
+    - `listNearbyVendors`: Real-time Haversine distance calculation, filtered by `isOnline: true`, sorted nearest-first.
+  - `src/server/services/location.service.ts`:
+    - Live GPS coordinate updates linked to vendor.
+    - `decayStaleLocations(timeoutMinutes)`: Automatically marks vendor `isOnline: false` if no GPS ping received for >15 minutes (strictly satisfies AGENTS.md Hard Constraint: "Mark vendor offline if no update for N minutes").
+  - `src/server/services/product.service.ts`:
+    - Individual & bulk product creation from structured voice listing JSON (`audio -> transcript -> JSON -> save`).
+    - Vendor ownership verification on update and delete.
+  - `src/server/services/order.service.ts`:
+    - Atomic order + order items + chat creation inside Prisma `$transaction`.
+    - Idempotency key tracking preventing duplicate orders/charges.
+    - State machine validation: `PLACED` -> `ACCEPTED` / `CANCELLED` -> `ENROUTE` -> `DELIVERED`.
+    - IDOR protection: restricts order visibility to customer, vendor owner, or admin.
+  - `src/server/services/demand.service.ts`:
+    - Customer "Bulao Thela" demand pings (`recordDemandPing`).
+    - Heatmap cell aggregation and top 3 suggested zones with human-readable rationale (F7 Community Predictive Routing).
+  - **Upgraded & New API Routes**:
+    - `app/api/vendor/route.ts`: Replaced mock array with PostgreSQL Prisma queries.
+    - `app/api/vendor/nearby/route.ts`: Geospatial search using Haversine formula with demo fallback.
+    - `app/api/vendor/update-location/route.ts`: Real-time GPS location updater.
+    - `app/api/products/route.ts`: Catalog retrieval and bulk voice product creation.
+    - `app/api/orders/route.ts`: Place and list orders with transaction safety.
+    - `app/api/orders/[id]/route.ts`: Single order lookup and status transitions.
+    - `app/api/ping/create/route.ts` & `app/api/ping/accept/route.ts`: Demand ping lifecycle.
+    - `app/api/demand/route.ts`: Predictive routing zone discovery.
+- **Verification & Testing (Mandatory Test-Fix Loop)**:
+  - `npx vitest run --coverage`: **77/77 tests PASSING** across 7 test suites.
+  - Strict coverage requirement met: **91.73% line coverage on `src/server/services`**, **92.67% on `src/server/auth`**, **92.24% overall**.
+  - Mutation testing verified: Deliberately bypassing ownership check in `ProductService.updateProduct` caused `services.test.ts` to immediately fail, and revert passed.
+  - `npx tsc --noEmit`: 0 errors.
+  - `npm run build`: Compiled 33/33 pages and routes with Turbopack in 3.5s with 0 errors.
+In progress:
+- Phase 5: Storage & Email Services (S3/R2 presigned upload endpoint with MIME/magic-byte checks + Nodemailer/Resend wrapper).
+Broken/risky:
+- None.
+Next:
+- Phase 5: Build presigned S3 upload handler and email verification dispatcher.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npx vitest run --coverage`
+- `npx tsc --noEmit`
+- `npm run build`
+
+## Previous session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 3: Authorization Matrix, RBAC, IDOR Protection, Edge Middleware & REST Auth Handlers)
 Done:
 - **Phase 3 Authorization Matrix & Middleware Architecture Complete**:
   - `src/server/auth/rbac.ts`:
