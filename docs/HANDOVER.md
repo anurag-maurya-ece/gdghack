@@ -1,24 +1,23 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Cards Section Fix & Chrome DevTools Multi-Page Verification)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Comprehensive Customer Dashboard & Sidebar Flow)
 Done:
-- Fixed the `#cardssection` layout defect highlighted in user screenshot (`media_1792228703539_880721ae.png`):
-  - Enclosed the heading and `LoginCard`s (`consumer.png` and `vendor.png`) inside a single rounded container (`bg-gray-50/90 border border-gray-200/80 p-16`).
-  - Removed the negative margin hack (`-mt-12`) that produced the horizontal cutting line across the cards.
-- Switched `components/LeafletMap.jsx` tile layer from Carto basemap to standard OpenStreetMap (`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`) to eliminate any watermark.
-- Performed end-to-end visual and functional browser tests across all features using Chrome DevTools:
-  - **Landing (`/`)**: Hero section, stats counters, fixed `#cardssection` role cards, and feedback carousel verified in Chrome with screenshots.
-  - **Customer Onboarding & Flow (`/Customerlogin` -> `/form` -> `/customer`)**: Tested customer credentials submission, household survey completion, and instant routing to `/customer` with live OpenStreetMap thela markers, product catalogue drawer, and "Bulao Thela" demand radar.
-  - **Vendor Onboarding & Flow (`/Vendorlogin` -> `/vendor`)**: Tested vendor portal sign-in, giant tactile "Thela ON / OFF" live switch, voice-to-listing mic interface, and incoming customer orders.
-  - **Community Rewards (`/rewards`)**: Mohalla leaderboard, coin wallet, review submission, and coupon store verified.
-  - **About & Pricing (`/aboutus`, `/pricing`)**: Story gif and 3-tier pricing cards verified.
-- Production build: `npm run build` compiled all 10 routes cleanly in 1552ms.
-- Smoke tests: `node scripts/smoke.mjs` passed 100% (11/11 tests green).
+- Ported and built the full Customer Dashboard flow matching `The-Hashira---tech-thela/pages/Customer.tsx`:
+  - Created `components/CustomerSidebar.jsx`: Dark luxury sidebar with user profile ("Mr. Oberoi", Customer ID: TH-CUST-007, Prime Member status, 125 Coins balance) and 4 interactive tabs.
+  - Upgraded `app/customer/page.jsx`:
+    1. **Tab 1: Vendors Near Me**: Pincode lookup (`110080`... `110085`), category chips (`Sabhi`, `Sabzi`, `Phal`, `Chaat`, `Chai`), real-time search, nearby vendor distance chips, live OpenStreetMap Leaflet tracker, produce catalogue with quantity selectors, and instant doorstep order basket drawer.
+    2. **Tab 2: Demand Ping (Beta)**: "Bulao Thela" broadcast radar with 5G mesh dispatch simulation, item/quantity/landmark form, and instant vendor acceptance alert.
+    3. **Tab 3: Review Vendors**: Vendor selection dropdown, interactive 5-star rating selector, feedback submission form with instant `+25 Coins` credit reward, and recent community review feed.
+    4. **Tab 4: Mohalla Leaderboard**: Ranked vendor trust table with Gold/Silver/Bronze medals, star ratings, and review counts.
+    5. **AI Vendor Recommendations**: Personalized cards at the bottom ("Organic Greens", "Suresh's Selection", "Global Spices") based on customer household dietary preferences from `/form`.
+- Production build: `npm run build` compiled all routes cleanly in 1365ms.
+- Chrome DevTools verification: All 4 tabs tested and verified in real Chrome browser with live state transitions and screenshots.
+- Smoke tests: `node scripts/smoke.mjs` passed 11/11 tests.
 In progress:
-- All pages and system flows aligned with `The-Hashira---tech-thela` and actively running on http://127.0.0.1:3000.
+- Full customer login & dashboard flow live on http://127.0.0.1:3000/customer.
 Broken/risky:
 - None.
 Next:
-- User visual review or proceed with WhatsApp bot webhook integration when ready.
+- Add additional flows or proceed to live cloud deployment / WhatsApp webhook integration.
 Do not touch:
 - Secrets, `.env`, live deployment.
 Run/test commands:

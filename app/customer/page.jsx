@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import CustomerSidebar from "../../components/CustomerSidebar";
 import { INITIAL_VENDORS } from "../../lib/mock-data";
 import {
   Search,
@@ -20,6 +21,12 @@ import {
   Phone,
   Radio,
   Sparkles,
+  Trophy,
+  Send,
+  MapPin,
+  ChevronRight,
+  ShieldCheck,
+  Check,
 } from "lucide-react";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
@@ -34,6 +41,7 @@ const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
 });
 
 export default function CustomerPage() {
+  const [activeTab, setActiveTab] = useState("vendors");
   const [vendors, setVendors] = useState(INITIAL_VENDORS);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,10 +49,52 @@ export default function CustomerPage() {
   const [cart, setCart] = useState({}); // { [itemId]: { vendorId, item, quantity } }
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [orderStatus, setOrderStatus] = useState(null); // 'placed' | 'accepted' | 'enroute' | 'delivered'
-  const [pingModalOpen, setPingModalOpen] = useState(false);
-  const [pingItem, setPingItem] = useState("");
+  
+  // Locate Product & Pincode Filter
+  const pincodes = ["110080", "110081", "110082", "110083", "110084", "110085"];
+  const [selectedPin, setSelectedPin] = useState("110080");
+  const [searchTriggered, setSearchTriggered] = useState(false);
+
+  // Demand Ping State
+  const [pingItem, setPingItem] = useState("Fresh Golgappe & Tamatar");
+  const [pingQty, setPingQty] = useState("1 kg");
+  const [pingNotes, setPingNotes] = useState("Deliver near Gate 2, Flat 302");
   const [pingBroadcastActive, setPingBroadcastActive] = useState(false);
   const [pingAcceptedVendor, setPingAcceptedVendor] = useState(null);
+
+  // Review System State
+  const [coins, setCoins] = useState(125);
+  const [reviewVendor, setReviewVendor] = useState("Ramesh Bhaiya");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSuccess, setReviewSuccess] = useState(false);
+  const [reviewsList, setReviewsList] = useState([
+    {
+      id: 1,
+      vendor: "Ramesh Bhaiya",
+      author: "Mansi Chaubey",
+      rating: 5,
+      comment: "Bilkul fresh sabzi deliver ki! Ekdum farm fresh tamatar aur palak.",
+      time: "20 mins ago",
+    },
+    {
+      id: 2,
+      vendor: "Suresh Cart",
+      author: "Vikram Malhotra",
+      rating: 5,
+      comment: "Bulao Thela ping karne par 5 minute me aa gaye. Bahut badhiya service!",
+      time: "1 hour ago",
+    },
+  ]);
+
+  // Leaderboard data
+  const leaderboardData = [
+    { rank: 1, name: "Ramesh Kumar", area: "Dwarka Sec 14", rating: 4.8, reviews: 52, medal: "🥇" },
+    { rank: 2, name: "Suresh Patel", area: "Janakpuri Pocket B", rating: 4.6, reviews: 47, medal: "🥈" },
+    { rank: 3, name: "Anita Devi", area: "Uttam Nagar East", rating: 4.5, reviews: 39, medal: "🥉" },
+    { rank: 4, name: "Chhotu Chaat", area: "Subhash Nagar", rating: 4.4, reviews: 31, medal: "#4" },
+    { rank: 5, name: "Ramu Fruits", area: "Tilak Nagar", rating: 4.3, reviews: 26, medal: "#5" },
+  ];
 
   // Filter vendors by category and search
   const filteredVendors = useMemo(() => {
@@ -105,10 +155,10 @@ export default function CustomerPage() {
     setOrderStatus("placed");
     setTimeout(() => {
       setOrderStatus("accepted");
-    }, 2500);
+    }, 2000);
     setTimeout(() => {
       setOrderStatus("enroute");
-    }, 6000);
+    }, 4500);
   };
 
   // Simulate Ping Demand Flow
@@ -118,17 +168,36 @@ export default function CustomerPage() {
     setPingBroadcastActive(true);
     setPingAcceptedVendor(null);
 
-    // Simulate nearby vendor matching after 2.5s
+    // Simulate nearby vendor matching after 2.8s
     setTimeout(() => {
       setPingBroadcastActive(false);
       setPingAcceptedVendor({
-        name: "Ramesh Bhaiya (Sabzi Thela)",
+        name: "Ram Kumar (Fresh Cart)",
         phone: "+91 98765 43210",
         item: pingItem,
-        eta: "5 mins",
-        distance: "180m",
+        eta: "4 mins",
+        distance: "140m",
       });
     }, 2800);
+  };
+
+  // Submit Review Flow
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    if (!reviewComment.trim()) return;
+    const newRev = {
+      id: Date.now(),
+      vendor: reviewVendor,
+      author: "Mr. Oberoi (You)",
+      rating: reviewRating,
+      comment: reviewComment,
+      time: "Just now",
+    };
+    setReviewsList([newRev, ...reviewsList]);
+    setCoins((c) => c + 25);
+    setReviewComment("");
+    setReviewSuccess(true);
+    setTimeout(() => setReviewSuccess(false), 4000);
   };
 
   const categories = [
@@ -140,502 +209,609 @@ export default function CustomerPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-[#111111] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FDFCFB] flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 shell px-4 sm:px-6 py-8 pt-28">
-        {/* Top Header & Ping Action */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b-2 border-gray-100">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+        {/* Customer Top Bar Header */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-[#22C55E] animate-ping" />
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Live Thela <mark>Nakshe Par</mark>
-              </h1>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-[#16A34A] text-xs font-black uppercase tracking-wider mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              Customer Dashboard • Tech Thela Live
             </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111111]">
+              Apni Gali Ka <span className="text-[#16A34A]">Live Thela</span>
+            </h1>
             <p className="text-sm text-gray-600 mt-1">
-              Real-time door-to-door fresh produce & snacks right around your street.
+              Pincode {selectedPin} • Real-time street vendors, door-to-door fresh supply & instant demand ping.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => {
-                setPingItem("");
-                setPingAcceptedVendor(null);
-                setPingBroadcastActive(false);
-                setPingModalOpen(true);
-              }}
-              className="button bg-[#D9C8F5] text-[#111111] hover:bg-[#c9b4ee] px-4 py-2 text-sm"
+              onClick={() => setActiveTab("demand_ping")}
+              className="inline-flex items-center gap-2 bg-[#16A34A] hover:bg-[#15803D] text-white px-5 py-3 rounded-2xl font-black text-sm shadow-md transition-all active:scale-95"
             >
-              <BellRing className="w-4 h-4 text-[#0F172A]" />
+              <Radio className="w-4 h-4 animate-pulse" />
               <span>Bulao Thela (Ping Demand)</span>
             </button>
-          </div>
-        </div>
-
-        {/* Filter bar & Search */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 py-6">
-          {/* Category Chips */}
-          <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 scrollbar-none">
-            {categories.map((cat) => (
+            
+            {cartItemsList.length > 0 && (
               <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold border-2 transition-all flex items-center gap-1.5 ${
-                  selectedCategory === cat.id
-                    ? "bg-[#22C55E] text-[#111111] border-[#111111] shadow-[2px_2px_0_#111111]"
-                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-400"
-                }`}
+                onClick={() => setOrderModalOpen(true)}
+                className="inline-flex items-center gap-2 bg-[#111111] text-white px-4 py-3 rounded-2xl font-bold text-sm shadow-md hover:bg-gray-800 transition-all"
               >
-                <span>{cat.icon}</span>
-                <span>{cat.label}</span>
+                <ShoppingCart className="w-4 h-4 text-emerald-400" />
+                <span>Basket ({cartItemsList.length})</span>
+                <span className="bg-[#16A34A] text-xs px-2 py-0.5 rounded-full font-black">
+                  ₹{totalCartPrice}
+                </span>
               </button>
-            ))}
-          </div>
-
-          {/* Search Input */}
-          <div className="relative w-full lg:w-80">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search aloo, tamatar, seb..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm rounded-full border-2 border-gray-200 focus:border-[#111111] focus:outline-none transition-all"
-            />
+            )}
           </div>
         </div>
 
-        {/* Main Grid: Interactive Map + Active Vendors List */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left: Map View (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col gap-4">
-            <LeafletMap
-              vendors={filteredVendors}
-              selectedVendor={activeVendor}
-              onSelectVendor={(v) => setActiveVendor(v)}
-              height="540px"
-            />
+        {/* Dashboard Main Grid: Sidebar + Dynamic Content */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Customer Sidebar */}
+          <CustomerSidebar activeTab={activeTab} onChangeTab={setActiveTab} />
 
-            {/* Quick Map Legend */}
-            <div className="flex flex-wrap items-center justify-between text-xs text-gray-600 bg-[#F8F4FF] p-3 rounded-2xl border border-gray-200">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-blue-600 inline-block"></span>
-                  <span>Aapka Ghar (You)</span>
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-[#22C55E] inline-block"></span>
-                  <span>Chalta Thela (Live Vendor)</span>
-                </span>
-              </div>
-              <span className="font-bold text-gray-800">
-                Tap any vendor pin on map to inspect items
-              </span>
-            </div>
-          </div>
-
-          {/* Right: Vendor Cards & Selected Vendor Drawer (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col gap-5">
-            {/* Active Selected Vendor Detail Card */}
-            {activeVendor && (
-              <div className="outline-card p-5 bg-[#F8F4FF] border-2 border-[#111111]">
-                <div className="flex items-start justify-between pb-3 border-b border-gray-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-white border-2 border-[#111111] flex items-center justify-center text-2xl shadow-[2px_2px_0_#111111]">
-                      {activeVendor.avatar}
+          {/* Main Tab Panels */}
+          <div className="flex-1 w-full space-y-8">
+            {/* TAB 1: VENDORS NEAR ME & LIVE MAP */}
+            {activeTab === "vendors" && (
+              <div className="space-y-6">
+                {/* Search & Pincode Filter (LocateProduct from Customer.tsx) */}
+                <div className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+                  <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl text-xs font-bold text-gray-700">
+                      <MapPin className="w-4 h-4 text-[#16A34A]" />
+                      <span>Pincode:</span>
+                      <select
+                        value={selectedPin}
+                        onChange={(e) => {
+                          setSelectedPin(e.target.value);
+                          setSearchTriggered(true);
+                        }}
+                        className="bg-transparent font-black text-gray-900 focus:outline-none cursor-pointer"
+                      >
+                        {pincodes.map((pin) => (
+                          <option key={pin} value={pin}>
+                            {pin} (Delhi NCR)
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <div>
-                      <h3 className="font-extrabold text-lg text-gray-900 leading-tight">
-                        {activeVendor.name}
-                      </h3>
-                      <p className="text-xs text-gray-600 font-medium">{activeVendor.shopName}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">
-                          <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                          {activeVendor.rating} ({activeVendor.reviewsCount})
-                        </span>
-                        <span className="text-[11px] font-bold text-gray-500">
-                          • {activeVendor.distanceMeters}m away
-                        </span>
-                      </div>
+
+                    {/* Category Badges */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {categories.map((c) => (
+                        <button
+                          key={c.id}
+                          onClick={() => setSelectedCategory(c.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                            selectedCategory === c.id
+                              ? "bg-[#16A34A] text-white shadow-sm font-black"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          }`}
+                        >
+                          {c.icon} {c.label.split(" ")[0]}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#22C55E]/20 text-[#0F172A] text-xs font-black border border-[#22C55E]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-ping" />
-                    ONLINE
-                  </span>
+                  {/* Search Bar */}
+                  <div className="relative w-full md:w-64">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search aloo, tamatar, chai..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
+                    />
+                  </div>
                 </div>
 
-                {/* Items List */}
-                <div className="pt-4 flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1">
-                  <h4 className="text-xs font-black uppercase text-gray-500 tracking-wider">
-                    Available on Thela Today
+                {/* Nearby Matching Vendor Chips */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="bg-emerald-50/70 border border-emerald-200 p-3 rounded-2xl flex items-center justify-between">
+                    <div>
+                      <h4 className="font-extrabold text-xs text-gray-900">Ramesh Bhaiya</h4>
+                      <p className="text-[10px] text-emerald-700 font-bold">Sabzi Thela • 180m</p>
+                    </div>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                  </div>
+                  <div className="bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-between">
+                    <div>
+                      <h4 className="font-extrabold text-xs text-gray-900">Suresh Cart</h4>
+                      <p className="text-[10px] text-gray-600 font-bold">Fresh Fruits • 340m</p>
+                    </div>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  </div>
+                  <div className="bg-white border border-gray-200 p-3 rounded-2xl flex items-center justify-between">
+                    <div>
+                      <h4 className="font-extrabold text-xs text-gray-900">Chhotu Chaat</h4>
+                      <p className="text-[10px] text-gray-600 font-bold">Snacks & Chai • 490m</p>
+                    </div>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  </div>
+                </div>
+
+                {/* Interactive Map Section */}
+                <div className="rounded-3xl border border-gray-200/80 overflow-hidden shadow-sm bg-white p-3">
+                  <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100 mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+                      <span className="text-xs font-black text-gray-800 uppercase tracking-wider">
+                        Live GPS Thela Tracker (OpenStreetMap)
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-bold text-gray-500">
+                      Auto-updates every 15s
+                    </span>
+                  </div>
+                  <LeafletMap
+                    vendors={filteredVendors}
+                    selectedVendor={activeVendor}
+                    onSelectVendor={setActiveVendor}
+                    height="420px"
+                  />
+                </div>
+
+                {/* Product Inventory Drawer for Selected Vendor */}
+                <div className="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-6">
+                    <div>
+                      <span className="text-[11px] font-bold text-[#16A34A] uppercase tracking-wider">
+                        Active Selected Thela
+                      </span>
+                      <h3 className="text-xl font-extrabold text-[#111111]">
+                        {activeVendor.name} — {activeVendor.shopName}
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {activeVendor.distance} away • ⭐ {activeVendor.rating} ({activeVendor.reviewsCount} reviews) • Verified Vendor
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#16A34A] text-xs font-black">
+                        ● Online Now
+                      </span>
+                    </div>
+                  </div>
+
+                  <h4 className="text-sm font-black text-gray-900 mb-4">
+                    Available Produce on Thela Today:
                   </h4>
-                  {activeVendor.inventory.map((item) => {
-                    const inCartQty = cart[item.id]?.quantity || 0;
-                    return (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-gray-200 hover:border-gray-400 transition-colors"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-xl">{item.icon}</span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {activeVendor.inventory.map((item) => {
+                      const inCart = cart[item.id]?.quantity || 0;
+                      return (
+                        <div
+                          key={item.id}
+                          className="bg-gray-50/80 rounded-2xl p-4 border border-gray-200/70 hover:border-[#16A34A] transition-all flex items-center justify-between"
+                        >
                           <div>
-                            <p className="text-xs font-bold text-gray-900">{item.name}</p>
-                            <p className="text-[11px] font-extrabold text-[#0B6B6B]">
-                              ₹{item.price} <span className="text-gray-400 font-normal">/ {item.unit}</span>
+                            <p className="font-extrabold text-sm text-[#111111]">{item.name}</p>
+                            <p className="text-xs font-bold text-[#16A34A] mt-0.5">
+                              ₹{item.price} <span className="text-gray-500 font-normal">/ {item.unit}</span>
                             </p>
                           </div>
-                        </div>
 
-                        {/* Add / Qty controls */}
-                        <div className="flex items-center gap-2">
-                          {inCartQty > 0 ? (
-                            <div className="flex items-center gap-1.5 bg-gray-100 rounded-full p-1 border border-gray-300">
-                              <button
-                                onClick={() => removeFromCart(item.id)}
-                                className="w-6 h-6 rounded-full bg-white flex items-center justify-center font-bold text-gray-700 hover:bg-gray-200"
-                              >
-                                <Minus className="w-3 h-3" />
-                              </button>
-                              <span className="text-xs font-extrabold px-1.5">{inCartQty}</span>
+                          <div className="flex items-center gap-1.5">
+                            {inCart > 0 ? (
+                              <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-xl border border-gray-200 shadow-xs">
+                                <button
+                                  onClick={() => removeFromCart(item.id)}
+                                  className="w-6 h-6 rounded-lg bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-600 flex items-center justify-center font-bold text-xs"
+                                >
+                                  -
+                                </button>
+                                <span className="text-xs font-black text-gray-900 w-4 text-center">
+                                  {inCart}
+                                </span>
+                                <button
+                                  onClick={() => addToCart(activeVendor, item)}
+                                  className="w-6 h-6 rounded-lg bg-[#16A34A] text-white flex items-center justify-center font-bold text-xs"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            ) : (
                               <button
                                 onClick={() => addToCart(activeVendor, item)}
-                                className="w-6 h-6 rounded-full bg-[#22C55E] text-[#111111] flex items-center justify-center font-bold shadow-sm"
+                                className="inline-flex items-center gap-1 bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-xs transition-transform active:scale-95"
                               >
-                                <Plus className="w-3 h-3" />
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Add</span>
                               </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => addToCart(activeVendor, item)}
-                              className="px-3 py-1 rounded-full bg-[#22C55E] text-[#111111] text-xs font-bold border border-[#111111] shadow-[1px_1px_0_#111111] hover:translate-y-[-1px] active:translate-y-[1px] transition-all flex items-center gap-1"
-                            >
-                              <Plus className="w-3 h-3" />
-                              <span>Add</span>
-                            </button>
-                          )}
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Other Nearby Thelas Horizontal/List Cards */}
-            <div className="flex flex-col gap-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                All Nearby Verified Thelas ({filteredVendors.length})
-              </h4>
-              <div className="flex flex-col gap-2.5">
-                {filteredVendors.map((vendor) => {
-                  const isCurrent = activeVendor?.id === vendor.id;
-                  return (
-                    <div
-                      key={vendor.id}
-                      onClick={() => setActiveVendor(vendor)}
-                      className={`cursor-pointer p-3.5 rounded-2xl border-2 transition-all flex items-center justify-between ${
-                        isCurrent
-                          ? "bg-white border-[#111111] shadow-[3px_3px_0_#111111]"
-                          : "bg-gray-50 border-gray-200 hover:border-gray-400"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{vendor.avatar}</span>
-                        <div>
-                          <p className="text-sm font-extrabold text-gray-900 leading-none">
-                            {vendor.name}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">{vendor.categoryLabel}</p>
-                        </div>
-                      </div>
+            {/* TAB 2: DEMAND PING (BETA) - BULAO THELA */}
+            {activeTab === "demand_ping" && (
+              <div className="space-y-6">
+                {/* Simulation Badge */}
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-2xl shadow-xs flex items-center gap-3">
+                  <Radio className="w-5 h-5 text-blue-500 animate-pulse flex-shrink-0" />
+                  <div>
+                    <h4 className="text-xs font-black text-blue-900 uppercase">
+                      5G Mesh Demand Broadcast Engine
+                    </h4>
+                    <p className="text-xs text-blue-700 mt-0.5 font-medium">
+                      Street vendors nearby receive real-time audio & push notifications of customer demand requests.
+                    </p>
+                  </div>
+                </div>
 
-                      <div className="text-right">
-                        <span className="text-xs font-bold text-[#0B6B6B] block">
-                          {vendor.distanceMeters}m away
-                        </span>
-                        <span className="text-[11px] font-semibold text-gray-500">
-                          {vendor.inventory.length} items
+                {/* Demand Request Form */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <h3 className="text-2xl font-black text-[#111111] mb-2">
+                    Bulao Thela (Demand Ping)
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    Aapke gate par thela nahi hai? Ping karein aur 5 minute me nearby vendor ko direct bulaayein.
+                  </p>
+
+                  <form onSubmit={handleSendPing} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-gray-700 uppercase mb-1.5">
+                        Produce / Snacks Needed
+                      </label>
+                      <input
+                        type="text"
+                        value={pingItem}
+                        onChange={(e) => setPingItem(e.target.value)}
+                        placeholder="e.g. 2 kg Aaloo, 1 kg Tamatar, Golgappe"
+                        className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-black text-gray-700 uppercase mb-1.5">
+                          Approx Quantity
+                        </label>
+                        <input
+                          type="text"
+                          value={pingQty}
+                          onChange={(e) => setPingQty(e.target.value)}
+                          placeholder="e.g. 1 kg / 2 plates"
+                          className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-black text-gray-700 uppercase mb-1.5">
+                          Delivery Spot / Landmark
+                        </label>
+                        <input
+                          type="text"
+                          value={pingNotes}
+                          onChange={(e) => setPingNotes(e.target.value)}
+                          placeholder="e.g. Near Gate 2, Flat 302"
+                          className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={pingBroadcastActive}
+                      className="w-full mt-4 bg-[#16A34A] hover:bg-[#15803D] text-white py-3.5 px-6 rounded-2xl font-black text-base shadow-md transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer disabled:opacity-60"
+                    >
+                      <Radio className={`w-5 h-5 ${pingBroadcastActive ? "animate-spin" : ""}`} />
+                      <span>
+                        {pingBroadcastActive
+                          ? "Broadcasting To 5 Nearby Thelas..."
+                          : "Broadcast Live Demand Ping 📡"}
+                      </span>
+                    </button>
+                  </form>
+
+                  {/* Broadcast Result */}
+                  {pingAcceptedVendor && (
+                    <div className="mt-6 p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 animate-fadeIn">
+                      <div className="flex items-center gap-2 text-emerald-800 font-extrabold text-sm mb-1">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                        <span>Vendor Accepted Your Ping!</span>
+                      </div>
+                      <p className="text-xs text-emerald-700 font-medium">
+                        <strong>{pingAcceptedVendor.name}</strong> is heading toward your street with{" "}
+                        <em>{pingAcceptedVendor.item}</em>.
+                      </p>
+                      <div className="mt-3 flex items-center gap-4 text-xs font-bold text-gray-800">
+                        <span>ETA: {pingAcceptedVendor.eta}</span>
+                        <span>•</span>
+                        <span>Distance: {pingAcceptedVendor.distance}</span>
+                        <span>•</span>
+                        <span>Phone: {pingAcceptedVendor.phone}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: REVIEW VENDORS & EARN COINS */}
+            {activeTab === "review" && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 pb-4 border-b border-gray-100">
+                    <div>
+                      <h3 className="text-2xl font-black text-[#111111]">
+                        Review Your Street Vendor
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Rate produce quality & speed. Every genuine review rewards you with +25 Tech Thela Coins!
+                      </p>
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-extrabold">
+                      <span>💰 Wallet Balance:</span>
+                      <span className="text-sm font-black text-amber-600">{coins} Coins</span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSubmitReview} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-black text-gray-700 uppercase mb-1.5">
+                        Select Thela Vendor
+                      </label>
+                      <select
+                        value={reviewVendor}
+                        onChange={(e) => setReviewVendor(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
+                      >
+                        <option value="Ramesh Bhaiya">Ramesh Bhaiya (Sabzi Thela • Dwarka)</option>
+                        <option value="Suresh Cart">Suresh Patel (Fresh Fruits • Janakpuri)</option>
+                        <option value="Anita Devi">Anita Devi (Organic Produce • Uttam Nagar)</option>
+                        <option value="Chhotu Chaat">Chhotu (Golgappe & Snacks)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-black text-gray-700 uppercase mb-1.5">
+                        Star Rating
+                      </label>
+                      <div className="flex items-center gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            type="button"
+                            key={star}
+                            onClick={() => setReviewRating(star)}
+                            className="p-1 text-2xl transition-transform hover:scale-110"
+                          >
+                            <span className={star <= reviewRating ? "text-amber-400" : "text-gray-300"}>
+                              ★
+                            </span>
+                          </button>
+                        ))}
+                        <span className="text-xs font-bold text-gray-600 ml-2">
+                          {reviewRating} out of 5 stars
                         </span>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Floating Cart Drawer (if items added) */}
-        {cartItemsList.length > 0 && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-lg bg-[#0F172A] border-2 border-[#111111] text-white p-4 rounded-3xl shadow-[4px_4px_0_#111111] flex items-center justify-between animate-in slide-in-from-bottom-5 duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#22C55E] text-[#111111] flex items-center justify-center font-extrabold text-lg">
-                <ShoppingCart className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-300 font-medium">
-                  {cartItemsList.length} item(s) in basket
-                </p>
-                <p className="text-lg font-extrabold text-[#22C55E]">
-                  ₹{totalCartPrice} <span className="text-xs text-gray-400 font-normal">(Cash/UPI on delivery)</span>
-                </p>
-              </div>
-            </div>
+                    <div>
+                      <label className="block text-xs font-black text-gray-700 uppercase mb-1.5">
+                        Your Feedback
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="Kaisa laga fresh produce? Sahi bhav tha?"
+                        className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
+                        required
+                      />
+                    </div>
 
-            <button
-              onClick={() => {
-                setOrderStatus(null);
-                setOrderModalOpen(true);
-              }}
-              className="button bg-[#22C55E] text-[#111111] px-5 py-2 text-sm font-black"
-            >
-              Order Doorstep
-            </button>
-          </div>
-        )}
+                    <button
+                      type="submit"
+                      className="bg-[#16A34A] hover:bg-[#15803D] text-white py-3 px-6 rounded-2xl font-black text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+                    >
+                      Submit Review & Claim +25 Coins 🎁
+                    </button>
 
-        {/* Order Modal Drawer */}
-        {orderModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="outline-card bg-white p-6 sm:p-8 max-w-md w-full relative flex flex-col gap-5">
-              <button
-                onClick={() => setOrderModalOpen(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100"
-              >
-                <X className="w-5 h-5" />
-              </button>
+                    {reviewSuccess && (
+                      <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-bold animate-fadeIn">
+                        ✓ Review saved successfully! 25 Coins credited to your wallet.
+                      </div>
+                    )}
+                  </form>
 
-              <div>
-                <h3 className="text-xl font-extrabold text-gray-900">
-                  {orderStatus ? "Live Order Tracking" : "Confirm Doorstep Delivery"}
-                </h3>
-                <p className="text-xs text-gray-500">
-                  Direct connection with {activeVendor?.name} — zero middleman cut!
-                </p>
-              </div>
-
-              {!orderStatus ? (
-                <>
-                  <div className="flex flex-col gap-2 max-h-52 overflow-y-auto border-y border-gray-100 py-3">
-                    {cartItemsList.map((entry) => (
-                      <div key={entry.item.id} className="flex justify-between items-center text-sm">
-                        <span>
-                          {entry.item.icon} {entry.item.name} × {entry.quantity}
-                        </span>
-                        <span className="font-extrabold">₹{entry.item.price * entry.quantity}</span>
+                  {/* Existing Reviews */}
+                  <div className="mt-8 pt-6 border-t border-gray-100 space-y-3">
+                    <h4 className="text-xs font-black text-gray-700 uppercase">
+                      Recent Community Reviews
+                    </h4>
+                    {reviewsList.map((rev) => (
+                      <div key={rev.id} className="p-4 rounded-2xl bg-gray-50 border border-gray-200/60">
+                        <div className="flex items-center justify-between text-xs mb-1">
+                          <span className="font-extrabold text-gray-900">{rev.vendor}</span>
+                          <span className="text-amber-500 font-bold">{"★".repeat(rev.rating)}</span>
+                        </div>
+                        <p className="text-xs text-gray-700">{rev.comment}</p>
+                        <p className="text-[10px] text-gray-400 mt-1 font-mono">
+                          By {rev.author} • {rev.time}
+                        </p>
                       </div>
                     ))}
                   </div>
-
-                  <div className="flex justify-between items-center text-base font-extrabold">
-                    <span>Total Amount:</span>
-                    <span className="text-xl text-[#0B6B6B]">₹{totalCartPrice}</span>
-                  </div>
-
-                  <div className="bg-[#F8F4FF] p-3 rounded-2xl border border-gray-200 text-xs text-gray-600">
-                    <p className="font-bold text-gray-900">📍 Delivery to: Current Location Beacon</p>
-                    <p className="mt-0.5">Payment mode: Cash or UPI Scanner directly to thela cart.</p>
-                  </div>
-
-                  <button
-                    onClick={handlePlaceOrder}
-                    className="button w-full bg-[#22C55E] text-[#111111] py-3 text-base font-extrabold"
-                  >
-                    Bhejo Order (Send Order to Thela)
-                  </button>
-                </>
-              ) : (
-                <div className="flex flex-col gap-6 py-2">
-                  {/* Stepper */}
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#22C55E] text-[#111111] flex items-center justify-center font-bold text-sm">
-                        ✓
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">Order Sent to Vendor</p>
-                        <p className="text-[11px] text-gray-500">Delivered directly via local webhook</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                          orderStatus === "accepted" || orderStatus === "enroute"
-                            ? "bg-[#22C55E] text-[#111111]"
-                            : "bg-gray-200 text-gray-500"
-                        }`}
-                      >
-                        {orderStatus === "accepted" || orderStatus === "enroute" ? "✓" : "2"}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">Thela Accepted Order</p>
-                        <p className="text-[11px] text-gray-500">Vendor packing fresh produce</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                          orderStatus === "enroute"
-                            ? "bg-[#22C55E] text-[#111111] animate-pulse"
-                            : "bg-gray-200 text-gray-500"
-                        }`}
-                      >
-                        3
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">Thela Arriving at your Gate</p>
-                        <p className="text-[11px] text-gray-500">Estimated time: ~3 mins</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#22C55E]/15 border border-[#22C55E] p-4 rounded-2xl flex items-center gap-3">
-                    <Sparkles className="w-5 h-5 text-[#22C55E] shrink-0" />
-                    <p className="text-xs text-gray-800 font-medium">
-                      After receiving your fresh items, give a quick review in Rewards to earn <strong className="text-[#0F172A]">+25 coins</strong>!
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setCart({});
-                      setOrderModalOpen(false);
-                      setOrderStatus(null);
-                    }}
-                    className="button bg-[#111111] text-white py-3 w-full"
-                  >
-                    Done & Return to Map
-                  </button>
                 </div>
-              )}
-            </div>
-          </div>
-        )}
+              </div>
+            )}
 
-        {/* "Bulao Thela" Ping Demand Radar Modal */}
-        {pingModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="outline-card bg-white p-6 sm:p-8 max-w-md w-full relative flex flex-col gap-5">
+            {/* TAB 4: MOHALLA LEADERBOARD */}
+            {activeTab === "leaderboard" && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                    <div>
+                      <h3 className="text-2xl font-black text-[#111111]">
+                        🏆 Mohalla Thela Leaderboard
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Ranked by customer trust, produce freshness & quick delivery responses.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {leaderboardData.map((item) => (
+                      <div
+                        key={item.rank}
+                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                          item.rank <= 3
+                            ? "bg-amber-50/50 border-amber-200"
+                            : "bg-gray-50/60 border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl w-8 text-center">{item.medal}</span>
+                          <div>
+                            <h4 className="font-extrabold text-sm text-gray-900">{item.name}</h4>
+                            <p className="text-xs text-gray-500">{item.area}</p>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="text-sm font-black text-[#16A34A]">⭐ {item.rating}</div>
+                          <div className="text-[10px] text-gray-500 font-bold">
+                            {item.reviews} verified reviews
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* AI Vendor Recommendations Section (from Customer.tsx) */}
+        <div className="mt-12 bg-gradient-to-br from-emerald-50/60 via-green-50/40 to-white p-6 sm:p-8 rounded-3xl border border-emerald-200/80 shadow-sm relative overflow-hidden">
+          <div className="mb-6">
+            <span className="text-[11px] font-black text-[#16A34A] uppercase tracking-wider">
+              ✨ Household Smart AI Engine
+            </span>
+            <h3 className="text-2xl font-extrabold text-[#111111] mt-0.5">
+              Personalized Thela Recommendations
+            </h3>
+            <p className="text-xs text-gray-600 mt-1">
+              Curated from your onboarding questionnaire & weekly dietary needs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Organic Greens",
+                type: "Fresh Vegetables",
+                score: "98% Match",
+                icon: "🥦",
+                desc: "Matches your daily green leafy preference and elders in family.",
+              },
+              {
+                name: "Suresh's Selection",
+                type: "Seasonal Fruits",
+                score: "94% Match",
+                icon: "🍎",
+                desc: "Pure naturally ripened fruits tailored for kids and family health.",
+              },
+              {
+                name: "Global Spices & Herbs",
+                type: "Exotic & Desi Combo",
+                score: "89% Match",
+                icon: "🌶️",
+                desc: "Fresh adrak, lasan, mirchi with zero doorstep delivery fees.",
+              },
+            ].map((rec, i) => (
+              <div
+                key={i}
+                className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200/80 hover:border-[#16A34A] transition-all hover:-translate-y-1"
+              >
+                <div className="text-3xl mb-3">{rec.icon}</div>
+                <h4 className="font-extrabold text-base text-gray-900">{rec.name}</h4>
+                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                  {rec.type}
+                </p>
+                <p className="text-xs text-gray-600 mt-2 mb-4 leading-relaxed">{rec.desc}</p>
+                <div className="inline-block bg-emerald-100 text-[#16A34A] font-black px-3 py-1 rounded-full text-xs">
+                  {rec.score}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Cart & Pre-Order Modal */}
+      {orderModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-gray-200 shadow-2xl animate-scaleUp">
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+              <h3 className="font-extrabold text-lg text-gray-900">Your Fresh Produce Basket</h3>
               <button
-                onClick={() => setPingModalOpen(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100"
+                onClick={() => setOrderModalOpen(false)}
+                className="p-1 rounded-full hover:bg-gray-100 text-gray-500"
               >
                 <X className="w-5 h-5" />
               </button>
+            </div>
 
-              <div>
-                <span className="text-xs font-black uppercase tracking-wider text-[#22C55E] bg-[#22C55E]/15 px-2.5 py-1 rounded-full">
-                  Doorstep Demand Ping
-                </span>
-                <h3 className="text-2xl font-extrabold text-gray-900 mt-2">
-                  Bulao Thela <mark>Apni Gali Mein</mark>
-                </h3>
-                <p className="text-xs text-gray-600 mt-1">
-                  Want fresh vegetables or fruits right at your society gate? Broadcast a direct ping to nearby roaming thelas!
-                </p>
+            <div className="py-4 space-y-3 max-h-60 overflow-y-auto">
+              {cartItemsList.map(({ item, quantity }) => (
+                <div key={item.id} className="flex justify-between items-center text-sm">
+                  <div>
+                    <span className="font-bold text-gray-900">{item.name}</span>
+                    <span className="text-gray-500 text-xs ml-2">x {quantity} {item.unit}</span>
+                  </div>
+                  <span className="font-black text-[#16A34A]">₹{item.price * quantity}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-4 border-t border-gray-100">
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-bold text-gray-700 text-sm">Total Payable:</span>
+                <span className="font-black text-xl text-gray-900">₹{totalCartPrice}</span>
               </div>
 
-              {!pingAcceptedVendor ? (
-                <form onSubmit={handleSendPing} className="flex flex-col gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-gray-700">
-                      Kya chahiye aapko? (What do you need?)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 1 kg Tamatar, fresh Adrak, Hari Mirchi"
-                      value={pingItem}
-                      onChange={(e) => setPingItem(e.target.value)}
-                      className="px-4 py-3 text-sm rounded-xl border-2 border-gray-300 focus:border-[#111111] focus:outline-none"
-                    />
-                  </div>
-
-                  {/* Quick Pill presets */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Aaloo & Pyaaz", "Fresh Dhaniya & Mirchi", "Kela (1 Dozen)", "Evening Golgappe"].map(
-                      (preset) => (
-                        <button
-                          key={preset}
-                          type="button"
-                          onClick={() => setPingItem(preset)}
-                          className="px-2.5 py-1 rounded-full bg-gray-100 text-[11px] font-bold text-gray-700 hover:bg-[#D9C8F5] transition-colors"
-                        >
-                          + {preset}
-                        </button>
-                      )
-                    )}
-                  </div>
-
-                  {pingBroadcastActive ? (
-                    <div className="flex flex-col items-center justify-center py-6 gap-3 bg-[#F8F4FF] rounded-2xl border border-gray-200">
-                      <div className="relative flex items-center justify-center w-16 h-16">
-                        <span className="absolute w-16 h-16 rounded-full bg-[#22C55E]/30 animate-ping" />
-                        <span className="relative w-8 h-8 rounded-full bg-[#22C55E] flex items-center justify-center text-white">
-                          <Radio className="w-5 h-5 animate-spin" />
-                        </span>
-                      </div>
-                      <p className="text-xs font-extrabold text-gray-800">
-                        Broadcasting to 4 roaming thelas nearby...
-                      </p>
-                    </div>
-                  ) : (
-                    <button
-                      type="submit"
-                      disabled={!pingItem.trim()}
-                      className="button w-full bg-[#22C55E] text-[#111111] py-3.5 text-base font-extrabold disabled:opacity-50"
-                    >
-                      Bhejo Ping (Send Demand Ping)
-                    </button>
-                  )}
-                </form>
-              ) : (
-                <div className="flex flex-col gap-4 animate-in fade-in duration-300">
-                  <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-[#22C55E] flex items-center gap-3">
-                    <CheckCircle2 className="w-8 h-8 text-[#22C55E] shrink-0" />
-                    <div>
-                      <p className="text-sm font-extrabold text-emerald-950">
-                        Thela Accepted Your Ping!
-                      </p>
-                      <p className="text-xs text-emerald-800">
-                        {pingAcceptedVendor.name} is on the way to your lane.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#F8F4FF] p-4 rounded-2xl border border-gray-200 text-xs flex flex-col gap-1.5">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Requested Items:</span>
-                      <span className="font-bold text-gray-900">{pingAcceptedVendor.item}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Current Distance:</span>
-                      <span className="font-bold text-[#0B6B6B]">{pingAcceptedVendor.distance}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Estimated Arrival (ETA):</span>
-                      <span className="font-bold text-[#0F172A]">{pingAcceptedVendor.eta}</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setPingModalOpen(false)}
-                    className="button w-full bg-[#0F172A] text-white py-3 text-sm font-bold"
-                  >
-                    Track Cart on Map
-                  </button>
+              {orderStatus ? (
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2">
+                  <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto animate-bounce" />
+                  <p className="font-black text-sm text-emerald-900 capitalize">
+                    Order Status: {orderStatus}
+                  </p>
+                  <p className="text-xs text-emerald-700">
+                    Vendor is bringing fresh stock right to your doorstep. Cash or UPI on delivery!
+                  </p>
                 </div>
+              ) : (
+                <button
+                  onClick={handlePlaceOrder}
+                  className="w-full bg-[#16A34A] hover:bg-[#15803D] text-white py-3.5 rounded-2xl font-black text-sm shadow-md transition-all active:scale-98 cursor-pointer"
+                >
+                  Confirm Doorstep Order (Cash/UPI)
+                </button>
               )}
             </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
 
       <Footer />
     </div>
