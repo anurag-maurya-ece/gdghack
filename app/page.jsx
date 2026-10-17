@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import AboutDataCard from "../components/AboutDataCard";
 import LoginCard from "../components/LoginCards";
 import ReviewCarousel from "../components/ReviewCarousel";
-import { ArrowRight, MapPin, Store } from "lucide-react";
 
 const statsData = [
   { picImg: "scholarship", number: 100, title: "Vendors" },
@@ -19,77 +18,111 @@ const statsData = [
 
 export default function Home() {
   return (
-    <div className="bg-white text-gray-900 min-h-screen font-sans overflow-x-hidden">
+    <div className="bg-white text-[#4B5563] min-h-screen overflow-x-hidden">
       <Navbar />
 
-      {/* 1. Main Hero Section with Original Green Ambience */}
-      <section className="relative flex flex-col md:flex-row justify-center min-h-[85vh] items-center px-6 sm:px-10 md:px-20 lg:px-28 gap-8 py-12 overflow-hidden">
-        {/* Floating Geometric Ambient Green Glows */}
-        <div className="absolute top-12 left-8 w-32 h-32 sm:w-44 sm:h-44 bg-[#DCFCE7] rounded-full filter blur-2xl opacity-75 pointer-events-none" />
-        <div className="absolute top-24 right-10 w-40 h-40 sm:w-56 sm:h-56 bg-[#DCFCE7] rounded-full filter blur-3xl opacity-80 pointer-events-none" />
-        <div className="absolute -bottom-10 left-1/3 w-48 h-48 bg-[#DCFCE7] rounded-full filter blur-3xl opacity-60 pointer-events-none" />
+      {/* Main Hero Section */}
+      <section className="flex flex-col md:flex-row justify-center min-h-[90vh] items-center px-6 sm:px-10 md:px-20 gap-8 py-10 pt-28 sm:pt-36 lg:pt-40 relative overflow-hidden">
+        {/* Floating Geometric Ambient Shapes */}
+        <div
+          className="absolute top-20 left-10 w-24 h-24 sm:w-32 sm:h-32 bg-[#DCFCE7] rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"
+          style={{ animationDelay: "0s", animationDuration: "7s" }}
+        />
+        <div
+          className="absolute top-40 right-10 w-32 h-32 sm:w-48 sm:h-48 bg-[#DCFCE7] rounded-full mix-blend-multiply filter blur-xl opacity-80 animate-float"
+          style={{ animationDelay: "2s", animationDuration: "8s" }}
+        />
+        <div
+          className="absolute -bottom-8 left-20 w-32 h-32 sm:w-40 sm:h-40 bg-[#DCFCE7] rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-float"
+          style={{ animationDelay: "4s", animationDuration: "9s" }}
+        />
 
-        <div className="flex flex-col justify-center gap-6 max-w-full md:max-w-[50vw] z-10">
-          <h5 className="text-xs sm:text-sm font-black text-[#16A34A] tracking-widest uppercase">
+        <div className="flex flex-col justify-center gap-6 sm:gap-8 w-full md:max-w-[48vw] z-10 text-center md:text-left">
+          <h5 className="text-xs sm:text-sm text-[#16A34A] font-bold tracking-widest uppercase">
             START TO SUCCESS
           </h5>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-950">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#111111] leading-tight">
             Empowering your long-lived{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#22C55E]">
-              trust
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#15803d]">
+              trust{" "}
+              <svg
+                className="inline w-6 h-6 sm:w-8 sm:h-8 -mt-1 text-[#16A34A]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </span>{" "}
             with{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#22C55E]">
-              technology
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#15803d]">
+              technology{" "}
+              <svg
+                className="inline w-6 h-6 sm:w-8 sm:h-8 -mt-1 text-[#16A34A]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                />
+              </svg>
             </span>{" "}
             and{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#22C55E]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#15803d]">
               love
             </span>
           </h1>
 
-          <h5 className="text-lg sm:text-xl text-gray-600 font-medium leading-relaxed">
-            Restoring the connection between vendors and consumers in a split second.
-          </h5>
+          <p className="text-lg sm:text-xl text-[#4B5563] leading-relaxed">
+            Restoring the connection between vendors and consumers in a split second. Experience seamless, reliable, and real-time community commerce.
+          </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
-              href="/customer"
-              className="px-8 py-4 rounded-2xl bg-[#16A34A] hover:bg-[#15803d] active:scale-95 text-white font-extrabold text-lg shadow-lg shadow-[#16A34A]/30 hover:shadow-xl hover:scale-105 flex items-center gap-2 transition-all"
-            >
-              <MapPin className="w-5 h-5 text-white" />
-              <span>Explore Live Thelas</span>
-              <ArrowRight className="w-4 h-4" />
+          <div className="pt-2 sm:pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
+            <Link href="#cardssection">
+              <button className="w-full sm:w-auto bg-[#16A34A] hover:bg-[#15803d] text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
+                Get Started
+              </button>
             </Link>
-
-            <Link
-              href="/vendor"
-              className="px-8 py-4 rounded-2xl bg-white hover:bg-emerald-50 active:scale-95 text-[#16A34A] font-extrabold text-lg border-2 border-[#16A34A] shadow-md hover:shadow-lg hover:scale-105 flex items-center gap-2 transition-all"
-            >
-              <Store className="w-5 h-5 text-[#16A34A]" />
-              <span>Vendor Portal</span>
+            <Link href="/customer">
+              <button className="w-full sm:w-auto bg-white border-2 border-[#16A34A] text-[#16A34A] hover:bg-emerald-50 font-bold text-lg px-8 py-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
+                Live Thela Map
+              </button>
             </Link>
           </div>
         </div>
 
-        <div className="w-full md:w-[48vw] flex justify-center relative z-10">
-          {/* Luminous Green Glow behind Hero Illustration */}
-          <div className="absolute inset-0 bg-[#DCFCE7]/70 rounded-full blur-3xl opacity-80 scale-[1.25] pointer-events-none" />
+        <div className="w-full md:w-[48vw] flex items-center justify-center relative pl-0 md:pl-10 mt-8 md:mt-0">
+          <div className="absolute inset-0 bg-[#DCFCE7]/60 rounded-full blur-3xl opacity-70 scale-[1.2] sm:scale-[1.35] pointer-events-none" />
           <Image
             src="/assets/herosec.gif"
-            width={650}
-            height={650}
-            className="w-full max-w-lg md:max-w-none h-auto object-contain relative z-10 drop-shadow-xl"
-            alt="Tech Thela Hero Animation"
+            width={1200}
+            height={1200}
             unoptimized={true}
+            className="w-full h-auto relative z-10 drop-shadow-2xl object-contain max-w-[90%] sm:max-w-full"
+            style={{
+              height: "auto",
+              maxHeight: "60vh",
+              WebkitMaskImage: "radial-gradient(ellipse 90% 90% at 50% 50%, black 60%, transparent 100%)",
+              maskImage: "radial-gradient(ellipse 90% 90% at 50% 50%, black 60%, transparent 100%)",
+            }}
+            alt="Tech Thela Hero Animation"
             priority
           />
         </div>
       </section>
 
-      {/* 2. Platform Stats with Emerald Accents */}
-      <section className="bg-gray-950 border-y border-emerald-950/40 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 px-6 md:px-12 w-full py-8">
+      {/* Platform Stats Section */}
+      <section className="bg-gray-50/70 border-y border-gray-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 px-6 sm:px-10 py-10 sm:py-16 w-full gap-8">
         {statsData.map((data, index) => (
           <AboutDataCard
             key={index}
@@ -100,51 +133,45 @@ export default function Home() {
         ))}
       </section>
 
-      {/* 3. Role Portals for Vendor and Consumer */}
-      <section className="px-4 sm:px-10 md:px-24 pt-16 sm:pt-20">
-        <div className="rounded-3xl bg-gray-950 text-white px-6 sm:px-16 md:px-32 py-16 sm:py-24 flex flex-col items-center text-center relative overflow-hidden border border-emerald-950/40">
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#16A34A]/15 rounded-full blur-3xl pointer-events-none" />
-          <p className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight max-w-4xl relative z-10">
+      {/* Role Cards for Vendor and Consumer */}
+      <section className="bg-white px-4 md:px-24 lg:px-32 py-16 sm:py-24 relative">
+        <div
+          id="cardssection"
+          className="rounded-3xl bg-gray-50 border border-gray-100 shadow-sm px-4 md:px-24 flex flex-col items-center text-center pb-24 sm:pb-32 pt-16 sm:pt-20"
+        >
+          <p className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-4 leading-tight text-[#111111]">
             It&apos;s your time to make the move with{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#22C55E]">
-              Tech Thela™
-            </span>
-          </p>
-          <p className="text-sm sm:text-base text-gray-400 mt-4 max-w-lg relative z-10">
-            Choose your role to get started with live street cart commerce.
+            <span className="text-[#111111]">Tech </span>
+            <span className="text-[#16A34A]">Thela</span>
           </p>
         </div>
 
-        {/* Div surrounding vendor and consumer cards */}
-        <div
-          id="cardssection"
-          className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16 px-4 relative -mt-16 sm:-mt-24 z-10"
-        >
+        <div className="flex flex-col md:flex-row gap-6 md:gap-16 justify-center w-full z-10 relative -mt-12 sm:-mt-16">
           <LoginCard
-            name="Vendor"
-            imgName="vendor"
-            text="Bahut hua online ka prahaar, ab phone hi badhaega apki raftaar. Voice listing se saman jodein aur grahak payein."
+            imgName="consumer"
+            name="Customer"
+            text="Get the best deals available in your local market. Track nearby thelas live and order fresh produce."
           />
           <LoginCard
-            name="Consumer"
-            imgName="consumer"
-            text="Ordering stuff is easy without making your pocket squeezy. Track nearby thelas live and order fresh produce."
+            imgName="vendor"
+            name="Vendor"
+            text="Boost sales by reaching thousands of local customers digitally with voice-assisted listings."
           />
         </div>
       </section>
 
-      {/* 4. Customer Feedback Carousel */}
-      <section className="flex flex-col gap-6 w-full py-12 mx-auto relative">
+      {/* Customer Feedback Carousel */}
+      <div className="bg-white flex flex-col gap-10 w-full md:w-4/5 py-16 mx-auto relative">
         <div className="flex flex-col gap-2">
-          <h2 className="text-center text-3xl sm:text-5xl font-extrabold text-gray-950">
+          <h2 className="xl:text-5xl text-4xl font-extrabold text-[#111111] text-center">
             Hear it from our customers!
           </h2>
-          <p className="text-gray-500 text-base sm:text-lg text-center font-medium">
-            Real feedback from local street vendors and regular neighborhood consumers.
+          <p className="text-[#4B5563] text-lg text-center font-medium">
+            Thousands trust Tech Thela every day.
           </p>
         </div>
         <ReviewCarousel />
-      </section>
+      </div>
 
       <Footer />
     </div>

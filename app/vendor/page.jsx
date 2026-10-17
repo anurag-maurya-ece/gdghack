@@ -156,7 +156,7 @@ export default function VendorDashboard() {
     <div className="min-h-screen bg-[#F8F4FF] text-[#111111] flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 shell px-4 sm:px-6 py-8">
+      <main className="flex-1 shell px-4 sm:px-6 py-8 pt-28">
         {/* Top Vendor Status Header */}
         <div className="outline-card p-6 sm:p-8 bg-white mb-8 border-2 border-[#111111]">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

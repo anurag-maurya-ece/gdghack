@@ -32,7 +32,7 @@ export default function VendorLoginPage() {
     <div className="min-h-screen bg-[#0F0F0F] text-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 flex items-stretch">
+      <main className="flex-1 flex items-stretch pt-24">
         <div className="w-full flex flex-col lg:flex-row min-h-[calc(100vh-80px)]">
           {/* Left Side: Brand Visual */}
           <div className="hidden lg:flex w-1/2 relative bg-zinc-950 items-center justify-center p-12 overflow-hidden border-r border-zinc-800/80">

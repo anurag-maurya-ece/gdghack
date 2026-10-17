@@ -143,7 +143,7 @@ export default function CustomerPage() {
     <div className="min-h-screen bg-white text-[#111111] flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 shell px-4 sm:px-6 py-8">
+      <main className="flex-1 shell px-4 sm:px-6 py-8 pt-28">
         {/* Top Header & Ping Action */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b-2 border-gray-100">
           <div>

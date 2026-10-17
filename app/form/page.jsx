@@ -42,7 +42,7 @@ export default function PreferencesFormPage() {
     <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col justify-between">
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center px-4 py-16 relative overflow-hidden">
+      <main className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative overflow-hidden">
         {/* Ambient green glows */}
         <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-10 right-1/4 w-80 h-80 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />

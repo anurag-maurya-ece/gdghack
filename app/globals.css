@@ -140,3 +140,13 @@ mark { background: var(--color-green); color: var(--color-ink); padding-inline: 
   /* CSS also protects first paint, before React reads the media preference. */
   .scene-card, .scene-card * { animation: none !important; transform: none !important; }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-25px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+

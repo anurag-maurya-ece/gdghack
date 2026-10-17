@@ -11,7 +11,7 @@ export default function AboutUsPage() {
     <div className="bg-white text-gray-900 min-h-screen flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-6xl mx-auto px-6 sm:px-10 py-12">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-6 sm:px-10 py-12 pt-28">
         {/* Main Header & Story */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Left Text */}

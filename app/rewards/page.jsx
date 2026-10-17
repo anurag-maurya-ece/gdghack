@@ -49,7 +49,7 @@ export default function RewardsPage() {
     <div className="min-h-screen bg-white text-[#111111] flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 shell px-4 sm:px-6 py-8">
+      <main className="flex-1 shell px-4 sm:px-6 py-8 pt-28">
         {/* Header & Wallet Banner */}
         <div className="outline-card p-6 sm:p-8 bg-[#0F172A] text-white border-2 border-[#111111] shadow-[4px_4px_0_#111111] mb-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

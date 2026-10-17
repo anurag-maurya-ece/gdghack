@@ -4,48 +4,40 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LoginCard({ name, imgName, text }) {
+export default function LoginCard({ imgName, name, text }) {
   const isVendor = name.toLowerCase().includes("vendor");
   const targetHref = isVendor ? "/Vendorlogin" : "/Customerlogin";
 
   return (
-    <div className="flex flex-col gap-5 items-center py-8 sm:py-12 bg-white rounded-3xl px-6 sm:px-10 text-center justify-between w-full max-w-sm sm:max-w-md border-2 border-gray-100 hover:border-[#16A34A] shadow-md hover:shadow-[0_20px_50px_-10px_rgba(22,163,74,0.25)] transition-all duration-300 group">
-      {/* Visual illustration with luminous green drop shadow */}
+    <div className="flex flex-col gap-4 sm:gap-6 items-center py-8 sm:py-12 md:py-14 bg-white rounded-2xl px-4 sm:px-8 md:px-12 text-center justify-center w-full sm:w-80 md:w-96 lg:w-[420px] shadow-sm border border-gray-100 hover:border-[#16A34A] hover:shadow-[0_15px_50px_-10px_rgba(22,163,74,0.15)] transition-all duration-500 z-20">
       <div
-        className="relative w-full h-48 sm:h-56 flex items-center justify-center transition-transform duration-500 group-hover:scale-105"
-        style={{ filter: "drop-shadow(0 15px 25px rgba(22, 163, 74, 0.22))" }}
+        className="relative w-full flex justify-center mb-2 sm:mb-4 transition-transform hover:scale-105 duration-500 min-h-[180px] sm:min-h-[220px] md:min-h-[250px] items-center"
+        style={{ filter: "drop-shadow(0 15px 25px rgba(22, 163, 74, 0.2))" }}
       >
         <Image
           src={`/assets/${imgName}.png`}
-          width={280}
-          height={220}
+          width={350}
+          height={350}
           alt={name}
           priority
-          className="max-h-full w-auto object-contain"
+          className="w-full h-auto object-contain drop-shadow-xl"
+          style={{ maxWidth: "280px", maxHeight: "220px", height: "auto" }}
         />
       </div>
 
-      <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111111]">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#111111]">
         Are you a <span className="text-[#16A34A]">{name}</span>?
       </h2>
 
-      <p className="text-sm sm:text-base text-gray-600 font-medium leading-relaxed min-h-[50px]">
+      <h5 className="text-xs sm:text-sm md:text-base text-[#4B5563] font-medium leading-relaxed min-h-[44px]">
         {text}
-      </p>
+      </h5>
 
-      <div className="w-full flex flex-col gap-2 mt-2">
-        <Link href={targetHref} className="w-full">
-          <button className="w-full text-base sm:text-lg bg-[#16A34A] hover:bg-[#15803d] text-white font-extrabold py-3.5 px-6 rounded-xl shadow-md shadow-[#16A34A]/30 hover:shadow-lg hover:scale-105 active:scale-95 transition-all">
-            Join now
-          </button>
-        </Link>
-        <Link
-          href={isVendor ? "/vendor" : "/customer"}
-          className="text-xs text-gray-400 hover:text-[#16A34A] font-semibold transition-colors py-1"
-        >
-          Direct {isVendor ? "Vendor Dashboard" : "Customer Map"} &rarr;
-        </Link>
-      </div>
+      <Link href={targetHref} className="w-full mt-2 sm:mt-4">
+        <button className="w-full text-sm sm:text-base md:text-lg bg-[#16A34A] hover:bg-[#15803d] text-white font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-md shadow-[#16A34A]/20 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
+          Join now
+        </button>
+      </Link>
     </div>
   );
 }

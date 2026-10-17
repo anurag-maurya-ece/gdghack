@@ -10,7 +10,7 @@ export default function PricingPage() {
     <div className="bg-white text-gray-900 min-h-screen flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 max-w-screen-xl mx-auto px-6 sm:px-10 py-16">
+      <main className="flex-1 max-w-screen-xl mx-auto px-6 sm:px-10 py-16 pt-28">
         <div className="mx-auto max-w-screen-md text-center mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-green-700 bg-green-100 px-3 py-1 rounded-full border border-green-300">
             Transparent & Fair
