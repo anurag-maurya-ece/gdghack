@@ -106,15 +106,12 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
         </nav>
       </div>
 
-      {/* Quick Switch / Footer */}
+      {/* Customer Perks Footer */}
       <div className="pt-6 border-t border-gray-200 mt-6">
-        <a
-          href="/Vendorlogin"
-          className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-gray-100 text-xs text-gray-700 hover:text-gray-900 border border-gray-200 transition-colors font-semibold"
-        >
-          <ShoppingBag className="w-4 h-4 text-[#16A34A]" />
-          <span>Switch to Vendor Portal</span>
-        </a>
+        <div className="flex items-center gap-2.5 w-full py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-bold">
+          <Sparkles className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
+          <span className="text-[11px] leading-tight">🪙 125 Coins Ready to Redeem on your next Sabzi order!</span>
+        </div>
       </div>
     </aside>
   );

@@ -1,6 +1,28 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Dynamic Navbar Auth State & Role Badges)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Strict Portal Isolation: Vendor vs Customer)
 Done:
+- **Strict Portal Isolation ("vendor login par sirf vendor dashboard and customer par sirf uska common nhi hona chaiye")**:
+  - Completely decoupled the portals in `components/Navbar.jsx`:
+    - **Vendor Portal (`/vendor`, `/Vendorlogin`)**: Exclusively renders the **Vendor Workspace Navbar** (`Store` icon, `Smart Routing & Map`, `Mohalla Leaderboard`, `👨‍🌾 Ramesh Bhaiya • Thela Online`, and dedicated `Vendor Logout`). ZERO customer links, ZERO "Join Now", ZERO public marketing clutter.
+    - **Customer Portal (`/customer`, `/Customerlogin`, `/form`)**: Exclusively renders the **Grahak Portal Navbar** (`ShoppingBag` icon, `Live Thela Map (GPS)`, `Mohalla Rewards (🪙 125 Coins)`, `MO Mr. Oberoi`, and dedicated `Customer Logout`). ZERO vendor links, ZERO "Join Now", ZERO public marketing clutter.
+    - **Public Site (`/`, `/aboutus`, `/pricing`)**: Public links (`Home`, `About Us`, `Pricing`, `Rewards`) with dedicated, distinct `Customer Login` and `Vendor Login` buttons.
+  - Removed "Switch to Vendor Portal" button from `components/CustomerSidebar.jsx` and replaced it with customer coin savings perk pill to prevent cross-portal contamination.
+- **Verification**:
+  - `npm run build` compiled all 20 routes cleanly in 2.4s.
+  - Verified in Chrome DevTools MCP: `/vendor` displays strictly Vendor Workspace; `/customer` displays strictly Grahak Portal.
+In progress:
+- Production server running on 0.0.0.0:3000.
+Broken/risky:
+- None.
+Next:
+- WhatsApp Cloud API webhook integration or live cloud deployment when approved.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `node scripts/smoke.mjs`
+
+## Previous session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Dynamic Navbar Auth State & Role Badges)
 - **Dynamic Navbar Auth State (`components/Navbar.jsx`)**:
   - Implemented dynamic user session detection via `localStorage` (`tech_thela_user`), `sessionStorage`, and route-aware fallback.
   - Replaced the static public "Join Now" button upon login with:
