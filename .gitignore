@@ -11,3 +11,5 @@ coverage/
 .tools/
 firebase-export-*/
 .neon
+docs/JUDGE_PITCH_AND_TECH_DEFENSE.md
+docs/WHITEBOARD-DEFENSE.md
