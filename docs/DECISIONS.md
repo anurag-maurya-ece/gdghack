@@ -70,3 +70,13 @@ Chosen: demo-tech-thela, localhost-only Auth/Firestore/Functions. Default-deny r
 Why: Exercise real Firebase behavior without live resources or secrets.
 Trade-off: Firebase CLI development-only dependency audit findings remain; runtime audits are clean after overriding the Firebase SDK's vulnerable gRPC dependency to 1.14.6. Emulator downloads require network.
 Revisit if: staging deployment is approved or upstream fixes the dependency pins.
+
+## D-009: Web application priority and original design adaptation
+Date: 2026-10-17 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User explicitly instructed to prioritize web application features first, defer WhatsApp bot, reference SIH-Wekreta and tech-thela concepts without directly copying UI/code, and design all features cleanly.
+Options: 1) Bespoke Next.js App Router web screens with brand tokens, 3D tilt cards, and Leaflet OSM 2) Copy legacy Next.js pages/components from reference.
+Chosen: 1. Created rich, authentic demo dataset (lib/mock-data.js) and 4 core web flows: updated landing page with 3D tilt cards, customer map discovery with animated SVG markers & ping radar (/customer), vendor operational dashboard with voice listing simulation & demand heatmap (/vendor), and community rewards & leaderboard (/rewards). Installed confirmed Leaflet 1.9.4 without conflicting wrappers.
+Why: Satisfies all Section 9 feature specs (F2 voice listing, F3 live location, F4 customer discovery, F5 orders, F7 demand routing) in web format while maintaining unique brand identity and accessibility.
+Trade-off: WhatsApp Cloud API webhook is deferred; live coordinates use mock simulation.
+Revisit if: live Meta WhatsApp credentials or cloud hosting are configured.
+

@@ -1,5 +1,30 @@
 # HANDOVER
-## Latest progress: 2026-10-17 — Firebase foundation
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Website Full Feature Suite)
+Done:
+- User prioritized website first (deferring WhatsApp bot) and provided reference repos `tech-thela` and `SIH-Wekreta`.
+- Created original, accessible design following `docs/UI-DESIGN.md`:
+  - `app/page.jsx`: Revamped landing page with moving ThelaScene, verified stats counters, 3D tilt role cards (`components/TiltCard.jsx`), 4 core feature pillars, testimonials, and mission statement.
+  - `app/customer/page.jsx`: Customer portal with Leaflet OpenStreetMap, custom animated SVG thela pins (`L.divIcon`), category filtering, doorstep basket pre-ordering, and "Bulao Thela" reverse-demand radar.
+  - `app/vendor/page.jsx`: Vendor operations dashboard with giant "Thela ON / OFF" switch, GPS movement simulation, voice-to-inventory listing with 2-tap "Sahi Hai" confirmation, order acceptance, and predictive demand heatmap.
+  - `app/rewards/page.jsx`: Community rewards & reviews hub with coin wallet, Mohalla Leaderboard, review submission (+25 coins), and coupon store.
+  - `components/Navbar.jsx` & `components/Footer.jsx`: Responsive bilingual header and brand footer.
+  - `lib/mock-data.js`: Authentic demo dataset for Delhi/NCR vendors, items, demand zones, reviews, and coupons.
+- Installed pre-approved `leaflet@1.9.4`.
+- Real build & test passes: `npm run build` compiled 5 static routes in 2.0s; `node scripts/smoke.mjs` verified all routes (200), CSS tokens, and 404 recovery.
+In progress:
+- Web features complete and active on http://127.0.0.1:3000.
+Broken/risky:
+- WhatsApp Cloud API webhook deferred per user instruction. Real microphone browser permissions depend on user environment (presets provided for instant verification).
+Next:
+- Review UI in browser, or proceed to WhatsApp webhook / live Firestore sync when ready.
+Do not touch:
+- Secrets, .env, live deployment, location OFF privacy boundaries.
+Run/test:
+- `npm run build; npm test` (with server on http://127.0.0.1:3000).
+Unverified assumptions:
+- Delhi NCR coordinates used as demo location anchor; simulated voice intent mimics Gemini model.
+
+## Previous progress: 2026-10-17 — Firebase foundation
 Done: official Auth/Firestore/Functions emulators running on localhost; default-deny rules verified for unauthenticated and authenticated callers; Node 22 and Java 21 workspace runtimes installed. Meta + Gemini selected by user.
 In progress: authorized sequential full build; next task is landing.
 Broken/risky: development-only CLI audit findings; no live credentials/deployment; phone and voice checks still pending.

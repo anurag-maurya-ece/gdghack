@@ -1,14 +1,32 @@
 # FLOW
 
-## Implemented local preview
-Browser GET / -> Next.js root layout + hello page -> compiled CSS and self-hosted fonts.
-"Tech Thela kya hai?" -> #about on the same page.
-Unknown route -> HTTP 404 with "Wapas chalein" link to /.
+## Implemented Web Application Flows (2026-10-17)
 
-No vendor/customer data is collected or stored. Product, location, order, voice and chat flows are not implemented.
+### 1. Landing Flow (`/`)
+- Root layout with responsive Navbar and Footer.
+- Hero with layered animated SVG ThelaScene and quick action buttons.
+- Stats section displaying 4 verified metric counters.
+- 3D Tilt Role Cards for Consumer (Grahak) and Street Vendor (Thela Wale).
+- Four core feature pillars showcase (Live Map, Voice Listing, Demand Ping, Predictive Heatmap).
+- Community testimonials grid and mission overview.
 
-## Illustration interaction
-Initial HTML -> static illustration -> client reads reduced-motion -> idle motion starts only while visible.
-Mouse over card -> bounded spring tilt -> layered person/cart depth.
-Pause -> loops freeze and tilt resets; Play -> resumes if motion permitted.
-Reduced-motion, scene offscreen or hidden tab -> stops automatically.
+### 2. Customer Discovery & Live Ordering Flow (`/customer`)
+- OpenStreetMap Leaflet integration with custom animated SVG thela pins (`L.divIcon`).
+- Realtime vendor markers with walking distance indicators and category badges.
+- Category filters: Sabhi (All), Sabzi, Phal, Chaat, Chai.
+- Live vendor selection -> inspect today's thela inventory with prices.
+- 2-tap doorstep basket pre-order with live order stepper (Placed -> Accepted -> Enroute).
+- "Bulao Thela" reverse-demand radar: customer inputs needed produce (e.g. "1 kg Tamatar, Adrak") -> broadcasts to nearby roaming thelas -> instant simulated vendor acceptance.
+
+### 3. Vendor Operations Flow (`/vendor`)
+- Giant "Thela ON / OFF" switch with immediate location privacy protection.
+- Live GPS beacon coordinates with "Simulate Movement (Chalte Raho)" button.
+- Voice-to-inventory listing: mic button with ripple animation -> Gemini intent parsing simulation -> reads back parsed items -> big "Sahi Hai" (Save) vs "Galat Hai" (Retry) confirmation buttons.
+- Realtime incoming orders and customer demand pings with 56px "Accept" / "Reject" controls.
+- Predictive community demand heatmap with peak hours and high-demand product recommendations.
+
+### 4. Community Rewards & Leaderboard Flow (`/rewards`)
+- Coins wallet (+25 coins earned per verified review).
+- Mohalla Leaderboard ranking top street vendors with trust badges.
+- Interactive review submission form (1-5 stars, comments, instant coin credit).
+- Discount coupon redemption store (e.g. Flat ₹25 off on fresh vegetables).

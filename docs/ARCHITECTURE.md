@@ -29,3 +29,12 @@ Trust boundaries (where outside input enters): WhatsApp webhook, customer chat a
 
 ## Animated preview
 app/thela-scene.jsx is a client boundary inside the server-rendered home. Layered SVG art stays in source; no media/CDN calls. framer-motion springs handle bounded pointer tilt; CSS transforms animate cart, wheels and vendor. IntersectionObserver, visibilitychange and reduced-motion preference gate animation. Local Pause/Play freezes loops; no device sensors.
+
+## Implemented Web Application Architecture (2026-10-17)
+- **Shared Data & State (`lib/mock-data.js`)**: Authentic Delhi/NCR street vendor profiles, product catalog, demand zones, review database, and coupon definitions.
+- **Leaflet OpenStreetMap Integration (`components/LeafletMap.jsx`)**: Client-side dynamically imported Leaflet with Carto Voyager raster tiles. Custom `L.divIcon` rendered SVG thela carts with live pulsating status rings and category emojis.
+- **Motion & 3D Tilt System (`components/TiltCard.jsx`)**: Reusable Framer Motion spring physics with preserve-3d, `translateZ` layer separation, and strict `prefers-reduced-motion` compliance.
+- **Customer Portal (`app/customer/page.jsx`)**: Split-pane layout with reactive category filtering, vendor drawer, 2-tap doorstep basket pre-ordering, and "Bulao Thela" reverse-demand radar.
+- **Vendor Operations Dashboard (`app/vendor/page.jsx`)**: Low-literacy accessible interface featuring giant "Thela ON / OFF" switch, live GPS movement simulation, voice-to-inventory pipeline with "Sahi Hai" verification, instant order acceptance, and predictive demand hotspots.
+- **Community Rewards & Leaderboard (`app/rewards/page.jsx`)**: Coins wallet with automatic +25 coin reward per vendor review, verified Mohalla Leaderboard, and discount coupon redemption.
+
