@@ -9,7 +9,8 @@ Done:
   - `app/vendor/page.jsx`: Vendor operations dashboard with giant "Thela ON / OFF" switch, live GPS movement simulation, voice-to-inventory assistant with 2-tap confirmation, order alert cards, and predictive demand hotspots.
   - `app/rewards/page.jsx`: Community rewards hub with coin wallet, Mohalla Leaderboard, review submission form (+25 coins), and coupon store.
   - `components/Navbar.jsx` & `components/Footer.jsx`: Full responsive navigation and brand footer.
-- Production build & test passes: `npm run build` compiled all 8 static routes in 1997ms; `node scripts/smoke.mjs` passed on all 8 routes, stylesheets, and 404 recovery.
+  - Enhanced brand color palette with authentic vibrant green touches: floating ambient emerald glows (`#DCFCE7`), text gradients (`#16A34A` to `#22C55E`), luminous green drop-shadows on role cards, and emerald CTA buttons.
+- Production build & test passes: `npm run build` compiled all 8 static routes in 1576ms; `node scripts/smoke.mjs` passed on all 8 routes, stylesheets, and 404 recovery.
 In progress:
 - Web application active and verified on http://127.0.0.1:3000.
 Broken/risky:

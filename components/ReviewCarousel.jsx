@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 
 const reviewsData = [
   {
@@ -56,7 +56,7 @@ export default function ReviewCarousel() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8">
       {/* Cards Display Grid / Slider */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
         {[0, 1, 2].map((offset) => {
           const index = (currentIndex + offset) % reviewsData.length;
           const data = reviewsData[index];
@@ -65,28 +65,30 @@ export default function ReviewCarousel() {
           return (
             <div
               key={index}
-              className={`h-full bg-purple-50 rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-2 border-black/10 shadow-md transition-all duration-300 ${
-                isCenter ? "md:scale-105 border-green-500 ring-2 ring-green-400/30" : "hidden md:flex opacity-85"
+              className={`h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
+                isCenter
+                  ? "bg-white border-2 border-[#16A34A] ring-4 ring-[#22C55E]/20 shadow-[0_20px_50px_rgba(22,163,74,0.18)] md:scale-105 z-10"
+                  : "bg-purple-50/70 border border-purple-200/60 hidden md:flex opacity-85 hover:opacity-100"
               }`}
             >
               <div className="flex flex-col gap-4">
-                <div className="flex w-full justify-between items-center pb-4 border-b border-purple-200">
+                <div className="flex w-full justify-between items-center pb-4 border-b border-gray-100">
                   <div className="flex gap-3.5 items-center">
-                    <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-green-500 bg-white">
+                    <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#16A34A] bg-white p-0.5 shadow-sm">
                       <Image
                         src={`/reviews/${data.image}.svg`}
                         alt={data.name}
                         width={56}
                         height={56}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-full"
                       />
                     </div>
                     <div className="flex flex-col">
                       <h4 className="text-lg font-bold text-[#1B1D1F]">{data.name}</h4>
-                      <p className="text-xs text-gray-500 font-semibold">{data.designation}</p>
+                      <p className="text-xs text-[#16A34A] font-bold">{data.designation}</p>
                     </div>
                   </div>
-                  <div className="w-8 h-8 opacity-75">
+                  <div className="w-8 h-8 opacity-80 text-[#16A34A]">
                     <Image
                       src="/reviews/quoteLogo.svg"
                       alt="Quote"
@@ -101,8 +103,10 @@ export default function ReviewCarousel() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-1 text-amber-500 pt-4 mt-2">
-                {"★★★★★"}
+              <div className="flex items-center gap-1 text-[#16A34A] pt-4 mt-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-[#16A34A] text-[#16A34A]" />
+                ))}
               </div>
             </div>
           );
@@ -113,7 +117,7 @@ export default function ReviewCarousel() {
       <div className="flex items-center justify-center gap-4 mt-8">
         <button
           onClick={prevSlide}
-          className="p-3 rounded-full bg-white border-2 border-black shadow-[2px_2px_0_#000000] hover:bg-gray-100 active:translate-y-[1px] transition-all"
+          className="p-3 rounded-full bg-white border-2 border-gray-200 shadow-md hover:border-[#16A34A] hover:text-[#16A34A] active:translate-y-[1px] transition-all"
           aria-label="Previous review"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -125,7 +129,7 @@ export default function ReviewCarousel() {
               key={i}
               onClick={() => setCurrentIndex(i)}
               className={`h-2.5 rounded-full transition-all ${
-                i === currentIndex ? "w-8 bg-green-500" : "w-2.5 bg-gray-300"
+                i === currentIndex ? "w-8 bg-[#16A34A] shadow-sm shadow-green-500/50" : "w-2.5 bg-gray-300"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
@@ -134,7 +138,7 @@ export default function ReviewCarousel() {
 
         <button
           onClick={nextSlide}
-          className="p-3 rounded-full bg-white border-2 border-black shadow-[2px_2px_0_#000000] hover:bg-gray-100 active:translate-y-[1px] transition-all"
+          className="p-3 rounded-full bg-white border-2 border-gray-200 shadow-md hover:border-[#16A34A] hover:text-[#16A34A] active:translate-y-[1px] transition-all"
           aria-label="Next review"
         >
           <ChevronRight className="w-5 h-5" />

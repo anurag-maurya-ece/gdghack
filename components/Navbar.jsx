@@ -55,9 +55,9 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-3">
           <Link
             href="/customer"
-            className="text-sm font-bold bg-green-500 hover:bg-green-600 text-black px-5 py-2.5 rounded-xl border border-black shadow-[2px_2px_0_#000000] active:translate-y-[1px] transition-all flex items-center gap-1.5"
+            className="text-sm font-bold bg-[#16A34A] hover:bg-[#15803d] text-white px-5 py-2.5 rounded-xl shadow-md shadow-[#16A34A]/30 active:translate-y-[1px] transition-all flex items-center gap-1.5"
           >
-            <MapPin className="w-4 h-4" />
+            <MapPin className="w-4 h-4 text-white" />
             <span>Track Thela Live</span>
           </Link>
         </div>
