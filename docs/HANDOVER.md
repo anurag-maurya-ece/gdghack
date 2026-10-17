@@ -1,30 +1,34 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Managed Neon Serverless PostgreSQL Setup & Verification)
+## Latest session: 2026-10-18 — Antigravity (Live Vercel Verification, Language Consistency, and Technical Defense Guide)
 Done:
-- **Neon Serverless PostgreSQL Setup Complete**:
-  - Installed `neon` CLI v8.8.0 globally.
-  - Linked project via `neon init -y --org-id org-falling-heart-62132785 --project-id curly-scene-47530715 --branch production --services postgres --no-agent-setup`.
-  - Executed `neon deploy`: Provisioned Postgres service on branch `production` (`br-floral-mountain-b7yuwflv`), successfully pulling environment variables (`DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH`).
-  - Configured `prisma/schema.prisma` with `directUrl = env("DATABASE_URL_UNPOOLED")` for connection pooling support with PgBouncer.
-  - Synced live schema to Neon with `npx prisma db push` (PostgreSQL 18.6 at `ep-winter-scene-b7pxej0k.c-13.us-east-1.aws.neon.tech`).
-  - Regenerated Prisma Client v6.4.1.
-  - Seeded live Neon database with `npm run db:seed`: 5 users, 4 street vendors, 18 products, and 3 predictive demand cells.
-- **Verification & Testing**:
-  - `scripts/verify-neon.mjs`: **100% PASS** — Verified raw SSL query (PostgreSQL 18.6), User service, Vendor service, Product inventory service, Demand cell service, and created/updated/cleaned up a live test order end-to-end on Neon.
-  - `npm run build`: Compiled 34/34 routes with Turbopack with **0 errors**.
-  - `node scripts/smoke.mjs`: **18/18 checks PASSING** on live server.
+- **Live Vercel Production Verification**:
+  - Live deployment verified at `https://gdghack-lwh2.vercel.app/`.
+  - All 23 dynamic API routes, Neon Serverless PostgreSQL connection, and Gemini 2.5 Flash operational in production.
+- **Trilingual Language Consistency (`lib/i18n.js`)**:
+  - Cleaned and separated all mixed English/Hinglish fragments across `/Customerlogin`, `/Vendorlogin`, `/customer`, `/vendor`, and sidebars.
+  - Selecting English enforces 100% clean English; selecting Hinglish enforces natural conversational Hindi-English; selecting Hindi enforces authentic Devanagari script.
+- **Judge Pitch & Technical Defense Guide (`docs/JUDGE_PITCH_AND_TECH_DEFENSE.md`)**:
+  - 30-Second Elevator Pitch.
+  - Complete Tech Stack & Architectural Justification.
+  - Whiteboard explanations for Inventory-First Allocation, 30-Min Spatio-Temporal Batching, Gemini Voice Pipeline, and Exponential Demand Decay.
+  - Answers to tough questions: Why Leaflet vs Google Maps ($0 vs $7/1k loads, 42KB vs 250KB), GPS drift handling (dead-band filtering, Kalman smoothing, snap-to-road), API Costing (Gemini 2.5 Flash @ $0.075/1M tokens = ₹0.0003/voice note, local regex fallback), and Low-literacy vendor design.
+  - Scaling Strategy for 100k vendors (PostGIS GiST indexing, Redis GEO RAM buffer, city sharding).
+  - ASCII Whiteboard Architecture Diagram and closing lines.
+- **Git Sync**:
+  - Pushed commits `8db65d3` and `381a100` to `origin/master` and `origin/main`.
 In progress:
 - None.
 Broken/risky:
 - None.
 Next:
-- Ready for live presentation or production deployment.
+- Review `docs/JUDGE_PITCH_AND_TECH_DEFENSE.md` for pitch rehearsal.
 Do not touch:
 - Secrets, `.env`, live deployment.
 Run/test commands:
-- `node scripts/verify-neon.mjs`
-- `node scripts/smoke.mjs`
 - `npm run build`
+- `node scripts/smoke.mjs`
+- `node scripts/verify-neon.mjs`
+
 
 - **Spatio-Temporal Batching & Inventory-First Allocation Engine (`lib/batching.js`)**:
   - `matchVendorInventory()`: Evaluates cart items against online vendors; assigns 100% full matches first; provides stepped greedy fallback with secondary vendor recommendation for missing items; distance-based tie breaker.
