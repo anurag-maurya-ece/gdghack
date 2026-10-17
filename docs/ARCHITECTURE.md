@@ -23,3 +23,6 @@ Trust boundaries (where outside input enters): WhatsApp webhook, customer chat a
 - next/font downloads Outfit and Noto Sans Devanagari during build and serves them locally. Two font weights: 400 and 600.
 - functions/ and lib/ are placeholders only. No Firebase client, backend, auth or external application API calls exist yet.
 - scripts/smoke.mjs checks a running localhost server through real HTTP; no test-framework dependency.
+
+## Animated preview
+app/thela-scene.jsx is a client boundary inside the server-rendered home. Layered SVG art stays in source; no media/CDN calls. framer-motion springs handle bounded pointer tilt; CSS transforms animate cart, wheels and vendor. IntersectionObserver, visibilitychange and reduced-motion preference gate animation. Local Pause/Play freezes loops; no device sensors.

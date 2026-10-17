@@ -1,5 +1,25 @@
 # HANDOVER
-## Latest session: 2026-10-17 (Codex / GPT-6) — approved foundation
+## Latest session: 2026-10-17 (Codex / GPT-6) — animated preview
+Done:
+- User prioritized moving thela/person depth before Firebase. Added layered SVG, wheel rotation, walking/bobbing and spring tilt.
+- Added Pause/Play, reduced-motion and offscreen/hidden-tab pause; installed pre-approved framer-motion 14.3.0.
+- Build, HTTP smoke and browser checks passed; output in TESTING.md. Inspected 360px/1440px screenshots.
+In progress:
+- Animation task complete; Firebase next.
+Broken or risky:
+- Real-phone FPS and actual background-tab behavior unverified. Full landing and backend pending.
+Next (exact first step):
+- Explain local Firebase emulator/default-deny setup and exact dependencies before implementation under the user's one-task-at-a-time approval workflow.
+Do not touch:
+- Secrets, .env files, live data, production deployment; preserve AGENTS.md and UI-DESIGN.md.
+Run / test commands:
+- npm run build; npm start; npm test in a second terminal. Preview left running at http://127.0.0.1:3000; reload for new scene.
+Unverified assumptions:
+- What did I assume that you did not tell me? "Thoda 3D" means layered illustration depth, not WebGL. Mobile uses idle movement without sensors.
+- Demo languages/city, duration/team and API providers still undecided.
+Read first: ARCHITECTURE.md, CONSTRAINTS.md, UI-DESIGN.md
+
+## Previous session: 2026-10-17 (Codex / GPT-6) — approved foundation
 Done:
 - User approved Next.js/Tailwind scaffold, design tokens and local hello page.
 - Added JavaScript App Router, exact npm versions/lockfile, fonts, brand tokens, static cart illustration and friendly 404 page. functions/ and lib/ placeholders exist.

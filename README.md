@@ -54,6 +54,8 @@ Setup -> landing -> vendor/products (text first) -> live location/map -> orders 
 
 ## Demo scope
 
+The hello illustration includes a moving thela, walking vendor and pointer-driven layered depth. Use Pause/Play to control it; reduced-motion devices get static art. No location is tracked by this illustration.
+
 Hackathon PoC (Lane A). No demo data exists yet. Future seeded history and other simulated data must be explicitly labeled in both UI and README. No payment integration: cash or UPI on delivery for the demo. Real-user use promotes this to Lane B and requires complete threat, failure and rollback documentation.
 
 ## Project memory

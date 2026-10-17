@@ -51,7 +51,6 @@ mark { background: var(--color-green); color: var(--color-ink); padding-inline: 
 
 .outline-card { border: 2px solid var(--color-ink); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background: var(--color-card); }
 .hello-card { padding: 2rem; }
-.thela-art { width: 100%; max-width: 24rem; margin: 1rem auto; }
 .about-section { border-top: 2px solid var(--color-ink); margin-top: 4rem; padding-top: 3rem; scroll-margin-top: 2rem; }
 
 .button {
@@ -80,10 +79,64 @@ mark { background: var(--color-green); color: var(--color-ink); padding-inline: 
 
 @media (min-width: 48rem) {
   .hello-layout { grid-template-columns: 1.2fr 1fr; }
-  .hello-card { margin-top: 4rem; }
+  .scene-preview { margin-top: 4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .button { transition: none; }
   .button:active { transform: none; }
+}
+
+.scene-preview { min-width: 0; }
+.scene-perspective { perspective: 900px; }
+.scene-card, .street-scene { transform-style: preserve-3d; }
+.scene-heading { transform: translateZ(24px); }
+.scene-caption { transform: translateZ(20px); }
+.street-scene { position: relative; aspect-ratio: 3 / 2; margin: 1rem -1rem; }
+.scene-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.street-backdrop { transform: translateZ(0); }
+.cart-depth { transform: translateZ(36px); }
+.vendor-depth { transform: translateZ(60px); }
+.cart-travel, .vendor-travel { width: 100%; height: 100%; overflow: visible; animation: thela-travel 6s ease-in-out infinite; }
+.cart-bob { animation: cart-bob 1.4s ease-in-out infinite; }
+.cart-wheel { animation: wheel-roll 6s ease-in-out infinite; }
+.vendor-leg { transform-origin: 356px 224px; animation: vendor-step 1.4s ease-in-out infinite alternate; }
+.vendor-leg-back { animation-delay: -1.4s; }
+.vendor-body { animation: vendor-bob 1.4s ease-in-out infinite; }
+.street-dashes { animation: street-drift 6s ease-in-out infinite; }
+
+/* Pausing holds each layer's current frame; the card's spring resets separately. */
+.scene-card[data-running="false"] * { animation-play-state: paused; }
+.scene-card[data-reduced="true"] * { animation: none; }
+.scene-card[data-reduced="true"] .scene-layer,
+.scene-card[data-reduced="true"] .scene-heading,
+.scene-card[data-reduced="true"] .scene-caption { transform: none; }
+
+.motion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.5rem;
+  margin: 1rem auto 0;
+  padding: 0.5rem 1rem;
+  color: var(--color-teal);
+  border: 2px solid var(--color-teal);
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.motion-toggle:disabled { cursor: default; }
+.motion-toggle:hover:not(:disabled) { background: var(--color-card); }
+
+@keyframes thela-travel { 0%, 100% { transform: translateX(8px); } 50% { transform: translateX(-8px); } }
+@keyframes cart-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes wheel-roll { 0%, 100% { transform: rotate(30deg); } 50% { transform: rotate(-30deg); } }
+@keyframes vendor-step { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+@keyframes vendor-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes street-drift { 0%, 100% { transform: translateX(-8px); } 50% { transform: translateX(8px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* CSS also protects first paint, before React reads the media preference. */
+  .scene-card, .scene-card * { animation: none !important; transform: none !important; }
 }

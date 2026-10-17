@@ -42,3 +42,13 @@ Chosen: 1. Keep the prescribed palette and highlight one heading word using gree
 Why: Keeps the design identity while preserving contrast and avoiding fake feature controls.
 Trade-off: Full tilt/parallax, language picker and recording controls are deferred to their actual landing/vendor tasks. A two-language voice check cannot run before voice features exist; it remains outstanding, not passed.
 Revisit if: the complete landing task is approved.
+
+## D-006: Animated cart and layered vendor before Firebase
+Date: 2026-10-17 Tool/model: Codex / GPT-6
+Context: User explicitly selected moving thela + person 3D effect first, Firebase afterward.
+Options: 1) Layered SVG/CSS with spring tilt 2) Full WebGL model.
+Chosen: 1. Pre-approved framer-motion 14.3.0 for tilt springs (maximum target 6 degrees, perspective 900px); transform-only CSS loops for cart, wheels and vendor. Vendor depth 60px, cart 36px, backdrop 0px.
+Why: Preserves flat lavender/teal illustrations while adding light depth without model downloads or WebGL.
+Trade-off: Illustrative depth, not a modeled 3D person. Mobile uses idle movement without sensors. Adds approved motion dependency and its transitive packages. Full landing and Firebase remain separate tasks.
+Accessibility/performance: Static server render until preferences are known, live reduced-motion handling, 56px Pause/Play, offscreen/hidden-tab pause.
+Revisit if: a real model is requested after mobile performance measurement.

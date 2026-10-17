@@ -1,24 +1,6 @@
 import { ArrowDown, Store } from "lucide-react";
+import ThelaScene from "./thela-scene";
 
-function ThelaIllustration() {
-  return (
-    <svg viewBox="0 0 320 240" aria-hidden="true" className="thela-art">
-      <g stroke="var(--color-teal)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M32 216h256" />
-        <path d="M72 112v56m168-56v56" />
-        <path d="m56 104 24-56h152l24 56Z" fill="var(--color-lavender)" />
-        <path d="m120 48-8 56m56-56 8 56m32-56 24 56" fill="none" />
-        <path d="M56 104v8a20 20 0 0 0 40 0 20 20 0 0 0 40 0 20 20 0 0 0 40 0 20 20 0 0 0 40 0 20 20 0 0 0 40 0v-8" fill="var(--color-lavender)" />
-        <path d="M64 160h184v40H64z" fill="var(--color-lavender)" />
-        <path d="M248 168h24v16" fill="none" />
-        <circle cx="96" cy="204" r="12" fill="var(--color-page)" />
-        <circle cx="216" cy="204" r="12" fill="var(--color-page)" />
-        <path d="M88 160v-16h48v16m32 0v-24h48v24" fill="var(--color-green)" />
-        <path d="M112 144v16m80-24v24" />
-      </g>
-    </svg>
-  );
-}
 
 export default function Home() {
   return (
@@ -43,12 +25,7 @@ export default function Home() {
               Tech Thela kya hai? <ArrowDown size={24} strokeWidth={2} aria-hidden="true" />
             </a>
           </section>
-          <aside className="outline-card hello-card" aria-label="Tech Thela preview">
-            <p className="font-semibold text-teal">Namaste, mohalla!</p>
-            <ThelaIllustration />
-            <p className="text-2xl font-semibold" lang="hi">अपना ठेला, अपनी पहचान।</p>
-            <p className="mt-4">Abhi taiyaari chal rahi hai. Jaldi milte hain.</p>
-          </aside>
+          <ThelaScene />
         </div>
         <section id="about" aria-labelledby="about-title" className="about-section">
           <p className="mb-4 font-semibold text-teal">Bridge the Gap</p>
