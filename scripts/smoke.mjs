@@ -67,7 +67,7 @@ assert.equal(vendorRes.status, 200);
 const vendorHtml = await vendorRes.text();
 assert.match(vendorHtml, /Ramesh Bhaiya/);
 assert.match(vendorHtml, /Thela ON/);
-assert.match(vendorHtml, /Voice Listing/);
+assert.match(vendorHtml, /Update Inventory/);
 console.log("PASS: /vendor returns 200 with live toggle, voice listing and inventory");
 
 // 6. Rewards & Reviews Check
@@ -93,3 +93,22 @@ const missing = await fetch(new URL("/missing-smoke-check-page", base));
 assert.equal(missing.status, 404);
 assert.match(await missing.text(), /Yeh gali abhi khaali hai/);
 console.log("PASS: unknown route returns 404 with friendly recovery page");
+
+// 9. Backend API Routes Check (ref-sih-wekreta & The-Hashira)
+const apiVendorRes = await fetch(new URL("/api/vendor", base));
+assert.equal(apiVendorRes.status, 200);
+const apiVendorData = await apiVendorRes.json();
+assert.equal(apiVendorData.success, true);
+console.log("PASS: /api/vendor returns 200 with vendor data");
+
+const apiLeaderboardRes = await fetch(new URL("/api/leaderboard", base));
+assert.equal(apiLeaderboardRes.status, 200);
+const apiLeaderboardData = await apiLeaderboardRes.json();
+assert.equal(apiLeaderboardData.success, true);
+console.log("PASS: /api/leaderboard returns 200 with rankings");
+
+const apiReviewsRes = await fetch(new URL("/api/reviews", base));
+assert.equal(apiReviewsRes.status, 200);
+const apiReviewsData = await apiReviewsRes.json();
+assert.equal(apiReviewsData.success, true);
+console.log("PASS: /api/reviews returns 200 with community reviews");

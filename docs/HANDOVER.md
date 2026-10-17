@@ -1,23 +1,35 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Comprehensive Customer Dashboard & Sidebar Flow)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Comprehensive Vendor Dashboard & Backend API Suite)
 Done:
-- Ported and built the full Customer Dashboard flow matching `The-Hashira---tech-thela/pages/Customer.tsx`:
-  - Created `components/CustomerSidebar.jsx`: Dark luxury sidebar with user profile ("Mr. Oberoi", Customer ID: TH-CUST-007, Prime Member status, 125 Coins balance) and 4 interactive tabs.
-  - Upgraded `app/customer/page.jsx`:
-    1. **Tab 1: Vendors Near Me**: Pincode lookup (`110080`... `110085`), category chips (`Sabhi`, `Sabzi`, `Phal`, `Chaat`, `Chai`), real-time search, nearby vendor distance chips, live OpenStreetMap Leaflet tracker, produce catalogue with quantity selectors, and instant doorstep order basket drawer.
-    2. **Tab 2: Demand Ping (Beta)**: "Bulao Thela" broadcast radar with 5G mesh dispatch simulation, item/quantity/landmark form, and instant vendor acceptance alert.
-    3. **Tab 3: Review Vendors**: Vendor selection dropdown, interactive 5-star rating selector, feedback submission form with instant `+25 Coins` credit reward, and recent community review feed.
-    4. **Tab 4: Mohalla Leaderboard**: Ranked vendor trust table with Gold/Silver/Bronze medals, star ratings, and review counts.
-    5. **AI Vendor Recommendations**: Personalized cards at the bottom ("Organic Greens", "Suresh's Selection", "Global Spices") based on customer household dietary preferences from `/form`.
-- Production build: `npm run build` compiled all routes cleanly in 1365ms.
-- Chrome DevTools verification: All 4 tabs tested and verified in real Chrome browser with live state transitions and screenshots.
-- Smoke tests: `node scripts/smoke.mjs` passed 11/11 tests.
+- **Backend API Suite (`app/api/`)**: Implemented 9 native Next.js App Router route handlers based on `ref-sih-wekreta` and `The-Hashira---tech-thela`:
+  - `/api/vendor`: GET vendor details & inventory; POST create/update vendor items.
+  - `/api/vendor/update-location`: POST update vendor live location coordinates & toggle online/offline.
+  - `/api/vendor/nearby`: GET nearby active street vendors within radius or GPS coordinate bounds.
+  - `/api/ping/create`: POST create customer demand ping ("Bulao Thela" broadcast).
+  - `/api/ping/accept`: POST vendor accept demand ping with ETA & navigation establishment.
+  - `/api/reviews`: GET/POST vendor ratings, reviews & automatic wallet coin bonus.
+  - `/api/leaderboard`: GET ranked street vendors by trust and community ratings.
+  - `/api/login`: POST vendor phone/password verification.
+  - `/api/userlogin`: POST customer email/password verification.
+- **Vendor Dashboard (`/vendor`)**:
+  - Top 4 stat cards from `The-Hashira`: Account Status (Active Pro), Live Thela GPS (Thela ON / OFF), Smart Routing (AI Enabled), and Market Insights (Customer Demand Alerts).
+  - Created `components/VendorSidebar.jsx`: Ramesh Bhaiya profile (+91 98765 43210, Dwarka Sec 14), 689 Vendor Credits, UPI Scan QR code, and 6 tabs.
+  - 6 Tab panels:
+    1. **Smart Routing & Map**: Giant tactile "THELA ONLINE / OFFICIAL" switch, OpenStreetMap live tracking, step simulation, and high demand zones.
+    2. **Update Inventory**: Voice-First assistant in Hindi/Hinglish with microphone simulation, "Sahi Hai" 2-tap confirmation, manual price adjusters, and stock status toggles.
+    3. **Demand Alerts (Pings)**: Live incoming customer orders with distance, required produce, and Sweekar/Chhod Do buttons.
+    4. **Pre-Order Stock**: Morning customer household advance orders with time slots and delivery addresses.
+    5. **Customer Reviews**: Verified customer ratings, feedback, and 4.8★ trust score.
+    6. **Mohalla Leaderboard**: Dwarka Sector 14 street vendor rankings.
+- **Production Build**: `npm run build` compiled all 20 routes (11 static + 9 dynamic API routes) in 1397ms.
+- **Smoke Tests**: `node scripts/smoke.mjs` passed 14/14 tests (including API routes).
+- **Chrome DevTools Verification**: All 6 vendor tabs and live switch verified in Chrome with screenshots.
 In progress:
-- Full customer login & dashboard flow live on http://127.0.0.1:3000/customer.
+- All Customer and Vendor flows active and verified on http://127.0.0.1:3000.
 Broken/risky:
 - None.
 Next:
-- Add additional flows or proceed to live cloud deployment / WhatsApp webhook integration.
+- WhatsApp Cloud API webhook integration or live cloud deployment when approved.
 Do not touch:
 - Secrets, `.env`, live deployment.
 Run/test commands:

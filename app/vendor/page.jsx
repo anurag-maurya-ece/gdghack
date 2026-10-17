@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import VendorSidebar from "../../components/VendorSidebar";
 import { DEMAND_ZONES, INITIAL_VENDORS } from "../../lib/mock-data";
 import {
   Mic,
@@ -20,9 +22,30 @@ import {
   AlertTriangle,
   RotateCcw,
   Navigation,
+  Award,
+  Bell,
+  Star,
+  Trophy,
+  ShoppingCart,
+  Phone,
+  ShieldCheck,
+  Check,
+  X,
 } from "lucide-react";
 
+// Dynamically load the Leaflet map to avoid server-side window errors
+const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[400px] rounded-3xl bg-gray-100 flex flex-col items-center justify-center border-2 border-gray-200 gap-3">
+      <div className="w-8 h-8 border-4 border-[#16A34A] border-t-transparent rounded-full animate-spin" />
+      <p className="text-xs font-bold text-gray-700">Loading Smart Navigation Map...</p>
+    </div>
+  ),
+});
+
 export default function VendorDashboard() {
+  const [activeTab, setActiveTab] = useState("locate_customer");
   const [isThelaOnline, setIsThelaOnline] = useState(true);
   const [vendorLocation, setVendorLocation] = useState({ lat: 28.6315, lng: 77.2185 });
   const [stepCount, setStepCount] = useState(0);
@@ -41,7 +64,7 @@ export default function VendorDashboard() {
     {
       id: "ord-101",
       customerName: "Mrs. Verma (Flat 302, Pocket B)",
-      distance: "140m",
+      distance: "140m away",
       items: "2 kg Aaloo, 1 kg Tamatar, Adrak Mirchi combo",
       total: 95,
       time: "2 mins ago",
@@ -50,11 +73,33 @@ export default function VendorDashboard() {
     {
       id: "ord-102",
       customerName: "Aman Gupta (Near Park Bench)",
-      distance: "210m",
+      distance: "210m away",
       items: "1 kg Nasik Pyaaz",
       total: 35,
       time: "Just now",
       status: "pending",
+    },
+  ]);
+
+  // Pre-Orders state
+  const [preOrders, setPreOrders] = useState([
+    {
+      id: "pre-1",
+      customer: "Dr. Rajesh Sharma",
+      timeSlot: "Tomorrow Morning (7:00 AM - 8:30 AM)",
+      items: "5 kg Desi Aloo, 2 kg Tamatar, 1 bunch Palak",
+      address: "House 42, Pocket 1, Dwarka",
+      status: "Confirmed",
+      amount: "₹240",
+    },
+    {
+      id: "pre-2",
+      customer: "Pooja Malhotra",
+      timeSlot: "Today Evening (5:30 PM - 6:30 PM)",
+      items: "1 kg Shimla Mirch, 500g Adrak, 1 kg Kheera",
+      address: "B-12, Sector 14",
+      status: "Confirmed",
+      amount: "₹130",
     },
   ]);
 
@@ -65,6 +110,36 @@ export default function VendorDashboard() {
     "gobi 30 rupaye piece, palak 20 rupaye gaddi",
   ];
 
+  // Toggle Thela Online / Offline
+  const handleToggleOnline = async () => {
+    const nextStatus = !isThelaOnline;
+    setIsThelaOnline(nextStatus);
+
+    try {
+      await fetch("/api/vendor/update-location", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: "9876543210",
+          isActive: nextStatus,
+          latitude: vendorLocation.lat,
+          longitude: vendorLocation.lng,
+        }),
+      });
+    } catch (e) {
+      console.log("Status synced locally");
+    }
+  };
+
+  // Simulate GPS walk / cart movement
+  const handleSimulateMove = () => {
+    setStepCount((prev) => prev + 1);
+    setVendorLocation((prev) => ({
+      lat: prev.lat + (Math.random() - 0.45) * 0.0008,
+      lng: prev.lng + (Math.random() - 0.45) * 0.0008,
+    }));
+  };
+
   // Simulate Voice Note Processing
   const handleStartVoice = (presetText) => {
     setIsListening(true);
@@ -74,7 +149,7 @@ export default function VendorDashboard() {
 
     setTimeout(() => {
       setIsListening(false);
-      // Simulate Gemini speech-to-intent parsing
+      // Simulate speech-to-intent parsing
       if ((presetText || voicePresets[0]).includes("seb")) {
         setParsedItems([
           { name: "Kinnaur Seb", price: 120, unit: "kg", icon: "🍎" },
@@ -98,37 +173,17 @@ export default function VendorDashboard() {
       name: p.name,
       price: p.price,
       unit: p.unit,
-      stock: 20,
       inStock: true,
-      icon: p.icon || "📦",
     }));
 
     setInventory((prev) => [...newItems, ...prev]);
-    setVoiceConfirmedMessage("Shabash! Sabhi item live customer menu mein jud gaye.");
+    setVoiceConfirmedMessage("Bhav safalta-purvak add ho gaya! (Stock live ho gaya)");
     setParsedItems(null);
     setVoiceTranscript("");
   };
 
-  // Simulate movement (GPS step for live demo)
-  const handleSimulateMovement = () => {
-    setVendorLocation((prev) => ({
-      lat: prev.lat + 0.0003,
-      lng: prev.lng + 0.0002,
-    }));
-    setStepCount((prev) => prev + 1);
-  };
-
-  // Toggle Stock status
-  const toggleStock = (itemId) => {
-    setInventory((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, inStock: !item.inStock } : item
-      )
-    );
-  };
-
-  // Quick adjust price (+/- ₹5)
-  const adjustPrice = (itemId, delta) => {
+  // Manual price adjustment
+  const handleUpdatePrice = (itemId, delta) => {
     setInventory((prev) =>
       prev.map((item) =>
         item.id === itemId
@@ -138,378 +193,582 @@ export default function VendorDashboard() {
     );
   };
 
-  // Accept Order
-  const handleAcceptOrder = (orderId) => {
-    setIncomingOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, status: "accepted" } : o))
+  // Toggle in stock
+  const handleToggleStock = (itemId) => {
+    setInventory((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, inStock: !item.inStock } : item
+      )
     );
   };
 
-  // Reject Order
-  const handleRejectOrder = (orderId) => {
+  // Accept or reject incoming demand alert
+  const handleOrderAction = (orderId, newStatus) => {
     setIncomingOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, status: "rejected" } : o))
+      prev.map((ord) => (ord.id === orderId ? { ...ord, status: newStatus } : ord))
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F4FF] text-[#111111] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FDFCFB] flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 shell px-4 sm:px-6 py-8 pt-28">
-        {/* Top Vendor Status Header */}
-        <div className="outline-card p-6 sm:p-8 bg-white mb-8 border-2 border-[#111111]">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-[#22C55E] border-2 border-[#111111] shadow-[3px_3px_0_#111111] flex items-center justify-center text-3xl font-extrabold">
-                🧑🏽‍🌾
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111111]">
-                    Ramesh Bhaiya <span className="text-[#0B6B6B] font-bold text-lg">(Sabzi Thela)</span>
-                  </h1>
-                </div>
-                <p className="text-xs sm:text-sm text-gray-600 font-medium mt-0.5">
-                  ID: TH-DEL-9842 • Dwarka Sector 14 / Connaught Place Area
-                </p>
-              </div>
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+        {/* Top Stat Cards matching The-Hashira---tech-thela */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Card 1: Account Status */}
+          <div className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-xs relative overflow-hidden">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">
+                Account Status
+              </span>
+              <Award className="w-5 h-5 text-emerald-500" />
             </div>
-
-            {/* Giant Thela ON/OFF Switch */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-              <button
-                onClick={() => setIsThelaOnline(!isThelaOnline)}
-                className={`w-full sm:w-auto min-h-[56px] px-8 rounded-full font-black text-base border-2 border-[#111111] shadow-[4px_4px_0_#111111] flex items-center justify-center gap-3 transition-all active:translate-y-[2px] active:shadow-none ${
-                  isThelaOnline
-                    ? "bg-[#22C55E] text-[#111111] hover:bg-[#1eb054]"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
-              >
-                <Power className="w-6 h-6" />
-                <span>{isThelaOnline ? "Thela ON (Live Grahak Dekh Sakte Hain)" : "Thela OFF (Dukaan Band)"}</span>
-              </button>
+            <h3 className="text-2xl font-black text-gray-900">Active Pro</h3>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold text-[#16A34A]">
+                Zero Platform Commission
+              </span>
             </div>
           </div>
 
-          {/* Location Bar & Movement Simulator */}
-          {isThelaOnline && (
-            <div className="mt-6 pt-5 border-t border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-bold text-gray-700 bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-[#22C55E] animate-ping" />
-                <span>Live GPS Active: {vendorLocation.lat.toFixed(4)}, {vendorLocation.lng.toFixed(4)}</span>
-                <span className="text-gray-500 font-normal">({stepCount} movements simulated)</span>
-              </div>
-
-              <button
-                onClick={handleSimulateMovement}
-                className="px-4 py-2 rounded-full bg-[#0F172A] text-white hover:bg-gray-800 transition-all flex items-center gap-1.5"
-              >
-                <Navigation className="w-3.5 h-3.5 text-[#22C55E]" />
-                <span>Simulate Movement (Chalte Raho)</span>
-              </button>
+          {/* Card 2: Live Location Switch */}
+          <div
+            onClick={handleToggleOnline}
+            className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-xs cursor-pointer hover:border-[#16A34A] transition-all"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">
+                Live Thela GPS
+              </span>
+              <Navigation className="w-5 h-5 text-blue-500" />
             </div>
-          )}
+            <h3 className="text-2xl font-black text-gray-900">
+              {isThelaOnline ? "Thela ON" : "Thela OFF"}
+            </h3>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isThelaOnline ? "bg-emerald-500 animate-ping" : "bg-gray-400"
+                }`}
+              />
+              <span className="text-xs font-bold text-gray-600">
+                {isThelaOnline ? "Signal Strong (Broadcasting)" : "Tap to go Online"}
+              </span>
+            </div>
+          </div>
+
+          {/* Card 3: Smart Routing */}
+          <div
+            onClick={() => setActiveTab("locate_customer")}
+            className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-xs cursor-pointer hover:border-[#16A34A] transition-all"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">
+                Smart Routing
+              </span>
+              <TrendingUp className="w-5 h-5 text-amber-500" />
+            </div>
+            <h3 className="text-2xl font-black text-gray-900">AI Enabled</h3>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+              <span className="text-xs font-bold text-amber-600">
+                3 Demand Hotspots Nearby
+              </span>
+            </div>
+          </div>
+
+          {/* Card 4: Market Insights */}
+          <div
+            onClick={() => setActiveTab("demand_alerts")}
+            className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-xs cursor-pointer hover:border-[#16A34A] transition-all"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">
+                Market Insights
+              </span>
+              <Bell className="w-5 h-5 text-purple-500" />
+            </div>
+            <h3 className="text-2xl font-black text-gray-900">
+              {incomingOrders.filter((o) => o.status === "pending").length} Pending
+            </h3>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+              <span className="text-xs font-bold text-purple-600">
+                Customer Demand Pings
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* 2-Column Operational Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column (7 cols): Voice Listing + Inventory Management */}
-          <div className="lg:col-span-7 flex flex-col gap-8">
-            {/* Feature: Voice-Activated Product Listing */}
-            <div className="outline-card p-6 sm:p-8 bg-white border-2 border-[#111111]">
-              <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-                <div className="flex items-center gap-2.5">
-                  <span className="p-2 rounded-xl bg-[#D9C8F5] border border-[#111111]">
-                    <Mic className="w-5 h-5 text-[#0F172A]" />
-                  </span>
+        {/* Dashboard Main Grid: Sidebar + Dynamic Tabs */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Vendor Sidebar */}
+          <VendorSidebar activeTab={activeTab} onChangeTab={setActiveTab} />
+
+          {/* Main Tab Panels */}
+          <div className="flex-1 w-full space-y-6">
+            {/* TAB 1: SMART ROUTING & LOCATE CUSTOMER */}
+            {activeTab === "locate_customer" && (
+              <div className="space-y-6">
+                {/* Giant Live Thela Toggle Button */}
+                <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-extrabold text-[#111111]">
-                      Bol Kar Item Jodein <mark>(Voice Listing)</mark>
-                    </h2>
-                    <p className="text-xs text-gray-600">Zero typing needed • Bolen aur list live karein</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Big Mic Button & Presets */}
-              <div className="py-6 flex flex-col items-center justify-center text-center gap-4">
-                <button
-                  onClick={() => handleStartVoice()}
-                  disabled={isListening}
-                  className={`relative w-24 h-24 rounded-full border-3 border-[#111111] flex items-center justify-center shadow-[4px_4px_0_#111111] transition-transform active:scale-95 ${
-                    isListening
-                      ? "bg-red-500 text-white animate-pulse"
-                      : "bg-[#22C55E] text-[#111111] hover:scale-105"
-                  }`}
-                  aria-label="Mic Record Button"
-                >
-                  {isListening ? <Volume2 className="w-10 h-10 animate-bounce" /> : <Mic className="w-10 h-10" />}
-                </button>
-
-                <p className="text-sm font-extrabold text-gray-800">
-                  {isListening
-                    ? "Sun rahe hain... (Listening...)"
-                    : "Mic dabayein aur apna bhav bolein"}
-                </p>
-
-                {/* Quick Presets for Demo */}
-                <div className="flex flex-col gap-2 w-full pt-2">
-                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                    Ya in demo voice notes par tap karein:
-                  </span>
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    {voicePresets.map((preset, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleStartVoice(preset)}
-                        className="px-3 py-1.5 rounded-full bg-[#F8F4FF] hover:bg-[#D9C8F5] text-xs font-bold border border-gray-300 text-gray-800 transition-colors"
-                      >
-                        🎙️ &ldquo;{preset}&rdquo;
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Parsed Result & Sahi Hai Confirmation */}
-              {parsedItems && (
-                <div className="mt-4 p-5 rounded-2xl bg-amber-50 border-2 border-amber-400 animate-in fade-in duration-200">
-                  <div className="flex items-center gap-2 text-amber-900 font-extrabold text-sm mb-2">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
-                    <span>AI Ne Ye Samjha (Voice Intent Parsed):</span>
-                  </div>
-                  <p className="text-xs text-gray-600 italic mb-3">
-                    &ldquo;{voiceTranscript}&rdquo;
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
-                    {parsedItems.map((item, i) => (
-                      <div key={i} className="p-2.5 rounded-xl bg-white border border-amber-300 text-xs">
-                        <span className="text-lg">{item.icon}</span>
-                        <p className="font-bold text-gray-900 mt-1">{item.name}</p>
-                        <p className="font-extrabold text-[#0B6B6B]">
-                          ₹{item.price} / {item.unit}
-                        </p>
-                      </div>
-                    ))}
+                    <h3 className="text-xl font-black text-[#111111]">
+                      Live Status: {isThelaOnline ? "Thela ON (Online)" : "Thela OFF (Offline)"}
+                    </h3>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {isThelaOnline
+                        ? "Aas-paas ke grahak nakshe par aapka thela dekh sakte hain aur live bula sakte hain."
+                        : "Aapka thela band hai. Online hone par grahak aapki dukaan dekh payenge."}
+                    </p>
                   </div>
 
-                  {/* 2-Button Rule: Big Sahi Hai vs Galat Hai */}
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <button
-                      onClick={handleConfirmVoice}
-                      className="min-h-[56px] rounded-xl bg-[#22C55E] text-[#111111] font-black text-base border-2 border-[#111111] shadow-[2px_2px_0_#111111] flex items-center justify-center gap-2 hover:bg-[#1eb054]"
-                    >
-                      <CheckCircle className="w-5 h-5" />
-                      <span>Sahi Hai (Save)</span>
-                    </button>
-                    <button
-                      onClick={() => setParsedItems(null)}
-                      className="min-h-[56px] rounded-xl bg-rose-100 text-rose-900 font-black text-base border-2 border-rose-400 flex items-center justify-center gap-2 hover:bg-rose-200"
-                    >
-                      <XCircle className="w-5 h-5" />
-                      <span>Galat Hai (Retry)</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {voiceConfirmedMessage && (
-                <div className="mt-4 p-4 rounded-xl bg-emerald-100 border border-emerald-400 text-emerald-950 font-bold text-xs flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
-                  <span>{voiceConfirmedMessage}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Inventory Manager */}
-            <div className="outline-card p-6 sm:p-8 bg-white border-2 border-[#111111]">
-              <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-                <div className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-[#22C55E]" />
-                  <h2 className="text-xl font-extrabold text-[#111111]">Thela Saman (Inventory)</h2>
-                </div>
-                <span className="text-xs font-bold text-gray-500">
-                  {inventory.filter((i) => i.inStock).length} of {inventory.length} In-Stock
-                </span>
-              </div>
-
-              <div className="pt-4 flex flex-col gap-3">
-                {inventory.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`p-3.5 rounded-2xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
-                      item.inStock
-                        ? "bg-white border-gray-200"
-                        : "bg-gray-100 border-gray-300 opacity-60"
+                  <button
+                    onClick={handleToggleOnline}
+                    className={`px-6 py-4 rounded-2xl font-black text-sm flex items-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer ${
+                      isThelaOnline
+                        ? "bg-[#16A34A] hover:bg-[#15803D] text-white shadow-green-900/20"
+                        : "bg-gray-800 hover:bg-gray-900 text-white"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{item.icon}</span>
-                      <div>
-                        <p className="text-sm font-extrabold text-gray-900">{item.name}</p>
-                        <p className="text-xs text-gray-500">
-                          Unit: {item.unit} • Stock: ~{item.stock} {item.unit}
-                        </p>
-                      </div>
+                    <Power className="w-5 h-5" />
+                    <span>{isThelaOnline ? "THELA ONLINE (Live)" : "THELA OFF (Chalu Karein)"}</span>
+                  </button>
+                </div>
+
+                {/* Smart Route OpenStreetMap */}
+                <div className="bg-white rounded-3xl p-4 border border-gray-200/80 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between px-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500 animate-ping" />
+                      <span className="text-xs font-black text-gray-800 uppercase tracking-wider">
+                        Smart Thela Route & Customer Hotspots
+                      </span>
                     </div>
+                    <button
+                      onClick={handleSimulateMove}
+                      className="text-xs font-bold text-[#16A34A] hover:underline flex items-center gap-1"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>Simulate Step ({stepCount})</span>
+                    </button>
+                  </div>
 
-                    <div className="flex items-center gap-4">
-                      {/* Price adjustment buttons */}
-                      <div className="flex items-center gap-1.5 bg-gray-50 p-1 rounded-xl border border-gray-200">
-                        <button
-                          onClick={() => adjustPrice(item.id, -5)}
-                          className="w-7 h-7 rounded-lg bg-white border border-gray-300 flex items-center justify-center font-bold text-gray-700 hover:bg-gray-100"
-                        >
-                          <Minus className="w-3.5 h-3.5" />
-                        </button>
-                        <span className="text-xs font-black px-2 min-w-[50px] text-center">
-                          ₹{item.price}
-                        </span>
-                        <button
-                          onClick={() => adjustPrice(item.id, 5)}
-                          className="w-7 h-7 rounded-lg bg-white border border-gray-300 flex items-center justify-center font-bold text-gray-700 hover:bg-gray-100"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                  <LeafletMap
+                    vendors={INITIAL_VENDORS}
+                    userLocation={vendorLocation}
+                    height="380px"
+                  />
+                </div>
 
-                      {/* In-Stock / Out-of-Stock Toggle */}
-                      <button
-                        onClick={() => toggleStock(item.id)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-bold border ${
-                          item.inStock
-                            ? "bg-[#22C55E]/15 text-emerald-900 border-[#22C55E]"
-                            : "bg-gray-200 text-gray-600 border-gray-400"
-                        }`}
+                {/* High Demand Zones */}
+                <div className="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-sm">
+                  <h4 className="text-sm font-black text-gray-900 mb-4 uppercase tracking-wider">
+                    High Demand Zones Right Now (Suggested by AI):
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {DEMAND_ZONES.map((zone) => (
+                      <div
+                        key={zone.id}
+                        className="bg-gray-50/80 border border-gray-200/80 rounded-2xl p-4 hover:border-[#16A34A] transition-all"
                       >
-                        {item.inStock ? "Dukaan Mein Hai" : "Khatam (Out)"}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column (5 cols): Live Orders & Demand Heatmap */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
-            {/* Incoming Orders & Doorstep Pings */}
-            <div className="outline-card p-6 bg-white border-2 border-[#111111]">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-rose-500 animate-ping" />
-                  <h2 className="text-lg font-extrabold text-gray-900">
-                    Aaye Hue Orders ({incomingOrders.filter((o) => o.status === "pending").length})
-                  </h2>
-                </div>
-                <span className="text-xs font-bold text-gray-500">Live Webhook</span>
-              </div>
-
-              <div className="pt-4 flex flex-col gap-3">
-                {incomingOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="p-4 rounded-2xl bg-[#F8F4FF] border-2 border-[#111111] flex flex-col gap-3"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-xs font-bold text-gray-500">{order.time}</p>
-                        <h4 className="text-sm font-extrabold text-gray-900">
-                          {order.customerName}
-                        </h4>
-                        <span className="text-[11px] font-bold text-[#0B6B6B]">
-                          📍 {order.distance} away
-                        </span>
-                      </div>
-                      <span className="text-base font-extrabold text-gray-900">
-                        ₹{order.total}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-gray-700 bg-white p-2 rounded-xl border border-gray-200">
-                      <strong>Items:</strong> {order.items}
-                    </p>
-
-                    {order.status === "pending" ? (
-                      <div className="grid grid-cols-2 gap-2 pt-1">
-                        <button
-                          onClick={() => handleAcceptOrder(order.id)}
-                          className="min-h-[48px] rounded-xl bg-[#22C55E] text-[#111111] font-black text-sm border-2 border-[#111111] shadow-[2px_2px_0_#111111] hover:bg-[#1eb054]"
-                        >
-                          Sweekar (Accept)
-                        </button>
-                        <button
-                          onClick={() => handleRejectOrder(order.id)}
-                          className="min-h-[48px] rounded-xl bg-gray-200 text-gray-700 font-bold text-sm border border-gray-300 hover:bg-gray-300"
-                        >
-                          Chhod Do
-                        </button>
-                      </div>
-                    ) : order.status === "accepted" ? (
-                      <div className="p-2 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-bold flex items-center justify-center gap-1.5">
-                        <CheckCircle className="w-4 h-4 text-emerald-600" />
-                        <span>Order Accepted! Deliver to gate.</span>
-                      </div>
-                    ) : (
-                      <div className="p-2 rounded-xl bg-gray-200 text-gray-600 text-xs font-bold text-center">
-                        Order Rejected
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Predictive Demand Heatmap / Hotspots */}
-            <div className="outline-card p-6 bg-white border-2 border-[#111111]">
-              <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
-                <TrendingUp className="w-5 h-5 text-[#22C55E]" />
-                <div>
-                  <h2 className="text-lg font-extrabold text-gray-900">
-                    Kahan Zyada Bikkri Hogi?
-                  </h2>
-                  <p className="text-xs text-gray-500">AI Community Demand Heatmap</p>
-                </div>
-              </div>
-
-              <div className="pt-4 flex flex-col gap-3.5">
-                {DEMAND_ZONES.map((zone) => (
-                  <div
-                    key={zone.id}
-                    className="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 hover:border-[#111111] transition-colors flex flex-col gap-2"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h4 className="text-xs font-extrabold text-gray-900">{zone.locationName}</h4>
-                        <p className="text-[11px] font-bold text-[#0B6B6B]">
-                          ⏰ Peak: {zone.peakHours}
+                        <div className="flex justify-between items-center text-xs mb-1">
+                          <span className="font-extrabold text-gray-900">{zone.name}</span>
+                          <span className="text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full text-[10px]">
+                            {zone.score} Demand
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
+                          {zone.reason}
                         </p>
                       </div>
-                      <span className="px-2 py-0.5 rounded-full bg-[#22C55E]/20 text-[#0F172A] font-extrabold text-xs">
-                        {zone.score}% Hot
-                      </span>
-                    </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
-                    <p className="text-[11px] text-gray-600 leading-snug">
-                      {zone.reasonHinglish}
+            {/* TAB 2: UPDATE INVENTORY (VOICE / TEXT) */}
+            {activeTab === "update" && (
+              <div className="space-y-6">
+                {/* Voice-First Assistant Box */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm text-center">
+                  <span className="text-[10px] font-black uppercase text-[#16A34A] tracking-wider">
+                    Zero Typing • Voice Listing Assistant
+                  </span>
+                  <h3 className="text-2xl font-black text-[#111111] mt-1 mb-2">
+                    Voice Listing: Aawaz Se Bhav Update Karein 🎙️
+                  </h3>
+                  <p className="text-xs text-gray-600 max-w-md mx-auto mb-6">
+                    Bolo: &quot;aaj aaloo 25 rupaye kilo, pyaaz 35, tamatar 30&quot; — AI bina typing ke stock add kar dega.
+                  </p>
+
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <button
+                      onClick={() => handleStartVoice()}
+                      disabled={isListening}
+                      className={`w-24 h-24 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer ${
+                        isListening
+                          ? "bg-red-500 text-white animate-pulse"
+                          : "bg-[#16A34A] hover:bg-[#15803D] text-white"
+                      }`}
+                    >
+                      {isListening ? <MicOff className="w-10 h-10" /> : <Mic className="w-10 h-10" />}
+                    </button>
+                    <span className="text-xs font-bold text-gray-700">
+                      {isListening ? "Sun rahe hain... Bolte rahiye" : "Mic dabayein aur bolen"}
+                    </span>
+                  </div>
+
+                  {/* Voice Simulation Presets */}
+                  <div className="mt-6 pt-4 border-t border-gray-100">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase mb-2">
+                      Demo Quick Voice Presets:
                     </p>
-
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {zone.recommendedItems.map((item, i) => (
-                        <span
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {voicePresets.map((preset, i) => (
+                        <button
                           key={i}
-                          className="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-[10px] font-bold text-gray-700"
+                          onClick={() => handleStartVoice(preset)}
+                          className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 rounded-xl font-medium transition-colors"
                         >
-                          + {item}
-                        </span>
+                          &ldquo;{preset}&rdquo;
+                        </button>
                       ))}
                     </div>
                   </div>
-                ))}
+
+                  {/* Parsed Result (Vendor-First "Sahi Hai" Confirmation) */}
+                  {parsedItems && (
+                    <div className="mt-6 p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-left animate-fadeIn">
+                      <div className="flex items-center gap-2 text-amber-900 font-extrabold text-sm mb-3">
+                        <Volume2 className="w-5 h-5 text-amber-600" />
+                        <span>AI ne yeh bhav samjha (Sahi Hai?):</span>
+                      </div>
+
+                      <div className="space-y-2 mb-4">
+                        {parsedItems.map((p, idx) => (
+                          <div
+                            key={idx}
+                            className="flex justify-between items-center text-sm font-bold bg-white p-2.5 rounded-xl border border-amber-200"
+                          >
+                            <span>
+                              {p.icon} {p.name}
+                            </span>
+                            <span className="text-[#16A34A]">
+                              ₹{p.price} / {p.unit}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-3">
+                        <button
+                          onClick={handleConfirmVoice}
+                          className="flex-1 bg-[#16A34A] hover:bg-[#15803D] text-white py-2.5 rounded-xl font-black text-xs shadow-xs"
+                        >
+                          ✓ Sahi Hai (Add Karein)
+                        </button>
+                        <button
+                          onClick={() => setParsedItems(null)}
+                          className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-bold text-xs"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {voiceConfirmedMessage && (
+                    <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+                      {voiceConfirmedMessage}
+                    </div>
+                  )}
+                </div>
+
+                {/* Manual Inventory List & Stock Toggle */}
+                <div className="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-sm">
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
+                    <h4 className="text-base font-black text-gray-900">
+                      Thela Inventory ({inventory.length} items)
+                    </h4>
+                    <span className="text-xs text-gray-500 font-bold">
+                      Tap + / - to adjust live prices
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {inventory.map((item) => (
+                      <div
+                        key={item.id}
+                        className={`p-4 rounded-2xl border transition-all ${
+                          item.inStock
+                            ? "bg-gray-50/70 border-gray-200"
+                            : "bg-gray-100/60 border-gray-200 opacity-60"
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h5 className="font-extrabold text-sm text-gray-900">{item.name}</h5>
+                            <p className="text-xs font-black text-[#16A34A]">
+                              ₹{item.price}{" "}
+                              <span className="text-gray-400 font-normal">/ {item.unit}</span>
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleToggleStock(item.id)}
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-md ${
+                              item.inStock
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-gray-300 text-gray-700"
+                            }`}
+                          >
+                            {item.inStock ? "In Stock" : "Out of Stock"}
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-1.5 mt-3 pt-2 border-t border-gray-200/60">
+                          <button
+                            onClick={() => handleUpdatePrice(item.id, -5)}
+                            className="w-7 h-7 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 flex items-center justify-center font-bold text-xs"
+                          >
+                            <Minus className="w-3.5 h-3.5 text-gray-700" />
+                          </button>
+                          <span className="text-xs font-mono font-bold text-gray-800 w-8 text-center">
+                            ₹{item.price}
+                          </span>
+                          <button
+                            onClick={() => handleUpdatePrice(item.id, +5)}
+                            className="w-7 h-7 rounded-lg bg-[#16A34A] text-white hover:bg-[#15803D] flex items-center justify-center font-bold text-xs"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* TAB 3: DEMAND ALERTS (BULAO THELA PINGS) */}
+            {activeTab === "demand_alerts" && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+                    <div>
+                      <h3 className="text-2xl font-black text-[#111111]">
+                        Live Customer Demand Pings
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Grahak jo aapke route par thela bula rahe hain. Sweekar karein aur direct deliver karein.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {incomingOrders.map((ord) => (
+                      <div
+                        key={ord.id}
+                        className={`p-5 rounded-2xl border transition-all ${
+                          ord.status === "accepted"
+                            ? "bg-emerald-50 border-emerald-300"
+                            : ord.status === "rejected"
+                            ? "bg-gray-100 border-gray-200 opacity-50"
+                            : "bg-white border-gray-200 hover:border-[#16A34A]"
+                        }`}
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                            <h4 className="font-extrabold text-sm text-gray-900">
+                              {ord.customerName}
+                            </h4>
+                            <span className="text-xs text-gray-400">• {ord.time}</span>
+                          </div>
+                          <span className="text-xs font-extrabold text-[#16A34A] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                            📍 {ord.distance}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-gray-700 font-medium mb-3">
+                          <strong>Requested Items:</strong> {ord.items} •{" "}
+                          <span className="font-bold text-gray-900">Total: ₹{ord.total}</span>
+                        </p>
+
+                        {ord.status === "pending" && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleOrderAction(ord.id, "accepted")}
+                              className="bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-black px-4 py-2 rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
+                            >
+                              ✓ Sweekar (Accept & Navigate)
+                            </button>
+                            <button
+                              onClick={() => handleOrderAction(ord.id, "rejected")}
+                              className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl"
+                            >
+                              ✕ Chhod Do
+                            </button>
+                          </div>
+                        )}
+
+                        {ord.status === "accepted" && (
+                          <div className="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5">
+                            <CheckCircle className="w-4 h-4 text-emerald-600" />
+                            <span>Accepted! Navigation route live on your phone.</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: PRE-ORDERS */}
+            {activeTab === "preorder" && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="pb-4 border-b border-gray-100 mb-6">
+                    <h3 className="text-2xl font-black text-[#111111]">
+                      Household Morning Pre-Orders
+                    </h3>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Customers who booked advance stock for morning delivery in your mohalla.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {preOrders.map((po) => (
+                      <div
+                        key={po.id}
+                        className="p-5 rounded-2xl bg-gray-50/70 border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-extrabold text-sm text-gray-900">{po.customer}</h4>
+                            <span className="text-[10px] font-black bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                              {po.status}
+                            </span>
+                          </div>
+                          <p className="text-xs text-emerald-700 font-bold mb-1">🕒 {po.timeSlot}</p>
+                          <p className="text-xs text-gray-700 font-medium">📦 {po.items}</p>
+                          <p className="text-[11px] text-gray-500 font-mono mt-1">📍 {po.address}</p>
+                        </div>
+
+                        <div className="text-right">
+                          <span className="text-base font-black text-gray-900">{po.amount}</span>
+                          <p className="text-[10px] text-gray-500 font-bold">UPI / Cash on Delivery</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 5: CUSTOMER REVIEWS */}
+            {activeTab === "reviews" && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="pb-4 border-b border-gray-100 mb-6 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-black text-[#111111]">
+                        Ramesh Bhaiya &apos; s Trust & Reviews
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Verified ratings from local mohalla residents.
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-black text-[#16A34A]">4.8 ★</div>
+                      <p className="text-[10px] text-gray-400 font-bold">52 Total Reviews</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      {
+                        name: "Mansi Chaubey",
+                        area: "Dwarka Pocket B",
+                        comment: "Bilkul fresh sabzi deliver ki! Ekdum farm fresh tamatar aur palak.",
+                        rating: 5,
+                      },
+                      {
+                        name: "Vikram Malhotra",
+                        area: "Sector 14",
+                        comment: "Bulao Thela ping karne par 5 minute me aa gaye. Bahut badhiya service!",
+                        rating: 5,
+                      },
+                      {
+                        name: "Kavita Sharma",
+                        area: "Pocket 1",
+                        comment: "Pyaaz aur aaloo ekdum badhiya size ke the. Zero complaints.",
+                        rating: 4,
+                      },
+                    ].map((rev, i) => (
+                      <div key={i} className="p-4 rounded-2xl bg-gray-50 border border-gray-200/60">
+                        <div className="flex justify-between items-center text-xs mb-1">
+                          <span className="font-extrabold text-gray-900">{rev.name} ({rev.area})</span>
+                          <span className="text-amber-500 font-bold">{"★".repeat(rev.rating)}</span>
+                        </div>
+                        <p className="text-xs text-gray-700">{rev.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 6: MOHALLA LEADERBOARD */}
+            {activeTab === "leaderboard" && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="pb-4 border-b border-gray-100 mb-6">
+                    <h3 className="text-2xl font-black text-[#111111]">
+                      🏆 Dwarka Sector 14 Leaderboard
+                    </h3>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Top vendors in your zone based on customer reviews and on-time response.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      { rank: "🥇", name: "Ramesh Kumar (You)", area: "Dwarka Sec 14", rating: "4.8 ★", reviews: "52 reviews", isMe: true },
+                      { rank: "🥈", name: "Suresh Patel", area: "Janakpuri Pocket B", rating: "4.6 ★", reviews: "47 reviews" },
+                      { rank: "🥉", name: "Anita Devi", area: "Uttam Nagar East", rating: "4.5 ★", reviews: "39 reviews" },
+                      { rank: "#4", name: "Chhotu Chaat", area: "Subhash Nagar", rating: "4.4 ★", reviews: "31 reviews" },
+                    ].map((v, i) => (
+                      <div
+                        key={i}
+                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                          v.isMe
+                            ? "bg-emerald-50/80 border-emerald-300 shadow-xs"
+                            : "bg-gray-50 border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl w-6 text-center">{v.rank}</span>
+                          <div>
+                            <h4 className="font-extrabold text-sm text-gray-900">{v.name}</h4>
+                            <p className="text-xs text-gray-500">{v.area}</p>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <span className="text-sm font-black text-[#16A34A]">{v.rating}</span>
+                          <p className="text-[10px] text-gray-500">{v.reviews}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
