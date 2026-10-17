@@ -5,9 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, LogOut, Store, ShoppingBag } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageSelector from "./LanguageSelector";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -58,8 +61,8 @@ export default function Navbar() {
   // ==========================================
   if (isVendorLoggedIn) {
     const vendorLinks = [
-      { href: "/vendor", label: "Smart Routing & Map" },
-      { href: "/rewards", label: "Mohalla Leaderboard" },
+      { href: "/vendor", label: t("navSmartRouting") },
+      { href: "/rewards", label: t("navMohallaLeaderboard") },
     ];
 
     return (
@@ -80,7 +83,7 @@ export default function Navbar() {
               </Link>
               <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-emerald-100 text-[#16A34A] border border-emerald-300">
                 <Store className="w-3 h-3" />
-                Vendor Workspace
+                {t("navVendorPortal")}
               </span>
             </div>
 
@@ -104,8 +107,13 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Vendor Profile & Logout */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* Vendor Profile & Controls */}
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              {/* Language Switcher */}
+              <div className="hidden sm:block">
+                <LanguageSelector />
+              </div>
+
               <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 py-1 px-2.5 sm:px-3 rounded-full">
                 <span className="text-base">👨‍🌾</span>
                 <div className="hidden sm:flex flex-col text-left leading-none">
@@ -114,7 +122,7 @@ export default function Navbar() {
                   </span>
                   <span className="text-[10px] font-extrabold text-[#16A34A] flex items-center gap-1 mt-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span>
-                    Thela Online
+                    {t("thelaOnline")}
                   </span>
                 </div>
               </div>
@@ -125,7 +133,7 @@ export default function Navbar() {
                 title="Vendor Logout"
               >
                 <LogOut className="w-4 h-4 text-gray-500 hover:text-red-600" />
-                <span className="hidden sm:inline font-bold">Logout</span>
+                <span className="hidden sm:inline font-bold">{t("navLogout")}</span>
               </button>
 
               <button
@@ -153,7 +161,7 @@ export default function Navbar() {
         >
           <div className="p-5 flex justify-between items-center border-b border-gray-100">
             <span className="text-xs font-black uppercase text-[#16A34A] tracking-wider flex items-center gap-1">
-              <Store className="w-3.5 h-3.5" /> Vendor Portal
+              <Store className="w-3.5 h-3.5" /> {t("navVendorPortal")}
             </span>
             <button onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-full hover:bg-gray-100 text-gray-500">
               <X className="w-5 h-5" />
@@ -165,10 +173,16 @@ export default function Navbar() {
               <p className="text-sm font-black text-gray-900">{user?.name || "Ramesh Bhaiya"}</p>
               <p className="text-xs text-gray-600 font-medium">Sabzi Thela • Dwarka Sec 14</p>
               <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-[#16A34A] mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span> Thela Online
+                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse"></span> {t("thelaOnline")}
               </span>
             </div>
           </div>
+
+          {/* Language Selector for Mobile */}
+          <div className="p-3 border-b border-gray-100">
+            <LanguageSelector variant="mobile" />
+          </div>
+
           <div className="flex-1 py-4 px-4 flex flex-col gap-2">
             {vendorLinks.map((link) => (
               <Link
@@ -185,10 +199,10 @@ export default function Navbar() {
             <div className="mt-auto pt-4 border-t border-gray-100">
               <button
                 onClick={handleLogout}
-                className="w-full text-center py-3 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-2xl border border-red-200 transition-all flex items-center justify-center gap-2"
+                className="w-full text-center py-3 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-2xl border border-red-200 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
-                <span>Vendor Logout</span>
+                <span>{t("navLogout")}</span>
               </button>
             </div>
           </div>
@@ -202,8 +216,8 @@ export default function Navbar() {
   // ==========================================
   if (isCustomerLoggedIn) {
     const customerLinks = [
-      { href: "/customer", label: "Live Thela Map", badge: "GPS" },
-      { href: "/rewards", label: "Mohalla Rewards", badge: "🪙 125 Coins" },
+      { href: "/customer", label: t("navLiveThelaMap"), badge: "GPS" },
+      { href: "/rewards", label: t("navRewards"), badge: `🪙 125 ${t("coins")}` },
     ];
 
     return (
@@ -224,7 +238,7 @@ export default function Navbar() {
               </Link>
               <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-emerald-100 text-[#16A34A] border border-emerald-300">
                 <ShoppingBag className="w-3 h-3" />
-                Grahak Portal
+                {t("navCustomerPortal")}
               </span>
             </div>
 
@@ -253,8 +267,13 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Customer Profile & Logout */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* Customer Profile & Controls */}
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              {/* Language Switcher */}
+              <div className="hidden sm:block">
+                <LanguageSelector />
+              </div>
+
               <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 py-1 px-2.5 sm:px-3 rounded-full">
                 <div className="w-6 h-6 rounded-full bg-[#16A34A] text-white flex items-center justify-center text-xs font-black shadow-xs">
                   MO
@@ -264,7 +283,7 @@ export default function Navbar() {
                     {user?.name || "Mr. Oberoi"}
                   </span>
                   <span className="text-[10px] font-extrabold text-amber-600 mt-0.5">
-                    🪙 125 Coins
+                    🪙 125 {t("coins")}
                   </span>
                 </div>
               </div>
@@ -275,7 +294,7 @@ export default function Navbar() {
                 title="Customer Logout"
               >
                 <LogOut className="w-4 h-4 text-gray-500 hover:text-red-600" />
-                <span className="hidden sm:inline font-bold">Logout</span>
+                <span className="hidden sm:inline font-bold">{t("navLogout")}</span>
               </button>
 
               <button
@@ -303,7 +322,7 @@ export default function Navbar() {
         >
           <div className="p-5 flex justify-between items-center border-b border-gray-100">
             <span className="text-xs font-black uppercase text-[#16A34A] tracking-wider flex items-center gap-1">
-              <ShoppingBag className="w-3.5 h-3.5" /> Grahak Portal
+              <ShoppingBag className="w-3.5 h-3.5" /> {t("navCustomerPortal")}
             </span>
             <button onClick={() => setMobileMenuOpen(false)} className="p-2 rounded-full hover:bg-gray-100 text-gray-500">
               <X className="w-5 h-5" />
@@ -315,12 +334,18 @@ export default function Navbar() {
             </div>
             <div>
               <p className="text-sm font-black text-gray-900">{user?.name || "Mr. Oberoi"}</p>
-              <p className="text-xs text-amber-600 font-extrabold">Prime Member • 🪙 125 Coins</p>
+              <p className="text-xs text-amber-600 font-extrabold">Prime Member • 🪙 125 {t("coins")}</p>
               <span className="inline-flex items-center gap-1 text-[10px] font-bold text-gray-600 mt-0.5">
                 Pincode: 110080
               </span>
             </div>
           </div>
+
+          {/* Language Selector for Mobile */}
+          <div className="p-3 border-b border-gray-100">
+            <LanguageSelector variant="mobile" />
+          </div>
+
           <div className="flex-1 py-4 px-4 flex flex-col gap-2">
             {customerLinks.map((link) => (
               <Link
@@ -342,10 +367,10 @@ export default function Navbar() {
             <div className="mt-auto pt-4 border-t border-gray-100">
               <button
                 onClick={handleLogout}
-                className="w-full text-center py-3 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-2xl border border-red-200 transition-all flex items-center justify-center gap-2"
+                className="w-full text-center py-3 bg-red-50 hover:bg-red-100 text-red-600 font-extrabold rounded-2xl border border-red-200 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
-                <span>Customer Logout</span>
+                <span>{t("navLogout")}</span>
               </button>
             </div>
           </div>
@@ -358,10 +383,10 @@ export default function Navbar() {
   // 3. PUBLIC WEBSITE NAVBAR (Home, About, Pricing, Login Pages)
   // ==========================================
   const publicLinks = [
-    { href: "/", label: "Home" },
-    { href: "/aboutus", label: "About Us" },
-    { href: "/pricing", label: "Pricing" },
-    { href: "/rewards", label: "Rewards" },
+    { href: "/", label: t("navHome") },
+    { href: "/aboutus", label: t("navAbout") },
+    { href: "/pricing", label: t("navPricing") },
+    { href: "/rewards", label: t("navRewards") },
   ];
 
   return (
@@ -400,13 +425,18 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Right Action: Separate Customer & Vendor Login Buttons */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Right Action: Language Selector & Login Buttons */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Desktop Language Switcher */}
+            <div className="hidden sm:block">
+              <LanguageSelector />
+            </div>
+
             <Link
               href="/Customerlogin"
               className="hidden sm:inline-flex px-3.5 py-1.5 rounded-full text-xs font-bold text-gray-700 hover:text-gray-900 hover:bg-gray-100 border border-gray-300/80 transition-colors"
             >
-              Customer Login
+              {t("navCustomerLogin")}
             </Link>
 
             <Link
@@ -414,7 +444,7 @@ export default function Navbar() {
               className="px-4 py-2 rounded-full text-xs font-black bg-[#16A34A] hover:bg-[#15803D] text-white shadow-md shadow-green-900/10 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5"
             >
               <Store className="w-3.5 h-3.5" />
-              <span>Vendor Login</span>
+              <span>{t("navVendorLogin")}</span>
             </Link>
 
             <button
@@ -455,7 +485,12 @@ export default function Navbar() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2">
+        {/* Mobile Language Switcher */}
+        <div className="p-3 border-b border-gray-100">
+          <LanguageSelector variant="mobile" />
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-4 px-4 flex flex-col gap-2">
           {publicLinks.map((link) => (
             <Link
               key={link.href}
@@ -475,7 +510,7 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-extrabold rounded-2xl transition-all"
             >
-              Customer Login
+              {t("navCustomerLogin")}
             </Link>
             <Link
               href="/Vendorlogin"
@@ -483,7 +518,7 @@ export default function Navbar() {
               className="w-full text-center py-3.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5"
             >
               <Store className="w-4 h-4" />
-              <span>Vendor Login</span>
+              <span>{t("navVendorLogin")}</span>
             </Link>
           </div>
         </div>

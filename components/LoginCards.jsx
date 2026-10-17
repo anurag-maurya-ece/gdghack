@@ -3,8 +3,10 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function LoginCard({ imgName, name, text }) {
+  const { t } = useLanguage();
   const isVendor = name.toLowerCase().includes("vendor");
   const targetHref = isVendor ? "/Vendorlogin" : "/Customerlogin";
 
@@ -26,7 +28,7 @@ export default function LoginCard({ imgName, name, text }) {
       </div>
 
       <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#111111]">
-        Are you a <span className="text-[#16A34A]">{name}</span>?
+        {t("areYouA")} <span className="text-[#16A34A]">{name}</span>?
       </h2>
 
       <h5 className="text-xs sm:text-sm md:text-base text-[#4B5563] font-medium leading-relaxed min-h-[44px]">
@@ -37,7 +39,7 @@ export default function LoginCard({ imgName, name, text }) {
         href={targetHref}
         className="w-full mt-2 sm:mt-4 inline-block text-center text-sm sm:text-base md:text-lg bg-[#16A34A] hover:bg-[#15803d] text-white font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-md shadow-[#16A34A]/20 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
       >
-        Join now
+        {t("joinNow")}
       </Link>
     </div>
   );

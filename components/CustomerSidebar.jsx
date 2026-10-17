@@ -7,35 +7,37 @@ import {
   Star,
   Trophy,
   Crown,
-  LogOut,
   ShoppingBag,
   Sparkles,
 } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = () => {} }) {
+  const { t } = useLanguage();
+
   const navItems = [
     {
       id: "vendors",
-      label: "Vendors Near Me",
+      label: t("findNearbyThela"),
       icon: MapPin,
       badge: "Live GPS",
     },
     {
       id: "demand_ping",
-      label: "Demand Ping (Beta)",
+      label: t("bulaoThelaTitle"),
       icon: Radar,
       badge: "Bulao Thela",
       isPulse: true,
     },
     {
       id: "review",
-      label: "Review Vendors",
+      label: t("writeReviewTitle"),
       icon: Star,
-      badge: "+25 Coins",
+      badge: `+25 ${t("coins")}`,
     },
     {
       id: "leaderboard",
-      label: "Mohalla Leaderboard",
+      label: t("mohallaLeaderboard"),
       icon: Trophy,
     },
   ];
@@ -59,14 +61,15 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
           <h2 className="text-xl font-extrabold text-gray-900">Mr. Oberoi</h2>
           <p className="text-xs text-gray-500 font-mono mt-0.5">ID: TH-CUST-007</p>
 
-          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Prime Member • 125 Coins</span>
+          <div className="mt-4 flex items-center gap-2 bg-amber-50 border border-amber-200/80 px-3.5 py-1.5 rounded-full text-xs font-black text-amber-900 shadow-2xs">
+            <span>🪙 125 {t("coins")}</span>
+            <span className="text-amber-500">•</span>
+            <span className="text-emerald-800">Prime Grahak</span>
           </div>
         </div>
 
         {/* Navigation Items */}
-        <nav className="mt-6 space-y-2">
+        <nav className="mt-6 flex flex-col gap-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -75,7 +78,7 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
               <button
                 key={item.id}
                 onClick={() => onChangeTab(item.id)}
-                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 text-left ${
+                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl font-extrabold text-sm transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "bg-[#16A34A] text-white shadow-lg shadow-green-900/20 font-black scale-[1.02]"
                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -110,7 +113,7 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
       <div className="pt-6 border-t border-gray-200 mt-6">
         <div className="flex items-center gap-2.5 w-full py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-bold">
           <Sparkles className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
-          <span className="text-[11px] leading-tight">🪙 125 Coins Ready to Redeem on your next Sabzi order!</span>
+          <span className="text-[11px] leading-tight">🪙 125 {t("coins")} Ready to Redeem on your next Sabzi order!</span>
         </div>
       </div>
     </aside>

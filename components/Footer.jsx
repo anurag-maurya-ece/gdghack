@@ -3,8 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="relative bg-gray-50 text-gray-700 pt-16 pb-8 overflow-hidden border-t border-gray-200">
       {/* Decorative gradient line */}
@@ -24,7 +27,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-sm leading-relaxed text-gray-600 max-w-xs">
-              Revolutionizing the street vendor ecosystem with real-time tracking, AI inventory, and seamless digital connectivity. Empowering micro-entrepreneurs across India.
+              {t("footerTagline")}
             </p>
           </div>
 
@@ -33,10 +36,10 @@ export default function Footer() {
             <h3 className="text-gray-900 font-bold mb-6 text-lg">Solution</h3>
             <ul className="space-y-4">
               {[
-                { name: "Live Thela Map", href: "/customer" },
-                { name: "Vendor Portal", href: "/vendor" },
-                { name: "Rewards & Reviews", href: "/rewards" },
-                { name: "Bulao Thela Radar", href: "/customer" },
+                { name: t("navLiveThelaMap"), href: "/customer" },
+                { name: t("navVendorPortal"), href: "/vendor" },
+                { name: t("navRewards"), href: "/rewards" },
+                { name: t("bulaoThelaTitle"), href: "/customer" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -56,10 +59,10 @@ export default function Footer() {
             <h3 className="text-gray-900 font-bold mb-6 text-lg">Company</h3>
             <ul className="space-y-4">
               {[
-                { name: "About Us", href: "/aboutus" },
-                { name: "Pricing Plans", href: "/pricing" },
-                { name: "Vendor Join", href: "/Vendorlogin" },
-                { name: "Customer Join", href: "/Customerlogin" },
+                { name: t("navAbout"), href: "/aboutus" },
+                { name: t("navPricing"), href: "/pricing" },
+                { name: t("navVendorLogin"), href: "/Vendorlogin" },
+                { name: t("navCustomerLogin"), href: "/Customerlogin" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -86,12 +89,12 @@ export default function Footer() {
                 placeholder="Enter email"
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] transition-all text-gray-900 placeholder-gray-400"
               />
-              <button className="absolute right-2 top-2 bg-[#16A34A] text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#15803d] transition-colors">
+              <button className="absolute right-2 top-2 bg-[#16A34A] text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#15803d] transition-colors cursor-pointer">
                 Send
               </button>
             </div>
             <div className="flex space-x-4 pt-2">
-              <span className="text-xs text-gray-500">© 2026 Tech Thela™. All Rights Reserved.</span>
+              <span className="text-xs text-gray-500">© 2026 Tech Thela™. {t("allRightsReserved")}</span>
             </div>
           </div>
         </div>

@@ -8,15 +8,18 @@ import Footer from "../components/Footer";
 import AboutDataCard from "../components/AboutDataCard";
 import LoginCard from "../components/LoginCards";
 import ReviewCarousel from "../components/ReviewCarousel";
-
-const statsData = [
-  { picImg: "scholarship", number: 100, title: "Vendors" },
-  { picImg: "people", number: 2000, title: "Consumers" },
-  { picImg: "vidcam", number: 5000, title: "Transactions" },
-  { picImg: "audience", number: 3000, title: "Reviews" },
-];
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Home() {
+  const { t } = useLanguage();
+
+  const statsData = [
+    { picImg: "scholarship", number: 100, title: t("statVendors") },
+    { picImg: "people", number: 2000, title: t("statConsumers") },
+    { picImg: "vidcam", number: 5000, title: t("statTransactions") },
+    { picImg: "audience", number: 3000, title: t("statReviews") },
+  ];
+
   return (
     <div className="bg-white text-[#4B5563] min-h-screen overflow-x-hidden">
       <Navbar />
@@ -39,13 +42,13 @@ export default function Home() {
 
         <div className="flex flex-col justify-center gap-6 sm:gap-8 w-full md:max-w-[48vw] z-10 text-center md:text-left">
           <h5 className="text-xs sm:text-sm text-[#16A34A] font-bold tracking-widest uppercase">
-            START TO SUCCESS
+            {t("heroBadge")}
           </h5>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#111111] leading-tight">
-            Empowering your long-lived{" "}
+            {t("heroTitlePrefix")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#15803d]">
-              trust{" "}
+              {t("trust")}{" "}
               <svg
                 className="inline w-6 h-6 sm:w-8 sm:h-8 -mt-1 text-[#16A34A]"
                 fill="currentColor"
@@ -59,9 +62,9 @@ export default function Home() {
                 />
               </svg>
             </span>{" "}
-            with{" "}
+            {t("with")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#15803d]">
-              technology{" "}
+              {t("technology")}{" "}
               <svg
                 className="inline w-6 h-6 sm:w-8 sm:h-8 -mt-1 text-[#16A34A]"
                 fill="none"
@@ -77,14 +80,14 @@ export default function Home() {
                 />
               </svg>
             </span>{" "}
-            and{" "}
+            {t("and")}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#15803d]">
-              love
+              {t("love")}
             </span>
           </h1>
 
           <p className="text-lg sm:text-xl text-[#4B5563] leading-relaxed">
-            Restoring the connection between vendors and consumers in a split second. Experience seamless, reliable, and real-time community commerce.
+            {t("heroSubtitle")}
           </p>
 
           <div className="pt-2 sm:pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
@@ -92,13 +95,13 @@ export default function Home() {
               href="#cardssection"
               className="w-full sm:w-auto inline-flex items-center justify-center bg-[#16A34A] hover:bg-[#15803d] text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
             >
-              Get Started
+              {t("getStarted")}
             </Link>
             <Link
               href="/customer"
               className="w-full sm:w-auto inline-flex items-center justify-center bg-white border-2 border-[#16A34A] text-[#16A34A] hover:bg-emerald-50 font-bold text-lg px-8 py-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
             >
-              Live Thela Map
+              {t("exploreMap")}
             </Link>
           </div>
         </div>
@@ -150,13 +153,13 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-8 lg:gap-14 justify-center w-full items-stretch">
             <LoginCard
               imgName="consumer"
-              name="Customer"
-              text="Get the best deals available in your local market. Track nearby thelas live and order fresh produce."
+              name={t("consumerRoleTitle")}
+              text={t("consumerRoleDesc")}
             />
             <LoginCard
               imgName="vendor"
-              name="Vendor"
-              text="Boost sales by reaching thousands of local customers digitally with voice-assisted listings."
+              name={t("vendorRoleTitle")}
+              text={t("vendorRoleDesc")}
             />
           </div>
         </div>
@@ -166,10 +169,10 @@ export default function Home() {
       <div className="bg-white flex flex-col gap-10 w-full md:w-4/5 py-16 mx-auto relative">
         <div className="flex flex-col gap-2">
           <h2 className="xl:text-5xl text-4xl font-extrabold text-[#111111] text-center">
-            Hear it from our customers!
+            {t("hearFromCustomers")}
           </h2>
           <p className="text-[#4B5563] text-lg text-center font-medium">
-            Thousands trust Tech Thela every day.
+            {t("thousandsTrust")}
           </p>
         </div>
         <ReviewCarousel />

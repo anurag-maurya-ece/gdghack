@@ -12,28 +12,30 @@ import {
   Award,
   QrCode,
   Sparkles,
-  LogOut,
   UserCheck,
   MessageSquare,
 } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function VendorSidebar({ activeTab = "locate_customer", onChangeTab = () => {} }) {
+  const { t } = useLanguage();
+
   const menuItems = [
     {
       id: "locate_customer",
-      label: "Smart Routing & Map",
+      label: t("navSmartRouting"),
       icon: Navigation,
       badge: "Live GPS",
     },
     {
       id: "update",
-      label: "Update Inventory",
+      label: t("voiceListingTitle"),
       icon: ShoppingCart,
       badge: "Voice/Text",
     },
     {
       id: "demand_alerts",
-      label: "Demand Alerts (Pings)",
+      label: t("predictiveDemandTitle"),
       icon: Bell,
       badge: "2 New",
       isPulse: true,
@@ -45,13 +47,13 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
     },
     {
       id: "reviews",
-      label: "Customer Reviews",
+      label: t("statReviews"),
       icon: Star,
       badge: "4.8 ★",
     },
     {
       id: "leaderboard",
-      label: "Mohalla Leaderboard",
+      label: t("mohallaLeaderboard"),
       icon: Trophy,
       badge: "Rank #1",
     },
@@ -108,7 +110,7 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
               <button
                 key={item.id}
                 onClick={() => onChangeTab(item.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200 text-left ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200 text-left cursor-pointer ${
                   isActive
                     ? "bg-[#16A34A] text-white shadow-lg shadow-green-900/20 font-black scale-[1.02]"
                     : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"

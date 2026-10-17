@@ -16,8 +16,10 @@ import {
   ShieldCheck,
   ChevronRight,
 } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function RewardsPage() {
+  const { t } = useLanguage();
   const [userCoins, setUserCoins] = useState(125);
   const [selectedVendorId, setSelectedVendorId] = useState(INITIAL_VENDORS[0].id);
   const [rating, setRating] = useState(5);
@@ -58,10 +60,10 @@ export default function RewardsPage() {
                 Community Trust & Rewards
               </span>
               <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight mt-3 text-gray-900">
-                Review Thelas, <mark className="bg-[#22C55E] text-[#111111] px-1.5 py-0.5 rounded-md">Earn Daily Savings</mark>
+                {t("rewardsTitle")}
               </h1>
               <p className="text-sm text-gray-700 mt-1 max-w-lg">
-                Every genuine review empowers your local street vendors with better platform visibility and rewards you with instant discount coupons!
+                {t("rewardsSubtitle")}
               </p>
             </div>
 
@@ -71,7 +73,7 @@ export default function RewardsPage() {
                 🪙
               </div>
               <div>
-                <span className="text-xs font-bold text-gray-500 uppercase">Aapke Coins</span>
+                <span className="text-xs font-bold text-gray-500 uppercase">{t("coins")}</span>
                 <p className="text-3xl font-black text-gray-900">{userCoins}</p>
                 <span className="text-[11px] font-bold text-[#15803d]">+25 per review</span>
               </div>
@@ -86,7 +88,7 @@ export default function RewardsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-extrabold text-[#111111]">
-                  Mohalla Leaderboard 🏆
+                  {t("mohallaLeaderboard")} 🏆
                 </h2>
                 <p className="text-xs text-gray-600">Top rated street vendors based on customer reviews</p>
               </div>
@@ -220,9 +222,9 @@ export default function RewardsPage() {
                   <button
                     type="submit"
                     disabled={!reviewComment.trim()}
-                    className="button w-full bg-[#22C55E] text-[#111111] py-3 text-sm font-extrabold disabled:opacity-50"
+                    className="button w-full bg-[#22C55E] text-[#111111] py-3 text-sm font-extrabold disabled:opacity-50 cursor-pointer"
                   >
-                    Submit Review (+25 Coins)
+                    {t("submitReview")}
                   </button>
                 </form>
               )}
@@ -235,7 +237,7 @@ export default function RewardsPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-extrabold text-[#111111]">
-                Redeem Discount Coupons 🏷️
+                {t("couponsStore")} 🏷️
               </h2>
               <p className="text-xs text-gray-600">
                 Use your coins to get instant money off on your next doorstep order

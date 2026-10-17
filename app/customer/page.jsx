@@ -30,6 +30,7 @@ import {
   Check,
   MessageCircle,
 } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
 const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
@@ -44,6 +45,7 @@ const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
 
 export default function CustomerPage() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     try {
@@ -216,11 +218,11 @@ export default function CustomerPage() {
   };
 
   const categories = [
-    { id: "All", label: "Sabhi (All)", icon: "🛒" },
-    { id: "Sabzi", label: "Sabzi (Vegetables)", icon: "🥦" },
-    { id: "Phal", label: "Phal (Fruits)", icon: "🍎" },
-    { id: "Chaat", label: "Chaat & Snacks", icon: "🥙" },
-    { id: "Chai", label: "Chai & Bites", icon: "☕" },
+    { id: "All", label: t("allCategory"), icon: "🛒" },
+    { id: "Sabzi", label: t("sabziCategory"), icon: "🥦" },
+    { id: "Phal", label: t("fruitsCategory"), icon: "🍎" },
+    { id: "Chaat", label: t("chaatCategory"), icon: "🥙" },
+    { id: "Chai", label: t("chaiCategory"), icon: "☕" },
   ];
 
   return (
@@ -246,16 +248,16 @@ export default function CustomerPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTab("demand_ping")}
-              className="inline-flex items-center gap-2 bg-[#16A34A] hover:bg-[#15803D] text-white px-5 py-3 rounded-2xl font-black text-sm shadow-md transition-all active:scale-95"
+              className="inline-flex items-center gap-2 bg-[#16A34A] hover:bg-[#15803D] text-white px-5 py-3 rounded-2xl font-black text-sm shadow-md transition-all active:scale-95 cursor-pointer"
             >
               <Radio className="w-4 h-4 animate-pulse" />
-              <span>Bulao Thela (Ping Demand)</span>
+              <span>{t("bulaoThelaTitle")}</span>
             </button>
             
             {cartItemsList.length > 0 && (
               <button
                 onClick={() => setOrderModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-[#111111] text-white px-4 py-3 rounded-2xl font-bold text-sm shadow-md hover:bg-gray-800 transition-all"
+                className="inline-flex items-center gap-2 bg-[#111111] text-white px-4 py-3 rounded-2xl font-bold text-sm shadow-md hover:bg-gray-800 transition-all cursor-pointer"
               >
                 <ShoppingCart className="w-4 h-4 text-emerald-400" />
                 <span>Basket ({cartItemsList.length})</span>
@@ -305,13 +307,13 @@ export default function CustomerPage() {
                         <button
                           key={c.id}
                           onClick={() => setSelectedCategory(c.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             selectedCategory === c.id
                               ? "bg-[#16A34A] text-white shadow-sm font-black"
                               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                           }`}
                         >
-                          {c.icon} {c.label.split(" ")[0]}
+                          {c.icon} {c.label}
                         </button>
                       ))}
                     </div>
@@ -322,12 +324,13 @@ export default function CustomerPage() {
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Search aloo, tamatar, chai..."
+                      placeholder={t("searchProducePlaceholder")}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
                     />
                   </div>
+
                 </div>
 
                 {/* Nearby Matching Vendor Chips */}

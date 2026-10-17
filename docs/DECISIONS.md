@@ -157,3 +157,12 @@ Chosen: 2. Completely uninstalled 656 Firebase packages, removed emulator/rule f
 Why: Meets non-negotiable requirement of 100% self-owned stack with zero reliance on proprietary vendor lock-in or Google Firebase infrastructure.
 Trade-off: Realtime updates now rely on polling / SSE architecture instead of Firebase `onSnapshot`.
 Revisit if: WebSockets are needed for ultra-low latency real-time telemetry.
+
+## D-020: Trilingual Language Engine (English, Hindi, Hinglish)
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested making the website bilingual/trilingual: English ("en"), Hindi ("hi" - Devanagari script), and Hinglish ("hinglish" - conversational transliterated Indian English/Hindi).
+Options: 1) Next.js subpath routing (`/en/...`, `/hi/...`, `/hinglish/...`) 2) Client-side React `LanguageContext` + persistent `localStorage` synchronization (`tech_thela_lang`) with modular dictionary (`lib/i18n.js`).
+Chosen: 2. Built `lib/i18n.js`, `context/LanguageContext.jsx`, `components/LanguageSelector.jsx`, and integrated across Navbar, Landing Hero/Stats/Cards, Customer discovery & map, Vendor dashboard, Rewards, and Footer.
+Why: Preserves existing URL routing and bookmarks, zero page reloads on language switch, ultra-low memory overhead, works seamlessly across both desktop and mobile viewports, and satisfies street vendor accessibility requirements (Devanagari Hindi + colloquial Hinglish).
+Trade-off: Text length differences between languages required auto-wrapping button and card adjustments.
+Revisit if: Regional Dravidian/Eastern languages (Tamil, Telugu, Bengali) are requested by judges.

@@ -1,5 +1,6 @@
 import { Outfit, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "../context/LanguageContext";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -26,8 +27,11 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${outfit.variable} ${devanagari.variable}`}>
       <body>
         <a className="skip-link button" href="#main">Skip to content</a>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );
 }
+

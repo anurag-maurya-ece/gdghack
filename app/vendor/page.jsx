@@ -33,6 +33,7 @@ import {
   Check,
   X,
 } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
 const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
@@ -47,6 +48,7 @@ const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
 
 export default function VendorDashboard() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     try {
@@ -348,7 +350,7 @@ export default function VendorDashboard() {
                     }`}
                   >
                     <Power className="w-5 h-5" />
-                    <span>{isThelaOnline ? "THELA ONLINE (Live)" : "THELA OFF (Chalu Karein)"}</span>
+                    <span>{isThelaOnline ? t("turnThelaOn") : t("turnThelaOff")}</span>
                   </button>
                 </div>
 
@@ -413,10 +415,10 @@ export default function VendorDashboard() {
                     Zero Typing • Voice Listing Assistant
                   </span>
                   <h3 className="text-2xl font-black text-[#111111] mt-1 mb-2">
-                    Voice Listing: Aawaz Se Bhav Update Karein 🎙️
+                    {t("voiceListingTitle")} 🎙️
                   </h3>
                   <p className="text-xs text-gray-600 max-w-md mx-auto mb-6">
-                    Bolo: &quot;aaj aaloo 25 rupaye kilo, pyaaz 35, tamatar 30&quot; — AI bina typing ke stock add kar dega.
+                    {t("voiceListingSubtitle")}
                   </p>
 
                   <div className="flex flex-col items-center justify-center gap-4">
@@ -432,7 +434,7 @@ export default function VendorDashboard() {
                       {isListening ? <MicOff className="w-10 h-10" /> : <Mic className="w-10 h-10" />}
                     </button>
                     <span className="text-xs font-bold text-gray-700">
-                      {isListening ? "Sun rahe hain... Bolte rahiye" : "Mic dabayein aur bolen"}
+                      {isListening ? t("voiceListening") : t("startVoiceBtn")}
                     </span>
                   </div>
 
@@ -481,15 +483,15 @@ export default function VendorDashboard() {
                       <div className="flex gap-3">
                         <button
                           onClick={handleConfirmVoice}
-                          className="flex-1 bg-[#16A34A] hover:bg-[#15803D] text-white py-2.5 rounded-xl font-black text-xs shadow-xs"
+                          className="flex-1 bg-[#16A34A] hover:bg-[#15803D] text-white py-2.5 rounded-xl font-black text-xs shadow-xs cursor-pointer"
                         >
-                          ✓ Sahi Hai (Add Karein)
+                          ✓ {t("confirmSaveBtn")}
                         </button>
                         <button
                           onClick={() => setParsedItems(null)}
-                          className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-bold text-xs"
+                          className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2.5 rounded-xl font-bold text-xs cursor-pointer"
                         >
-                          Cancel
+                          ✕ {t("retryVoiceBtn")}
                         </button>
                       </div>
                     </div>
@@ -618,13 +620,13 @@ export default function VendorDashboard() {
                               onClick={() => handleOrderAction(ord.id, "accepted")}
                               className="bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-black px-4 py-2 rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
                             >
-                              ✓ Sweekar (Accept & Navigate)
+                              ✓ {t("acceptBtn")}
                             </button>
                             <button
                               onClick={() => handleOrderAction(ord.id, "rejected")}
-                              className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl"
+                              className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl cursor-pointer"
                             >
-                              ✕ Chhod Do
+                              ✕ {t("rejectBtn")}
                             </button>
                           </div>
                         )}
