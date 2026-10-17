@@ -42,7 +42,7 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
     },
     {
       id: "preorder",
-      label: "Pre-Order Stock",
+      label: t("preOrderStock"),
       icon: Package,
     },
     {
@@ -78,13 +78,13 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
           <h2 className="text-xl font-extrabold text-gray-900">Ramesh Bhaiya</h2>
           <p className="text-xs text-gray-500 font-mono mt-0.5">+91 98765 43210</p>
           <p className="text-[11px] text-[#16A34A] font-bold mt-1">
-            Sabzi Thela • Dwarka Sec 14
+            Dwarka Sec 14 • Delhi
           </p>
 
           <div className="mt-4 flex items-center justify-between w-full bg-amber-50/60 border border-amber-200 rounded-2xl px-4 py-2.5">
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-amber-500" />
-              <span className="text-xs text-gray-700 font-semibold uppercase">Vendor Credits</span>
+              <span className="text-xs text-gray-700 font-semibold uppercase">{t("vendorCredits")}</span>
             </div>
             <span className="text-base font-black text-amber-600">689</span>
           </div>
@@ -95,7 +95,7 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
               <QrCode className="w-16 h-16 text-gray-900" />
             </div>
             <p className="text-[10px] text-gray-700 font-bold mt-1.5 uppercase tracking-wider">
-              UPI Grahak Scan QR
+              {t("upiQrCodeTitle")}
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5">
           <div className="flex items-center gap-1.5 text-[#16A34A] text-xs font-black uppercase mb-1">
             <Sparkles className="w-3.5 h-3.5 text-[#16A34A]" />
-            <span>Pro Vendor Tip</span>
+            <span>{t("proVendorTip")}</span>
           </div>
           <p className="text-[11px] text-gray-700 leading-relaxed">
             Keep inventory updated to get <strong className="text-emerald-800 font-bold">2x more demand alerts</strong> on your route.

@@ -432,13 +432,11 @@ export default function VendorDashboard() {
               </div>
               <h4 className="text-base font-black text-gray-900 mt-0.5">
                 {batchingRoom
-                  ? `Mohalla Batching Room: ${batchingRoom.timeLeftMinutes || 28} mins remaining`
-                  : "Mohalla 30-Minute Dynamic Batching Window"}
+                  ? `${t("batchingRoomTitle")}: ${batchingRoom.timeLeftMinutes || 28} mins`
+                  : t("batchingRoomTitle")}
               </h4>
               <p className="text-xs text-gray-600">
-                {batchingRoom
-                  ? `Orders within 2.0 km geofence are batched to your active run. Next sector (>2 km) unlocks after window ends.`
-                  : "First incoming customer order starts a 30-min window, grouping all orders within 2.0 km into your active route."}
+                {t("batchingRoomSubtitle")}
               </p>
             </div>
           </div>
@@ -483,7 +481,7 @@ export default function VendorDashboard() {
               <Navigation className="w-5 h-5 text-blue-500" />
             </div>
             <h3 className="text-2xl font-black text-gray-900">
-              {isThelaOnline ? "Thela ON" : "Thela OFF"}
+              {isThelaOnline ? t("thelaOnline") : t("thelaOffline")}
             </h3>
             <div className="mt-2 flex items-center gap-1.5">
               <span
@@ -554,12 +552,10 @@ export default function VendorDashboard() {
                 <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div>
                     <h3 className="text-xl font-black text-[#111111]">
-                      Live Status: {isThelaOnline ? "Thela ON (Online)" : "Thela OFF (Offline)"}
+                      Live Status: {isThelaOnline ? t("thelaOnline") : t("thelaOffline")}
                     </h3>
                     <p className="text-xs text-gray-600 mt-1">
-                      {isThelaOnline
-                        ? "Aas-paas ke grahak nakshe par aapka thela dekh sakte hain aur live bula sakte hain."
-                        : "Aapka thela band hai. Online hone par grahak aapki dukaan dekh payenge."}
+                      {isThelaOnline ? t("onlineStatusDesc") : t("offlineStatusDesc")}
                     </p>
                   </div>
 
@@ -683,7 +679,7 @@ export default function VendorDashboard() {
                     <div className="mt-6 p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-left animate-fadeIn">
                       <div className="flex items-center gap-2 text-amber-900 font-extrabold text-sm mb-3">
                         <Volume2 className="w-5 h-5 text-amber-600" />
-                        <span>AI ne yeh bhav samjha (Sahi Hai?):</span>
+                        <span>{t("aiParsedTitle")}</span>
                       </div>
 
                       <div className="space-y-2 mb-4">
@@ -808,7 +804,7 @@ export default function VendorDashboard() {
                         </span>
                       </div>
                       <p className="text-xs text-gray-600 mt-1">
-                        Grahak jinhone direct doorstep delivery order kiya hai. Sweekar karein aur rasta dekhein.
+                        {t("doorstepOrdersDesc")}
                       </p>
                     </div>
                   </div>
@@ -884,14 +880,14 @@ export default function VendorDashboard() {
                       <div className="flex items-center gap-2">
                         <Radio className="w-5 h-5 text-amber-500 animate-pulse" />
                         <h3 className="text-xl sm:text-2xl font-black text-[#111111]">
-                          Live &quot;Bulao Thela&quot; Demand Pings
+                          {t("liveDemandPingsTitle")}
                         </h3>
                         <span className="text-xs font-black bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">
                           {livePings.filter((p) => p.status !== "accepted").length} Live
                         </span>
                       </div>
                       <p className="text-xs text-gray-600 mt-1">
-                        Aas-paas ke mohalla grahak jo thela apni gali me bulana chahte hain. Sweekar karein aur rasta dekhein.
+                        {t("liveDemandPingsDesc")}
                       </p>
                     </div>
                   </div>
@@ -940,12 +936,12 @@ export default function VendorDashboard() {
                               onClick={() => handleAcceptPing(ping.id)}
                               className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-black px-4 py-2 rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1.5"
                             >
-                              ✓ Sweekar Karein & Thela Le Jaayein (Accept & Go)
+                              ✓ {t("acceptBtn")}
                             </button>
                           ) : (
                             <div className="text-xs font-extrabold text-amber-800 flex items-center gap-1.5">
                               <CheckCircle className="w-4 h-4 text-emerald-600" />
-                              <span>Accepted! Grahak ko notify kar diya gaya hai. ETA ~3 mins.</span>
+                              <span>✓ Accepted! {t("pingSentSuccess")}</span>
                             </div>
                           )}
                         </div>

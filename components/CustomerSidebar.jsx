@@ -26,7 +26,7 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
       id: "demand_ping",
       label: t("bulaoThelaTitle"),
       icon: Radar,
-      badge: "Bulao Thela",
+      badge: t("callCartDemandRadar"),
       isPulse: true,
     },
     {
@@ -64,7 +64,7 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
           <div className="mt-4 flex items-center gap-2 bg-amber-50 border border-amber-200/80 px-3.5 py-1.5 rounded-full text-xs font-black text-amber-900 shadow-2xs">
             <span>🪙 125 {t("coins")}</span>
             <span className="text-amber-500">•</span>
-            <span className="text-emerald-800">Prime Grahak</span>
+            <span className="text-emerald-800">{t("primeCustomer")}</span>
           </div>
         </div>
 
@@ -113,7 +113,7 @@ export default function CustomerSidebar({ activeTab = "vendors", onChangeTab = (
       <div className="pt-6 border-t border-gray-200 mt-6">
         <div className="flex items-center gap-2.5 w-full py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-bold">
           <Sparkles className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
-          <span className="text-[11px] leading-tight">🪙 125 {t("coins")} Ready to Redeem on your next Sabzi order!</span>
+          <span className="text-[11px] leading-tight">🪙 125 {t("coins")} {t("coinsRedeemNotice")}</span>
         </div>
       </div>
     </aside>

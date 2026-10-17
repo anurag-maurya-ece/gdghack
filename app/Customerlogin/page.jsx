@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Mail, Lock, ArrowRight, CheckCircle2, Sparkles, Navigation, BellRing } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function CustomerLoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("customer@techthela.ai");
   const [password, setPassword] = useState("fresh123");
   const [loading, setLoading] = useState(false);
@@ -59,28 +61,27 @@ export default function CustomerLoginPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight leading-tight">
-              Empowering your <br />
-              <span className="text-[#16A34A]">Fresh Produce</span> Journey.
+              {t("heroProduceJourney")}
             </h1>
 
             <p className="text-base sm:text-lg text-gray-600 font-medium leading-relaxed">
-              Experience the future of farm-to-table with Tech Thela. Discover authentic fruit and vegetable carts nearby, ping them directly to your street, and pre-order fresh produce.
+              {t("heroProduceJourneyDesc")}
             </p>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="p-5 rounded-2xl bg-white border border-gray-200/80 shadow-xs">
                 <div className="flex items-center gap-2 mb-1">
                   <Navigation className="w-4 h-4 text-[#16A34A]" />
-                  <p className="text-base font-black text-gray-900">Live GPS</p>
+                  <p className="text-base font-black text-gray-900">{t("callCartLiveGps")}</p>
                 </div>
-                <p className="text-xs font-bold text-gray-500">Real-time street thela tracking on OpenStreetMap</p>
+                <p className="text-xs font-bold text-gray-500">{t("callCartLiveGpsDesc")}</p>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-gray-200/80 shadow-xs">
                 <div className="flex items-center gap-2 mb-1">
                   <BellRing className="w-4 h-4 text-[#16A34A]" />
-                  <p className="text-base font-black text-gray-900">Bulao Thela</p>
+                  <p className="text-base font-black text-gray-900">{t("callCartDemandRadar")}</p>
                 </div>
-                <p className="text-xs font-bold text-gray-500">Direct customer demand radar & ping alerts</p>
+                <p className="text-xs font-bold text-gray-500">{t("callCartDemandRadarDesc")}</p>
               </div>
             </div>
           </div>
@@ -101,10 +102,10 @@ export default function CustomerLoginPage() {
                   />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                  Customer Login
+                  {t("loginCustomerTitle")}
                 </h2>
                 <p className="text-sm text-gray-500 font-medium">
-                  Sign in to personalize your neighborhood cart recommendations.
+                  {t("loginCustomerSubtitle")}
                 </p>
               </div>
 
@@ -112,7 +113,7 @@ export default function CustomerLoginPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-extrabold uppercase tracking-wider text-gray-700">
-                    Email Address
+                    {t("emailAddress")}
                   </label>
                   <div className="relative flex items-center">
                     <Mail className="w-5 h-5 absolute left-4 text-gray-400" />
@@ -130,10 +131,10 @@ export default function CustomerLoginPage() {
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-extrabold uppercase tracking-wider text-gray-700">
-                      Password
+                      {t("password")}
                     </label>
                     <span className="text-xs text-[#16A34A] font-bold">
-                      Default: fresh123
+                      {t("defaultPassword")}
                     </span>
                   </div>
                   <div className="relative flex items-center">
@@ -159,11 +160,11 @@ export default function CustomerLoginPage() {
                   ) : success ? (
                     <>
                       <CheckCircle2 className="w-5 h-5 text-white" />
-                      <span>Welcome! Opening Survey...</span>
+                      <span>{t("signInAndContinue")}...</span>
                     </>
                   ) : (
                     <>
-                      <span>Sign In & Continue</span>
+                      <span>{t("signInAndContinue")}</span>
                       <ArrowRight className="w-5 h-5" />
                     </>
                   )}
@@ -173,8 +174,8 @@ export default function CustomerLoginPage() {
               {/* Demo Helper Banner */}
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-gray-800 flex items-center justify-between">
                 <div>
-                  <span className="font-extrabold text-[#16A34A]">Hackathon Quick Login:</span>
-                  <p className="text-gray-600 mt-0.5">Pre-filled credentials for instant demo inspection.</p>
+                  <span className="font-extrabold text-[#16A34A]">{t("quickLoginTitle")}</span>
+                  <p className="text-gray-600 mt-0.5">{t("quickLoginSubtitle")}</p>
                 </div>
                 <button
                   type="button"
@@ -184,15 +185,14 @@ export default function CustomerLoginPage() {
                   }}
                   className="px-3 py-1.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold rounded-xl transition-colors cursor-pointer"
                 >
-                  Skip to Form &rarr;
+                  {t("skipToForm")}
                 </button>
               </div>
 
               {/* Footer Switch Link */}
               <div className="text-center text-xs text-gray-500 pt-2">
-                Are you a vendor?{" "}
                 <Link href="/Vendorlogin" className="text-[#16A34A] font-extrabold hover:underline">
-                  Switch to Vendor Login
+                  {t("switchToVendor")}
                 </Link>
               </div>
             </div>

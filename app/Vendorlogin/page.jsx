@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Store, Phone, Lock, ArrowRight, CheckCircle2, Sparkles, ShieldCheck } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function VendorLoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [phone, setPhone] = useState("9876543210");
   const [password, setPassword] = useState("vendor123");
   const [loading, setLoading] = useState(false);
@@ -60,27 +62,27 @@ export default function VendorLoginPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight leading-tight">
-              Grow Your <span className="text-[#16A34A]">Thela Business</span> Faster.
+              {t("vendorGrowthHeroTitle")}
             </h1>
 
             <p className="text-base sm:text-lg text-gray-600 font-medium leading-relaxed">
-              Join the Tech Thela network. Broadcast your live cart location, list products using natural voice notes, and receive instant orders from nearby neighborhood customers.
+              {t("vendorGrowthHeroDesc")}
             </p>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="p-5 rounded-2xl bg-white border border-gray-200/80 shadow-xs">
                 <p className="text-3xl font-black text-[#16A34A]">0%</p>
-                <p className="text-xs font-bold text-gray-600 mt-1">Platform commission on street sales</p>
+                <p className="text-xs font-bold text-gray-600 mt-1">{t("commissionFree")}</p>
               </div>
               <div className="p-5 rounded-2xl bg-white border border-gray-200/80 shadow-xs">
                 <p className="text-3xl font-black text-[#16A34A]">2-Tap</p>
-                <p className="text-xs font-bold text-gray-600 mt-1">Voice-to-inventory & order acceptance</p>
+                <p className="text-xs font-bold text-gray-600 mt-1">{t("twoTapVoice")}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-bold text-gray-500 pt-2">
               <ShieldCheck className="w-4 h-4 text-[#16A34A]" />
-              <span>Verified Street Commerce Platform • Trusted by 100+ local vendors</span>
+              <span>{t("verifiedPlatform")}</span>
             </div>
           </div>
 
@@ -100,10 +102,10 @@ export default function VendorLoginPage() {
                   />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                  Vendor Login
+                  {t("loginVendorTitle")}
                 </h2>
                 <p className="text-sm text-gray-500 font-medium">
-                  Access your live cart controls, voice inventory, and customer orders.
+                  {t("loginVendorSubtitle")}
                 </p>
               </div>
 
@@ -111,7 +113,7 @@ export default function VendorLoginPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-extrabold uppercase tracking-wider text-gray-700">
-                    Phone Number
+                    {t("phoneNumber")}
                   </label>
                   <div className="relative flex items-center">
                     <Phone className="w-5 h-5 absolute left-4 text-gray-400" />
@@ -129,10 +131,10 @@ export default function VendorLoginPage() {
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-extrabold uppercase tracking-wider text-gray-700">
-                      Password
+                      {t("password")}
                     </label>
                     <span className="text-xs text-[#16A34A] font-bold">
-                      Default: vendor123
+                      {t("defaultVendorPassword")}
                     </span>
                   </div>
                   <div className="relative flex items-center">
@@ -158,11 +160,11 @@ export default function VendorLoginPage() {
                   ) : success ? (
                     <>
                       <CheckCircle2 className="w-5 h-5 text-white" />
-                      <span>Welcome! Opening Dashboard...</span>
+                      <span>{t("signInToBusiness")}...</span>
                     </>
                   ) : (
                     <>
-                      <span>Sign In to Business</span>
+                      <span>{t("signInToBusiness")}</span>
                       <ArrowRight className="w-5 h-5" />
                     </>
                   )}
@@ -172,8 +174,8 @@ export default function VendorLoginPage() {
               {/* Demo Helper Banner */}
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-gray-800 flex items-center justify-between">
                 <div>
-                  <span className="font-extrabold text-[#16A34A]">Hackathon Quick Login:</span>
-                  <p className="text-gray-600 mt-0.5">Pre-filled credentials for instant demo inspection.</p>
+                  <span className="font-extrabold text-[#16A34A]">{t("quickLoginTitle")}</span>
+                  <p className="text-gray-600 mt-0.5">{t("quickLoginSubtitle")}</p>
                 </div>
                 <button
                   type="button"
@@ -183,15 +185,14 @@ export default function VendorLoginPage() {
                   }}
                   className="px-3 py-1.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold rounded-xl transition-colors cursor-pointer"
                 >
-                  Skip to Portal &rarr;
+                  {t("skipToPortal")}
                 </button>
               </div>
 
               {/* Footer Switch Link */}
               <div className="text-center text-xs text-gray-500 pt-2">
-                Need customer tracking?{" "}
                 <Link href="/Customerlogin" className="text-[#16A34A] font-extrabold hover:underline">
-                  Switch to Customer Login
+                  {t("switchToCustomer")}
                 </Link>
               </div>
             </div>

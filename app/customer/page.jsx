@@ -624,10 +624,10 @@ export default function CustomerPage() {
                 {/* Demand Request Form */}
                 <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
                   <h3 className="text-2xl font-black text-[#111111] mb-2">
-                    Bulao Thela (Demand Ping)
+                    {t("bulaoThelaTitle")}
                   </h3>
                   <p className="text-sm text-gray-600 mb-6">
-                    Aapke gate par thela nahi hai? Ping karein aur 5 minute me nearby vendor ko direct bulaayein.
+                    {t("bulaoThelaSubtitle")}
                   </p>
 
                   <form onSubmit={handleSendPing} className="space-y-4">
@@ -785,7 +785,7 @@ export default function CustomerPage() {
                         rows={3}
                         value={reviewComment}
                         onChange={(e) => setReviewComment(e.target.value)}
-                        placeholder="Kaisa laga fresh produce? Sahi bhav tha?"
+                        placeholder={t("reviewPlaceholder")}
                         className="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#16A34A]"
                         required
                       />
@@ -834,7 +834,7 @@ export default function CustomerPage() {
                   <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                     <div>
                       <h3 className="text-2xl font-black text-[#111111]">
-                        🏆 Mohalla Thela Leaderboard
+                        🏆 {t("mohallaLeaderboard")}
                       </h3>
                       <p className="text-xs text-gray-600 mt-1">
                         Ranked by customer trust, produce freshness & quick delivery responses.
@@ -987,7 +987,7 @@ export default function CustomerPage() {
                   )}
                 </p>
                 <div className="text-[10px] text-emerald-800 font-bold flex items-center gap-1 pt-0.5">
-                  <span>⏱️ 30-min Mohalla Batching Room: 1.5km core + 0.5km buffer applied</span>
+                  <span>⏱️ {t("batchingRoomTitle")}: {t("batchingRoomSubtitle")}</span>
                 </div>
               </div>
             )}
