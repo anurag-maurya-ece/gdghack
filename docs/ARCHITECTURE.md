@@ -1,5 +1,8 @@
 # ARCHITECTURE
 
+## Firebase foundation
+firebase.json binds Auth 9099, Firestore 8080 and Functions 5001 to 127.0.0.1, project demo-tech-thela. functions/index.js exposes health; database rules deny unspecified access. scripts/emulators.mjs selects ignored workspace Java 21 and Node 22 runtimes. No live Firebase project has been configured.
+
 5. Architecture (high level)
 Modules and what each owns
 WhatsApp Bot service (/functions): receives webhooks, verifies them, routes voice/text to the intent parser, replies in the vendor's language.

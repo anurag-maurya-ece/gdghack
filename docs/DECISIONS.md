@@ -52,3 +52,21 @@ Why: Preserves flat lavender/teal illustrations while adding light depth without
 Trade-off: Illustrative depth, not a modeled 3D person. Mobile uses idle movement without sensors. Adds approved motion dependency and its transitive packages. Full landing and Firebase remain separate tasks.
 Accessibility/performance: Static server render until preferences are known, live reduced-motion handling, 56px Pause/Play, offscreen/hidden-tab pause.
 Revisit if: a real model is requested after mobile performance measurement.
+
+## D-007: Autonomous build within existing constraints
+Date: 2026-10-17 Tool/model: Codex / GPT-6
+Context: User said "do all fast" and "ok proceed", approving remaining work without repeated routine approvals. User explicitly approved Java/Firebase tooling installation and selected Meta WhatsApp Cloud API + Gemini.
+Options: Repeated task approvals or sequential implementation under this authorization.
+Chosen: Sequential tasks with explanations, tests and separate commits. No production deployment or live-data access.
+Why: User requested speed while retaining the master stack and rules.
+Trade-off: Defaults requiring later confirmation: Hindi/English demo and a clearly labeled sample Delhi area; no real vendor identity or location is implied.
+Revisit if: user changes scope or a new service/paid API is needed.
+
+## D-008: Isolated Firebase emulator foundation
+Date: 2026-10-17 Tool/model: Codex / GPT-6
+Context: No local Java; live Firebase project and credentials are not configured.
+Options: Local official emulators or immediate cloud setup.
+Chosen: demo-tech-thela, localhost-only Auth/Firestore/Functions. Default-deny rules. Official SDK/CLI and rules-test tooling; workspace-local checksum-verified Temurin Java 21 and Node 22 for Functions, with Node 24 retained for Next.js.
+Why: Exercise real Firebase behavior without live resources or secrets.
+Trade-off: Firebase CLI development-only dependency audit findings remain; runtime audits are clean after overriding the Firebase SDK's vulnerable gRPC dependency to 1.14.6. Emulator downloads require network.
+Revisit if: staging deployment is approved or upstream fixes the dependency pins.

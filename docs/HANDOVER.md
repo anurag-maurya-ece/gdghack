@@ -1,4 +1,13 @@
 # HANDOVER
+## Latest progress: 2026-10-17 — Firebase foundation
+Done: official Auth/Firestore/Functions emulators running on localhost; default-deny rules verified for unauthenticated and authenticated callers; Node 22 and Java 21 workspace runtimes installed. Meta + Gemini selected by user.
+In progress: authorized sequential full build; next task is landing.
+Broken/risky: development-only CLI audit findings; no live credentials/deployment; phone and voice checks still pending.
+Next: complete landing role cards and depth/parallax, then vendor/products.
+Do not touch: secrets, .env, live data, deployment.
+Run/test: npm run emulators; npm run test:rules; npm run build; npm test with web server running.
+Unverified assumptions: sample Delhi area and Hindi/English demo; no real business identity implied.
+
 ## Latest session: 2026-10-17 (Codex / GPT-6) — animated preview
 Done:
 - User prioritized moving thela/person depth before Firebase. Added layered SVG, wheel rotation, walking/bobbing and spring tilt.

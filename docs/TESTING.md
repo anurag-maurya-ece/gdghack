@@ -1,5 +1,14 @@
 # TESTING
 
+## Firebase foundation — 2026-10-17
+Actual output:
+```text
+functions: Using node@22 from host.
+All emulators ready! It is now safe to connect your app.
+PASS: unauthenticated and authenticated clients cannot read or write unspecified collections
+```
+The PERMISSION_DENIED messages during negative rule tests are expected. npm audit --omit=dev and the functions runtime audit both report `found 0 vulnerabilities`. Full root audit still reports 8 development-tool findings (5 moderate, 3 high); no forced downgrade or disabled validation was used.
+
 ## Animated preview — 2026-10-17
 Production build and existing HTTP smoke checks passed after restarting the server. Actual build: `Compiled successfully in 781ms`. Installation: `added 3 packages, and audited 47 packages in 3s` / `found 0 vulnerabilities`.
 

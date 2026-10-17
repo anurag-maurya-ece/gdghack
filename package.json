@@ -6,12 +6,15 @@
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
-    "test": "node scripts/smoke.mjs"
+    "test": "node scripts/smoke.mjs",
+    "emulators": "node scripts/emulators.mjs",
+    "test:rules": "node scripts/rules.test.mjs"
   },
   "engines": {
     "node": ">=24 <25"
   },
   "dependencies": {
+    "firebase": "13.0.0",
     "framer-motion": "14.3.0",
     "lucide-react": "1.59.0",
     "next": "16.4.2",
@@ -19,8 +22,13 @@
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "6.0.0",
     "@tailwindcss/postcss": "4.3.3",
+    "firebase-tools": "15.34.0",
     "postcss": "8.5.30",
     "tailwindcss": "4.3.3"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "1.14.6"
   }
 }

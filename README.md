@@ -46,6 +46,19 @@ git diff --check
 
 ## Configuration
 
+Local Firebase setup (no login or real project required):
+
+```sh
+npm ci --prefix functions
+npm run emulators
+# In another terminal:
+npm run test:rules
+```
+
+The launcher uses demo-tech-thela only and binds services to localhost. Java 21+ is required for Firestore; Functions target Node 22. On this workstation checksum-verified runtimes are in ignored .tools/ and the launcher finds them automatically. Other machines should install Java 21+ and Node 22 for emulator execution. Runtime archives are not committed. Emulator UI: http://127.0.0.1:4000.
+
+Meta WhatsApp Cloud API and Gemini are selected. No live provider has been configured or tested; never paste credentials into chat.
+
 .env.example contains variable names only, with no assignments or values, per the master doc. It is an inventory, not a usable dotenv file. Names currently cover proposed Firebase web configuration. Provider-specific names will be added after selection. Never ask an AI tool to read, print, edit or commit real secrets or .env files. No credentials are required for this documentation setup.
 
 ## Build order
