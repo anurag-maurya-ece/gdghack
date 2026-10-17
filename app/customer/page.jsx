@@ -28,6 +28,7 @@ import {
   ChevronRight,
   ShieldCheck,
   Check,
+  MessageCircle,
 } from "lucide-react";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
@@ -390,10 +391,19 @@ export default function CustomerPage() {
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 rounded-full bg-emerald-100 text-[#16A34A] text-xs font-black">
+                    <div className="flex items-center gap-2.5">
+                      <span className="px-3 py-1.5 rounded-full bg-emerald-100 text-[#16A34A] text-xs font-black">
                         ● Online Now
                       </span>
+                      <a
+                        href={`https://wa.me/91${(activeVendor.phone || "9876543210").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Namaste ${activeVendor.name}! Main Tech Thela customer hoon. Mujhe ${activeVendor.shopName} se taaza saman mangwana hai.`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-black shadow-xs transition-transform active:scale-95"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>Chat on WhatsApp</span>
+                      </a>
                     </div>
                   </div>
 
@@ -545,12 +555,20 @@ export default function CustomerPage() {
                         <strong>{pingAcceptedVendor.name}</strong> is heading toward your street with{" "}
                         <em>{pingAcceptedVendor.item}</em>.
                       </p>
-                      <div className="mt-3 flex items-center gap-4 text-xs font-bold text-gray-800">
+                      <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-bold text-gray-800">
                         <span>ETA: {pingAcceptedVendor.eta}</span>
                         <span>•</span>
                         <span>Distance: {pingAcceptedVendor.distance}</span>
                         <span>•</span>
-                        <span>Phone: {pingAcceptedVendor.phone}</span>
+                        <a
+                          href={`https://wa.me/919876543210?text=${encodeURIComponent(`Namaste ${pingAcceptedVendor.name}! Maine Tech Thela par Bulao Thela ping kiya tha (${pingAcceptedVendor.item}). Kripya gate par aakar bataiye.`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-black shadow-xs transition-transform active:scale-95"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span>WhatsApp Vendor</span>
+                        </a>
                       </div>
                     </div>
                   )}

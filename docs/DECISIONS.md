@@ -96,5 +96,14 @@ Why: Twilio Sandbox allows the developer to test immediately on their personal W
 Trade-off: Twilio Sandbox requires sending a join code once from the test phone.
 Revisit if: dedicated production WhatsApp Business Number is approved.
 
+## D-013: WhatsApp Vendor MCP Server and In-App Contact Integration
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested adding WhatsApp MCP tools so that street vendors can be contacted via WhatsApp directly by AI agents or customers.
+Options: 1) Client-side wa.me links only 2) Third-party cloud MCP package only 3) Dual approach: Local Model Context Protocol (MCP) server script implementing JSON-RPC 2.0 (`scripts/whatsapp-mcp-server.mjs`) registered in `C:\Users\HP\.gemini\config\mcp_config.json`, coupled with direct WhatsApp click-to-chat links in `app/customer/page.jsx`.
+Chosen: 3. Built `scripts/whatsapp-mcp-server.mjs` providing `contact_vendor_whatsapp`, `send_thela_demand_ping`, and `notify_vendor_order` tools with Twilio REST dispatch. Added green `Chat on WhatsApp` CTA button to the active vendor header and `WhatsApp Vendor` to the Bulao Thela match banner in `/customer`.
+Why: Empowers both external AI workflows via MCP protocol and web customers via 1-click WhatsApp deep links to immediately message thela vendors.
+Trade-off: MCP server runs over stdio on the local machine; production agents will call REST or cloud-hosted MCP endpoint.
+Revisit if: multi-agent autonomous negotiation is introduced.
+
 
 

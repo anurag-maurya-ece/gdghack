@@ -1,5 +1,33 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Live WhatsApp on Real Phone: Meta Cloud API + Twilio Sandbox TwiML)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (WhatsApp Vendor MCP Server & Direct Customer-Vendor Contact)
+Done:
+- **WhatsApp Vendor MCP Server (`scripts/whatsapp-mcp-server.mjs`)**:
+  - Implemented standard Model Context Protocol (MCP) server over stdio conforming to JSON-RPC 2.0.
+  - Exposes 3 production tools:
+    1. `contact_vendor_whatsapp`: Send custom queries/chat to a street vendor's WhatsApp with live Twilio dispatch.
+    2. `send_thela_demand_ping`: Notify vendor of customer "Bulao Thela" demand pings with landmark/notes.
+    3. `notify_vendor_order`: Alert vendor with full item breakdown, total amount, and delivery spot.
+  - Registered `"whatsapp-vendor-mcp"` directly in `C:\Users\HP\.gemini\config\mcp_config.json`.
+- **In-App Direct WhatsApp Contact Integration (`app/customer/page.jsx`)**:
+  - Added green `Chat on WhatsApp` button in the Active Thela Header on the customer live map.
+  - Added `WhatsApp Vendor` CTA button in the "Bulao Thela" ping accepted card for 1-tap customer-to-vendor communication.
+- **Verification**:
+  - `node scripts/whatsapp-mcp-server.mjs` tested via JSON-RPC stdio pipes: `tools/list` returns 3 tools, `tools/call` executes with `twilio_live` dispatch.
+  - `npm run build` compiled all 22 routes in 1556ms with 0 errors.
+  - `scripts/smoke.mjs`: 18/18 checks passing.
+In progress:
+- Server running daemon on 0.0.0.0:3000.
+Broken/risky:
+- None.
+Next:
+- Prepare presentation slides or live demo rehearsal for hackathon judges.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `node scripts/smoke.mjs`
+
+## Previous session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Live WhatsApp on Real Phone: Meta Cloud API + Twilio Sandbox TwiML)
 Done:
 - **Real Phone WhatsApp Testing Support**:
   - Upgraded `app/api/whatsapp/webhook/route.js` to support both:
