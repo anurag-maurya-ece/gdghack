@@ -1,0 +1,258 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+enum OrderStatus {
+  PLACED
+  ACCEPTED
+  ENROUTE
+  DELIVERED
+  CANCELLED
+}
+
+enum PingStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  phone              String              @unique
+  name               String
+  passwordHash       String
+  role               UserRole            @default(CUSTOMER)
+  emailVerified      Boolean             @default(false)
+  isBanned           Boolean             @default(false)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  sessions           Session[]
+  refreshTokens      RefreshToken[]
+  verificationTokens VerificationToken[]
+  vendor             Vendor?
+  orders             Order[]             @relation("CustomerOrders")
+  reviews            Review[]
+  demandPings        DemandPing[]
+  sentMessages       Message[]
+
+  @@index([email])
+  @@index([phone])
+}
+
+model Session {
+  id            String         @id @default(uuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress     String
+  userAgent     String
+  expiresAt     DateTime
+  createdAt     DateTime       @default(now())
+  lastUsedAt    DateTime       @default(now())
+
+  refreshTokens RefreshToken[]
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid())
+  sessionId  String
+  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String   @unique
+  familyId   String
+  isRevoked  Boolean  @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([familyId])
+  @@index([userId])
+}
+
+model VerificationToken {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  type      TokenType
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([userId, type])
+}
+
+model Vendor {
+  id           String     @id @default(uuid())
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shopName     String
+  shopType     String
+  language     String     @default("hi")
+  isOnline     Boolean    @default(false)
+  rating       Float      @default(5.0)
+  reviewsCount Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  location     Location?
+  products     Product[]
+  orders       Order[]    @relation("VendorOrders")
+  reviews      Review[]
+
+  @@index([isOnline])
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  vendorId  String   @unique
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  latitude  Float
+  longitude Float
+  updatedAt DateTime @updatedAt
+
+  @@index([latitude, longitude])
+}
+
+model Product {
+  id         String      @id @default(uuid())
+  vendorId   String
+  vendor     Vendor      @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name       String
+  price      Float
+  unit       String
+  inStock    Boolean     @default(true)
+  category   String      @default("Sabzi")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  orderItems OrderItem[]
+
+  @@index([vendorId])
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  customerId    String
+  customer      User        @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Restrict)
+  vendorId      String
+  vendor        Vendor      @relation("VendorOrders", fields: [vendorId], references: [id], onDelete: Restrict)
+  status        OrderStatus @default(PLACED)
+  totalAmount   Float
+  deliveryNotes String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  items         OrderItem[]
+  chat          Chat?
+
+  @@index([customerId])
+  @@index([vendorId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity  Int
+  unitPrice Float
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Chat {
+  id         String    @id @default(uuid())
+  orderId    String?   @unique
+  order      Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  customerId String
+  vendorId   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  messages   Message[]
+
+  @@index([customerId])
+  @@index([vendorId])
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  chatId         String
+  chat           Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  originalText   String
+  sourceLang     String   @default("en")
+  translatedText String?
+  targetLang     String?
+  createdAt      DateTime @default(now())
+
+  @@index([chatId])
+}
+
+model DemandPing {
+  id               String     @id @default(uuid())
+  customerId       String
+  customer         User       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  itemRequested    String
+  approxQuantity   String
+  landmark         String
+  status           PingStatus @default(PENDING)
+  acceptedVendorId String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model DemandCell {
+  id        String   @id @default(uuid())
+  cellHash  String   @unique
+  latitude  Float
+  longitude Float
+  score     Int
+  peakHours String
+  reason    String
+  updatedAt DateTime @updatedAt
+
+  @@index([cellHash])
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  rating      Int
+  comment     String
+  coinsEarned Int      @default(25)
+  createdAt   DateTime @default(now())
+
+  @@index([customerId])
+  @@index([vendorId])
+}

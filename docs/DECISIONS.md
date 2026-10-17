@@ -105,5 +105,14 @@ Why: Empowers both external AI workflows via MCP protocol and web customers via 
 Trade-off: MCP server runs over stdio on the local machine; production agents will call REST or cloud-hosted MCP endpoint.
 Revisit if: multi-agent autonomous negotiation is introduced.
 
+## D-014: Phase 1 Setup — Zod Env Validation, PostgreSQL Schema, and Vitest Harness
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested migrating completely off Firebase to self-owned Next.js backend, starting with Phase 1 setup.
+Options: 1) SQLite for local dev 2) Real local/containerized PostgreSQL.
+Chosen: 2. Real PostgreSQL running locally on port 5432 with dedicated `tech_thela_db` and `tech_thela_test` databases, accompanied by `docker-compose.yml`. Installed stable `prisma@6.4.1`, `@prisma/client@6.4.1`, `zod`, `vitest`, `@vitest/coverage-v8`, and strict `typescript`. Created `src/server/validators/env.ts` with fail-fast startup crash and `prisma/schema.prisma` mapping all 14 models from the Phase 0 ERD.
+Why: Matches non-negotiable directive for real test PostgreSQL (not mocks) and strict typechecking without pre-release CLI instability.
+Trade-off: Requires local PostgreSQL server on port 5432 or Docker.
+Revisit if: cloud connection pooler (e.g. PgBouncer / Neon / Supabase) is deployed.
+
 
 
