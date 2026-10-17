@@ -1,6 +1,30 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (100% Light Mode Platform Conversion)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Dynamic Navbar Auth State & Role Badges)
 Done:
+- **Dynamic Navbar Auth State (`components/Navbar.jsx`)**:
+  - Implemented dynamic user session detection via `localStorage` (`tech_thela_user`), `sessionStorage`, and route-aware fallback.
+  - Replaced the static public "Join Now" button upon login with:
+    - **Vendor Mode (`/vendor`)**: Shows `👨‍🌾 Ramesh Bhaiya • Vendor (Live)` badge with pulsing emerald status dot + clean `Logout` button. Center navigation automatically highlights `Vendor Portal (Live)`, `Customer Map`, `Rewards & Reviews`, and `Home`.
+    - **Customer Mode (`/customer`, `/form`)**: Shows `MO Mr. Oberoi • 🪙 125 Coins` badge + clean `Logout` button. Center navigation highlights `Live Thela Map (GPS)`, `Rewards & Coins (🪙 125)`, `Vendor Portal`, and `Home`.
+    - **Public Mode (Logged out)**: Restores standard links + gradient `Join Now` button.
+  - Linked `saveVendorAuth` and `saveCustomerAuth` across `app/Vendorlogin/page.jsx`, `app/Customerlogin/page.jsx`, and `app/form/page.jsx` with instant `window.dispatchEvent(new Event("auth_change"))`.
+  - Added clean `handleLogout` which purges user session and smoothly resets to public state.
+- **Verification**:
+  - `npm run build` compiled all 20 routes cleanly in 1747ms.
+  - Verified in Chrome DevTools MCP with real clicks on login, logout, and navbar updates across Vendor and Customer flows.
+In progress:
+- Server running daemon on 0.0.0.0:3000.
+Broken/risky:
+- None.
+Next:
+- WhatsApp Cloud API webhook integration or live cloud deployment when approved.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `node scripts/smoke.mjs`
+
+## Previous session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (100% Light Mode Platform Conversion)
 - **100% Light Mode Platform-Wide ("light mode kro sab dark mode nhi hoga kuch")**:
   - Eliminated Tailwind v4 utility palette wipeout (`--color-*: initial;` in `app/globals.css`) which previously made text fallback to pitch black on dark elements.
   - Converted `/Vendorlogin` and `/Customerlogin` from dark black backgrounds (`bg-[#0F0F0F]`) to clean crisp light mode (`bg-[#FDFCFB]`, `bg-white` cards with `border-gray-200/90`, dark text, and solid `#16A34A` buttons).

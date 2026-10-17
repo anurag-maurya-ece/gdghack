@@ -15,17 +15,34 @@ export default function CustomerLoginPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const saveCustomerAuth = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("tech_thela_logged_out");
+      localStorage.setItem(
+        "tech_thela_user",
+        JSON.stringify({
+          role: "customer",
+          name: "Mr. Oberoi",
+          email: email || "customer@techthela.ai",
+          coins: 125,
+        })
+      );
+      window.dispatchEvent(new Event("auth_change"));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    saveCustomerAuth();
 
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
       setTimeout(() => {
         router.push("/form");
-      }, 600);
-    }, 500);
+      }, 500);
+    }, 400);
   };
 
   return (
@@ -161,7 +178,10 @@ export default function CustomerLoginPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => router.push("/form")}
+                  onClick={() => {
+                    saveCustomerAuth();
+                    router.push("/form");
+                  }}
                   className="px-3 py-1.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold rounded-xl transition-colors cursor-pointer"
                 >
                   Skip to Form &rarr;

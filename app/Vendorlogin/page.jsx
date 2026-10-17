@@ -15,17 +15,35 @@ export default function VendorLoginPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const saveVendorAuth = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("tech_thela_logged_out");
+      localStorage.setItem(
+        "tech_thela_user",
+        JSON.stringify({
+          role: "vendor",
+          name: "Ramesh Bhaiya",
+          phone: phone || "9876543210",
+          category: "Sabzi Thela",
+          isOnline: true,
+        })
+      );
+      window.dispatchEvent(new Event("auth_change"));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    saveVendorAuth();
 
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
       setTimeout(() => {
         router.push("/vendor");
-      }, 600);
-    }, 500);
+      }, 500);
+    }, 400);
   };
 
   return (
@@ -159,7 +177,10 @@ export default function VendorLoginPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => router.push("/vendor")}
+                  onClick={() => {
+                    saveVendorAuth();
+                    router.push("/vendor");
+                  }}
                   className="px-3 py-1.5 bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold rounded-xl transition-colors cursor-pointer"
                 >
                   Skip to Portal &rarr;

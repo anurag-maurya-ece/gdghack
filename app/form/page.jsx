@@ -20,14 +20,29 @@ export default function PreferencesFormPage() {
     e.preventDefault();
     if (!familyMembers || !youngestAge || !oldestAge) return;
 
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("tech_thela_logged_out");
+      localStorage.setItem(
+        "tech_thela_user",
+        JSON.stringify({
+          role: "customer",
+          name: "Mr. Oberoi",
+          email: "customer@techthela.ai",
+          coins: 125,
+          familyDetails: { familyMembers, youngestAge, oldestAge },
+        })
+      );
+      window.dispatchEvent(new Event("auth_change"));
+    }
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
       setTimeout(() => {
         router.push("/customer");
-      }, 700);
-    }, 500);
+      }, 600);
+    }, 400);
   };
 
   const isFormValid =
