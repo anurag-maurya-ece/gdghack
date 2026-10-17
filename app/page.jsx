@@ -134,29 +134,29 @@ export default function Home() {
       </section>
 
       {/* Role Cards for Vendor and Consumer */}
-      <section className="bg-white px-4 md:px-24 lg:px-32 py-16 sm:py-24 relative">
+      <section className="bg-white px-4 md:px-16 lg:px-24 py-16 sm:py-24 relative">
         <div
           id="cardssection"
-          className="rounded-3xl bg-gray-50 border border-gray-100 shadow-sm px-4 md:px-24 flex flex-col items-center text-center pb-24 sm:pb-32 pt-16 sm:pt-20"
+          className="rounded-3xl bg-gray-50/90 border border-gray-200/80 shadow-sm px-6 sm:px-10 md:px-16 py-16 sm:py-20 flex flex-col items-center text-center max-w-6xl mx-auto"
         >
-          <p className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-4 leading-tight text-[#111111]">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-10 sm:mb-14 leading-tight text-[#111111] max-w-4xl">
             It&apos;s your time to make the move with{" "}
             <span className="text-[#111111]">Tech </span>
             <span className="text-[#16A34A]">Thela</span>
-          </p>
-        </div>
+          </h2>
 
-        <div className="flex flex-col md:flex-row gap-6 md:gap-16 justify-center w-full z-10 relative -mt-12 sm:-mt-16">
-          <LoginCard
-            imgName="consumer"
-            name="Customer"
-            text="Get the best deals available in your local market. Track nearby thelas live and order fresh produce."
-          />
-          <LoginCard
-            imgName="vendor"
-            name="Vendor"
-            text="Boost sales by reaching thousands of local customers digitally with voice-assisted listings."
-          />
+          <div className="flex flex-col md:flex-row gap-8 lg:gap-14 justify-center w-full items-stretch">
+            <LoginCard
+              imgName="consumer"
+              name="Customer"
+              text="Get the best deals available in your local market. Track nearby thelas live and order fresh produce."
+            />
+            <LoginCard
+              imgName="vendor"
+              name="Vendor"
+              text="Boost sales by reaching thousands of local customers digitally with voice-assisted listings."
+            />
+          </div>
         </div>
       </section>
 

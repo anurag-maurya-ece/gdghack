@@ -1,16 +1,29 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (UI Alignment with The-Hashira---tech-thela)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Cards Section Fix & Chrome DevTools Multi-Page Verification)
 Done:
-- Cloned and inspected the target repository `The-Hashira---tech-thela` directly.
-- Aligned the entire user interface to match `The-Hashira---tech-thela` precisely:
-  - **Floating Pill Navbar**: Centered glass capsule (`bg-white/85 backdrop-blur-2xl rounded-full`) with Tech Thela logo, pill links (`Home`, `Live Thela Map`, `Vendor Portal`, `Rewards`, `About`, `Pricing`), and gradient "Join Now" button (`#cardssection`).
-  - **Main Hero Section**: Ambient green floating shapes (`animate-float`), uppercase badge `START TO SUCCESS`, dual-gradient typography (`trust`, `technology`, `love`), `Get Started` & `Live Thela Map` CTA buttons, and `herosec.gif` with radial mask.
-  - **Stats Section**: Refined `AboutDataCard` counters on `bg-gray-50/70` with clean emerald counts and titles.
-  - **Role Portals Section (`#cardssection`)**: Fixed the container layout glitch completely: `#cardssection` is now a rounded light gray card with ample bottom padding (`pb-24 sm:pb-32`), while `LoginCard`s overlap seamlessly (`-mt-12 sm:-mt-16`) without any clipped borders or extra clutter links.
-  - **Footer**: Modern dark luxury footer with brand mission, Solution and Company directory columns, newsletter signup, and copyright.
-  - Adjusted top spacing (`pt-28` / `pt-24`) across all subpages (`Customerlogin`, `Vendorlogin`, `form`, `customer`, `vendor`, `rewards`, `aboutus`, `pricing`) for the floating pill navbar.
-- Production build: `npm run build` compiled all 10 static routes in 1186ms.
-- Smoke tests: `npm test` verified HTTP 200 on all 10 routes, brand tokens, and 404 recovery.
+- Fixed the `#cardssection` layout defect highlighted in user screenshot (`media_1792228703539_880721ae.png`):
+  - Enclosed the heading and `LoginCard`s (`consumer.png` and `vendor.png`) inside a single rounded container (`bg-gray-50/90 border border-gray-200/80 p-16`).
+  - Removed the negative margin hack (`-mt-12`) that produced the horizontal cutting line across the cards.
+- Switched `components/LeafletMap.jsx` tile layer from Carto basemap to standard OpenStreetMap (`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`) to eliminate any watermark.
+- Performed end-to-end visual and functional browser tests across all features using Chrome DevTools:
+  - **Landing (`/`)**: Hero section, stats counters, fixed `#cardssection` role cards, and feedback carousel verified in Chrome with screenshots.
+  - **Customer Onboarding & Flow (`/Customerlogin` -> `/form` -> `/customer`)**: Tested customer credentials submission, household survey completion, and instant routing to `/customer` with live OpenStreetMap thela markers, product catalogue drawer, and "Bulao Thela" demand radar.
+  - **Vendor Onboarding & Flow (`/Vendorlogin` -> `/vendor`)**: Tested vendor portal sign-in, giant tactile "Thela ON / OFF" live switch, voice-to-listing mic interface, and incoming customer orders.
+  - **Community Rewards (`/rewards`)**: Mohalla leaderboard, coin wallet, review submission, and coupon store verified.
+  - **About & Pricing (`/aboutus`, `/pricing`)**: Story gif and 3-tier pricing cards verified.
+- Production build: `npm run build` compiled all 10 routes cleanly in 1552ms.
+- Smoke tests: `node scripts/smoke.mjs` passed 100% (11/11 tests green).
+In progress:
+- All pages and system flows aligned with `The-Hashira---tech-thela` and actively running on http://127.0.0.1:3000.
+Broken/risky:
+- None.
+Next:
+- User visual review or proceed with WhatsApp bot webhook integration when ready.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `npm test`
 
 ## Previous session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Comprehensive Multi-Page Platform & Feature Suite)
 Done:
