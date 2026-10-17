@@ -33,10 +33,11 @@ export default function LoginCard({ imgName, name, text }) {
         {text}
       </h5>
 
-      <Link href={targetHref} className="w-full mt-2 sm:mt-4">
-        <button className="w-full text-sm sm:text-base md:text-lg bg-[#16A34A] hover:bg-[#15803d] text-white font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-md shadow-[#16A34A]/20 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
-          Join now
-        </button>
+      <Link
+        href={targetHref}
+        className="w-full mt-2 sm:mt-4 inline-block text-center text-sm sm:text-base md:text-lg bg-[#16A34A] hover:bg-[#15803d] text-white font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-md shadow-[#16A34A]/20 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+      >
+        Join now
       </Link>
     </div>
   );

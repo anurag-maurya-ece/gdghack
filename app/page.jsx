@@ -88,15 +88,17 @@ export default function Home() {
           </p>
 
           <div className="pt-2 sm:pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
-            <Link href="#cardssection">
-              <button className="w-full sm:w-auto bg-[#16A34A] hover:bg-[#15803d] text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
-                Get Started
-              </button>
+            <Link
+              href="#cardssection"
+              className="w-full sm:w-auto inline-flex items-center justify-center bg-[#16A34A] hover:bg-[#15803d] text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+            >
+              Get Started
             </Link>
-            <Link href="/customer">
-              <button className="w-full sm:w-auto bg-white border-2 border-[#16A34A] text-[#16A34A] hover:bg-emerald-50 font-bold text-lg px-8 py-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
-                Live Thela Map
-              </button>
+            <Link
+              href="/customer"
+              className="w-full sm:w-auto inline-flex items-center justify-center bg-white border-2 border-[#16A34A] text-[#16A34A] hover:bg-emerald-50 font-bold text-lg px-8 py-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
+            >
+              Live Thela Map
             </Link>
           </div>
         </div>

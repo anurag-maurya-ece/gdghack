@@ -21,11 +21,14 @@ Done:
     4. **Pre-Order Stock**: Morning customer household advance orders with time slots and delivery addresses.
     5. **Customer Reviews**: Verified customer ratings, feedback, and 4.8★ trust score.
     6. **Mohalla Leaderboard**: Dwarka Sector 14 street vendor rankings.
-- **Production Build**: `npm run build` compiled all 20 routes (11 static + 9 dynamic API routes) in 1397ms.
+- **Production Build**: `npm run build` compiled all 20 routes (11 static + 9 dynamic API routes) in 1317ms.
+- **Button Interaction & Hostname Fix**:
+  - Replaced nested `<button>` inside `<Link>` elements in `components/LoginCards.jsx` and `app/page.jsx` with direct styled `<Link>` components, eliminating event suppression.
+  - Bound server hostname to `0.0.0.0` in `package.json` so both `http://localhost:3000` and `http://127.0.0.1:3000` serve live changes reliably across all network adapters.
 - **Smoke Tests**: `node scripts/smoke.mjs` passed 14/14 tests (including API routes).
-- **Chrome DevTools Verification**: All 6 vendor tabs and live switch verified in Chrome with screenshots.
+- **Chrome DevTools Verification**: All 6 vendor tabs, customer flows, and live switches verified in Chrome with real clicks.
 In progress:
-- All Customer and Vendor flows active and verified on http://127.0.0.1:3000.
+- All Customer and Vendor flows active and verified on http://localhost:3000 and http://127.0.0.1:3000.
 Broken/risky:
 - None.
 Next:
