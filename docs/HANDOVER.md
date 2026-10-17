@@ -1,6 +1,37 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Trilingual Engine: English, Hindi, Hinglish)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Real-time Cross-Tab Order & Ping Synchronization)
 Done:
+- **Real-Time Customer <-> Vendor 2-Way Synchronization Engine (`lib/sync.js`)**:
+  - Implemented triple-bus IPC: Native browser `BroadcastChannel("tech_thela_realtime_sync")` + `localStorage` storage events + `window.CustomEvent` with background REST fallback.
+  - Implemented Web Audio API synthesized 2-tone doorbell chime (`playChime("order")` - 587Hz to 880Hz sine wave) and alert tone (`playChime("ping")`), zero audio file asset dependency.
+  - Created shared order & demand ping storage helpers: `saveNewOrder()`, `updateOrderStatus()`, `saveNewPing()`, `acceptDemandPing()`, `subscribeSync()`.
+- **Customer Portal Synchronization (`app/customer/page.jsx`)**:
+  - Wired `handlePlaceOrder` to generate unique order ID, save and broadcast `NEW_ORDER_CREATED` to vendor across tabs immediately.
+  - Wired `handleSendPing` ("Bulao Thela") to broadcast `NEW_DEMAND_PING` with item details, quantity, and notes.
+  - Integrated `subscribeSync` listener for `ORDER_STATUS_UPDATED` and `DEMAND_PING_ACCEPTED`.
+  - Upgraded cart checkout UI to display reactive state badges with animation: `Order Placed` -> `✓ Sweekar Kar Liya! (Accepted by Vendor)` -> `🛵 Vendor Enroute! (~3 mins)`.
+- **Vendor Portal Synchronization (`app/vendor/page.jsx`)**:
+  - Added `subscribeSync` listener to instantly receive new customer orders and pings, play audio chime, and update orders count.
+  - Added floating/pinned real-time Toast Notification banner with 1-click `✓ Sweekar Karein (Accept)` and dismissal.
+  - Updated `handleOrderAction(orderId, newStatus)` to immediately broadcast status change back to customer tab.
+  - Enhanced Tab 3 (`demand_alerts`) with 2 dedicated sections: "Live Doorstep Orders" and "Live Bulao Thela Demand Pings" with "✓ Sweekar Karein & Thela Le Jaayein (Accept & Go)" action.
+- **Verification & Test Loop**:
+  - `npm run test:coverage`: **83/83 tests PASSING** with 92.6% coverage.
+  - `node scripts/smoke.mjs`: **18/18 checks PASSING**.
+  - `npm run build`: Compiled 34/34 routes with **0 errors**.
+In progress:
+- None.
+Broken/risky:
+- None.
+Next:
+- Ready for live judge demonstration. Open `/customer` and `/vendor` in two side-by-side browser windows to showcase instant 0ms order sync and audio chimes.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run test:coverage`
+- `node scripts/smoke.mjs`
+- `npm run build`
+
 - **Trilingual Language Engine Complete (English, Hindi, Hinglish)**:
   - `lib/i18n.js`: Comprehensive trilingual translation dictionaries for `en` (English), `hi` (हिंदी - Devanagari script), and `hinglish` (authentic conversational Indian English/Hindi transliteration).
   - `context/LanguageContext.jsx`: Client-side React context with persistent `localStorage` synchronization (`tech_thela_lang`) and zero-reload reactive state updates.

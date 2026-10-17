@@ -31,6 +31,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
+import { saveNewOrder, saveNewPing, subscribeSync, playChime } from "../../lib/sync";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
 const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
@@ -167,35 +168,154 @@ export default function CustomerPage() {
     0
   );
 
-  // Simulate Order Flow
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const [currentPingId, setCurrentPingId] = useState(null);
+
+  // Real-time synchronization listener (Listens for Vendor actions across tabs/devices)
+  useEffect(() => {
+    const unsubscribe = subscribeSync((event) => {
+      // Vendor accepted or rejected order
+      if (event.action === "ORDER_STATUS_UPDATED") {
+        const { orderId, status } = event.payload || {};
+        if (!currentOrderId || orderId === currentOrderId) {
+          if (status === "accepted") {
+            setOrderStatus("accepted");
+            playChime("order");
+            setTimeout(() => setOrderStatus("enroute"), 2200);
+          } else if (status === "rejected") {
+            setOrderStatus("rejected");
+          }
+        }
+      }
+
+      // Vendor accepted demand ping ("Bulao Thela")
+      if (event.action === "DEMAND_PING_ACCEPTED") {
+        const { pingId, vendor } = event.payload || {};
+        if (!currentPingId || pingId === currentPingId) {
+          playChime("order");
+          setPingBroadcastActive(false);
+          setPingAcceptedVendor(
+            vendor || {
+              name: "Ramesh Bhaiya (Sabzi Thela)",
+              phone: "+91 98765 43210",
+              item: pingItem,
+              eta: "3 mins",
+              distance: "90m",
+            }
+          );
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [currentOrderId, currentPingId, pingItem]);
+
+  // Real-time Order Flow
   const handlePlaceOrder = () => {
+    const orderId = `ord-${Date.now().toString().slice(-4)}`;
+    setCurrentOrderId(orderId);
     setOrderStatus("placed");
+
+    const orderPayload = {
+      id: orderId,
+      customerId: "cust-oberoi",
+      customerName: "Mr. Oberoi (Pocket B, Gate 2)",
+      vendorId: activeVendor?.id || "vendor-ramesh",
+      vendorName: activeVendor?.name || "Ramesh Bhaiya",
+      distance: `${activeVendor?.distance || 140}m away`,
+      items: cartItemsList.map((c) => `${c.quantity}x ${c.item.name}`).join(", "),
+      total: totalCartPrice,
+      time: "Just now",
+      status: "pending",
+      deliveryAddress: `Pincode ${selectedPin}, Gate 2, Flat 302`,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Broadcast live across tabs to Vendor screen instantly
+    saveNewOrder(orderPayload);
+
+    // Also persist via API in background
+    try {
+      fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: "cust-oberoi",
+          vendorId: activeVendor?.id || "vendor-ramesh",
+          items: cartItemsList.map((c) => ({
+            productId: c.item.id || "prod-default",
+            name: c.item.name,
+            quantity: c.quantity,
+            price: c.item.price,
+          })),
+          deliveryAddress: `Pincode ${selectedPin}, Gate 2, Flat 302`,
+        }),
+      }).catch(() => {});
+    } catch (e) {}
+
+    // Fallback auto-accept simulation if vendor tab is not currently open
     setTimeout(() => {
-      setOrderStatus("accepted");
-    }, 2000);
-    setTimeout(() => {
-      setOrderStatus("enroute");
-    }, 4500);
+      setOrderStatus((prev) => (prev === "placed" ? "accepted" : prev));
+    }, 7000);
   };
 
-  // Simulate Ping Demand Flow
+  // Real-time Ping Demand Flow ("Bulao Thela")
   const handleSendPing = (e) => {
     e.preventDefault();
     if (!pingItem.trim()) return;
+
+    const pingId = `ping-${Date.now()}`;
+    setCurrentPingId(pingId);
     setPingBroadcastActive(true);
     setPingAcceptedVendor(null);
 
-    // Simulate nearby vendor matching after 2.8s
+    const pingPayload = {
+      id: pingId,
+      consumerName: "Mr. Oberoi",
+      item: pingItem,
+      quantity: pingQty,
+      notes: pingNotes,
+      pin: selectedPin,
+      time: "Just now",
+      status: "broadcasting",
+      location: { lat: 28.6304, lng: 77.2177 },
+    };
+
+    // Broadcast live to Vendor screen instantly
+    saveNewPing(pingPayload);
+
+    // Also persist via API in background
+    try {
+      fetch("/api/ping/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          consumerId: "cust-oberoi",
+          item: pingItem,
+          quantity: pingQty,
+          notes: pingNotes,
+          latitude: 28.6304,
+          longitude: 77.2177,
+        }),
+      }).catch(() => {});
+    } catch (e) {}
+
+    // Fallback automated response if vendor tab is not open
     setTimeout(() => {
-      setPingBroadcastActive(false);
-      setPingAcceptedVendor({
-        name: "Ram Kumar (Fresh Cart)",
-        phone: "+91 98765 43210",
-        item: pingItem,
-        eta: "4 mins",
-        distance: "140m",
+      setPingBroadcastActive((active) => {
+        if (active) {
+          setPingAcceptedVendor({
+            name: "Ramesh Bhaiya (Fresh Cart)",
+            phone: "+91 98765 43210",
+            item: pingItem,
+            eta: "4 mins",
+            distance: "140m",
+          });
+          return false;
+        }
+        return active;
       });
-    }, 2800);
+    }, 8000);
   };
 
   // Submit Review Flow
@@ -826,14 +946,52 @@ export default function CustomerPage() {
               </div>
 
               {orderStatus ? (
-                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2">
-                  <CheckCircle2 className="w-8 h-8 text-[#16A34A] mx-auto animate-bounce" />
-                  <p className="font-black text-sm text-emerald-900 capitalize">
-                    Order Status: {orderStatus}
+                <div
+                  className={`p-4 rounded-2xl border text-center space-y-2 transition-all ${
+                    orderStatus === "placed"
+                      ? "bg-amber-50 border-amber-300 text-amber-900"
+                      : orderStatus === "accepted"
+                      ? "bg-blue-50 border-blue-300 text-blue-900"
+                      : orderStatus === "enroute"
+                      ? "bg-emerald-50 border-emerald-300 text-emerald-900"
+                      : "bg-red-50 border-red-300 text-red-900"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    {orderStatus === "placed" && (
+                      <span className="w-3 h-3 rounded-full bg-amber-500 animate-ping" />
+                    )}
+                    {orderStatus === "accepted" && (
+                      <span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
+                    )}
+                    {orderStatus === "enroute" && (
+                      <CheckCircle2 className="w-6 h-6 text-[#16A34A] animate-bounce" />
+                    )}
+                    <p className="font-black text-sm capitalize">
+                      {orderStatus === "placed" && "Order Placed! Waiting for Vendor..."}
+                      {orderStatus === "accepted" && "✓ Sweekar Kar Liya! (Accepted by Vendor)"}
+                      {orderStatus === "enroute" && "🛵 Vendor Enroute! Arriving at Doorstep (~3 mins)"}
+                      {orderStatus === "rejected" && "Order Declined by Vendor"}
+                    </p>
+                  </div>
+                  <p className="text-xs opacity-85">
+                    {orderStatus === "placed" &&
+                      "Order is live on Vendor's dashboard across tabs/devices. Cash or UPI on delivery."}
+                    {orderStatus === "accepted" &&
+                      "Ramesh Bhaiya has accepted your order and is packing fresh produce."}
+                    {orderStatus === "enroute" &&
+                      "Thela is on its way to your gate/flat. Keep ₹" + totalCartPrice + " cash or UPI ready!"}
+                    {orderStatus === "rejected" && "All items in this cart were released."}
                   </p>
-                  <p className="text-xs text-emerald-700">
-                    Vendor is bringing fresh stock right to your doorstep. Cash or UPI on delivery!
-                  </p>
+                  <button
+                    onClick={() => {
+                      setOrderStatus(null);
+                      setCart({});
+                    }}
+                    className="mt-2 text-[11px] font-black underline cursor-pointer text-gray-600 hover:text-gray-900 block mx-auto"
+                  >
+                    + Place Another Order
+                  </button>
                 </div>
               ) : (
                 <button

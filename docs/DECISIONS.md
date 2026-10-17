@@ -166,3 +166,13 @@ Chosen: 2. Built `lib/i18n.js`, `context/LanguageContext.jsx`, `components/Langu
 Why: Preserves existing URL routing and bookmarks, zero page reloads on language switch, ultra-low memory overhead, works seamlessly across both desktop and mobile viewports, and satisfies street vendor accessibility requirements (Devanagari Hindi + colloquial Hinglish).
 Trade-off: Text length differences between languages required auto-wrapping button and card adjustments.
 Revisit if: Regional Dravidian/Eastern languages (Tamil, Telugu, Bengali) are requested by judges.
+
+## D-021: Real-time Cross-Tab & Cross-Device Order and Demand Ping Synchronization
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested verifying whether customer orders and "Bulao Thela" demand pings properly synchronize to the vendor in real-time, and fixing any sync gap between `/customer` and `/vendor`.
+Options: 1) Polling REST API every 1-2 seconds (high server CPU, noisy network tab) 2) Pure WebSockets requiring dedicated external socket server 3) Triple-bus IPC (`BroadcastChannel` + `localStorage` storage events + `window.CustomEvent`) backed by background REST persistence and Web Audio API synthesized chimes.
+Chosen: 3. Built `lib/sync.js`, wired `app/customer/page.jsx` and `app/vendor/page.jsx`.
+Why: BroadcastChannel provides 0ms latency inter-tab communication in modern browsers; localStorage event bus ensures cross-window fallback; Web Audio API synthesized oscillators (587Hz -> 880Hz sine wave) provide instant audible doorbell chimes with zero external audio assets. When customer clicks "Confirm Doorstep Order" or "Ping Nearby Thelas", vendor dashboard immediately plays a chime, raises an alert banner, and shows actionable Accept/Decline buttons. Clicking Accept in vendor immediately transitions customer UI to `Accepted -> Enroute` without page reload.
+Trade-off: BroadcastChannel is browser-instance scoped for localhost demonstrations; background REST fetch persists to database for multi-device deployments.
+Revisit if: Multi-device WebSocket/SSE relay cluster is needed across distant mobile networks.
+

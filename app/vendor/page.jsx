@@ -28,12 +28,22 @@ import {
   Star,
   Trophy,
   ShoppingCart,
+  ShoppingBag,
+  Radio,
   Phone,
   ShieldCheck,
   Check,
   X,
 } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
+import {
+  getStoredOrders,
+  getStoredPings,
+  updateOrderStatus as updateSyncOrderStatus,
+  acceptDemandPing as acceptSyncDemandPing,
+  subscribeSync,
+  playChime,
+} from "../../lib/sync";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
 const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
@@ -96,6 +106,82 @@ export default function VendorDashboard() {
       status: "pending",
     },
   ]);
+
+  // Live demand pings ("Bulao Thela")
+  const [livePings, setLivePings] = useState([
+    {
+      id: "ping-demo-1",
+      consumerName: "Sanjay Singhal",
+      item: "2 kg Fresh Tamatar & Dhaniya",
+      quantity: "2 kg",
+      notes: "Gate No. 2 ke paas delivery chahiye",
+      pin: "110075",
+      time: "3 mins ago",
+      status: "broadcasting",
+    },
+  ]);
+
+  // Toast notification for incoming orders / pings
+  const [toastNotification, setToastNotification] = useState(null);
+
+  // Real-time synchronization with Customer portal
+  useEffect(() => {
+    // 1. Initial hydration from shared storage
+    const storedOrders = getStoredOrders();
+    if (storedOrders.length > 0) {
+      setIncomingOrders((prev) => {
+        const ids = new Set(storedOrders.map((o) => o.id));
+        return [...storedOrders, ...prev.filter((o) => !ids.has(o.id))];
+      });
+    }
+
+    const storedPings = getStoredPings();
+    if (storedPings.length > 0) {
+      setLivePings((prev) => {
+        const ids = new Set(storedPings.map((p) => p.id));
+        return [...storedPings, ...prev.filter((p) => !ids.has(p.id))];
+      });
+    }
+
+    // 2. Subscribe to real-time events across tabs/devices
+    const unsubscribe = subscribeSync((event) => {
+      if (event.action === "NEW_ORDER_CREATED") {
+        const order = event.payload;
+        playChime("order");
+        setIncomingOrders((prev) => [order, ...prev.filter((o) => o.id !== order.id)]);
+        setToastNotification({
+          type: "order",
+          title: "🔔 Naya Order Aaya!",
+          subtitle: `${order.customerName} • ₹${order.total} (${order.items})`,
+          orderId: order.id,
+        });
+        setTimeout(() => setToastNotification(null), 10000);
+      } else if (event.action === "NEW_DEMAND_PING") {
+        const ping = event.payload;
+        playChime("ping");
+        setLivePings((prev) => [ping, ...prev.filter((p) => p.id !== ping.id)]);
+        setToastNotification({
+          type: "ping",
+          title: "📍 Grahak ne Thela Bulaya! (Bulao Thela)",
+          subtitle: `${ping.consumerName || "Grahak"} wants: ${ping.item} (${ping.quantity || "1 kg"})`,
+          pingId: ping.id,
+        });
+        setTimeout(() => setToastNotification(null), 10000);
+      } else if (event.action === "ORDER_STATUS_UPDATED") {
+        const { orderId, status } = event.payload || {};
+        setIncomingOrders((prev) =>
+          prev.map((o) => (o.id === orderId ? { ...o, status } : o))
+        );
+      } else if (event.action === "DEMAND_PING_ACCEPTED") {
+        const { pingId } = event.payload || {};
+        setLivePings((prev) =>
+          prev.map((p) => (p.id === pingId ? { ...p, status: "accepted" } : p))
+        );
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Pre-Orders state
   const [preOrders, setPreOrders] = useState([
@@ -223,6 +309,49 @@ export default function VendorDashboard() {
     setIncomingOrders((prev) =>
       prev.map((ord) => (ord.id === orderId ? { ...ord, status: newStatus } : ord))
     );
+
+    // Broadcast status change immediately to Customer tab
+    updateSyncOrderStatus(orderId, newStatus);
+
+    try {
+      fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      }).catch(() => {});
+    } catch (e) {}
+
+    if (toastNotification && toastNotification.orderId === orderId) {
+      setToastNotification(null);
+    }
+  };
+
+  // Accept a demand ping ("Bulao Thela")
+  const handleAcceptPing = (pingId) => {
+    const vendorInfo = {
+      name: "Ramesh Bhaiya (Fresh Sabzi Thela)",
+      phone: "+91 98765 43210",
+      eta: "3-4 mins",
+      distance: "120m away",
+    };
+
+    setLivePings((prev) =>
+      prev.map((p) => (p.id === pingId ? { ...p, status: "accepted", acceptedBy: vendorInfo } : p))
+    );
+
+    acceptSyncDemandPing(pingId, vendorInfo);
+
+    try {
+      fetch("/api/ping/accept", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pingId, vendorId: "vendor-ramesh" }),
+      }).catch(() => {});
+    } catch (e) {}
+
+    if (toastNotification && toastNotification.pingId === pingId) {
+      setToastNotification(null);
+    }
   };
 
   return (
@@ -230,6 +359,46 @@ export default function VendorDashboard() {
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-16">
+        {/* Real-time Order & Ping Toast Notification Banner */}
+        {toastNotification && (
+          <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-green-600 to-emerald-700 text-white shadow-xl flex items-center justify-between gap-4 animate-bounce">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                {toastNotification.type === "order" ? (
+                  <ShoppingBag className="w-5 h-5 text-white" />
+                ) : (
+                  <Radio className="w-5 h-5 text-white animate-pulse" />
+                )}
+              </div>
+              <div>
+                <p className="font-black text-sm tracking-wide">{toastNotification.title}</p>
+                <p className="text-xs text-white/90 font-medium">{toastNotification.subtitle}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => {
+                  setActiveTab("demand_alerts");
+                  if (toastNotification.type === "order" && toastNotification.orderId) {
+                    handleOrderAction(toastNotification.orderId, "accepted");
+                  } else if (toastNotification.type === "ping" && toastNotification.pingId) {
+                    handleAcceptPing(toastNotification.pingId);
+                  }
+                }}
+                className="bg-white text-emerald-800 text-xs font-black px-4 py-2 rounded-xl shadow-xs hover:bg-emerald-50 transition-all cursor-pointer whitespace-nowrap"
+              >
+                ✓ Sweekar Karein (Accept)
+              </button>
+              <button
+                onClick={() => setToastNotification(null)}
+                className="p-1.5 rounded-lg hover:bg-white/20 text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Top Stat Cards matching The-Hashira---tech-thela */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Card 1: Account Status */}
@@ -569,76 +738,166 @@ export default function VendorDashboard() {
               </div>
             )}
 
-            {/* TAB 3: DEMAND ALERTS (BULAO THELA PINGS) */}
+            {/* TAB 3: DEMAND ALERTS (ORDERS & BULAO THELA PINGS) */}
             {activeTab === "demand_alerts" && (
               <div className="space-y-6">
+                {/* Section 1: Live Doorstep Orders */}
                 <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
                   <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
                     <div>
-                      <h3 className="text-2xl font-black text-[#111111]">
-                        Live Customer Demand Pings
-                      </h3>
+                      <div className="flex items-center gap-2">
+                        <ShoppingBag className="w-5 h-5 text-emerald-600" />
+                        <h3 className="text-xl sm:text-2xl font-black text-[#111111]">
+                          Live Doorstep Orders
+                        </h3>
+                        <span className="text-xs font-black bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
+                          {incomingOrders.filter((o) => o.status === "pending").length} New
+                        </span>
+                      </div>
                       <p className="text-xs text-gray-600 mt-1">
-                        Grahak jo aapke route par thela bula rahe hain. Sweekar karein aur direct deliver karein.
+                        Grahak jinhone direct doorstep delivery order kiya hai. Sweekar karein aur rasta dekhein.
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    {incomingOrders.map((ord) => (
-                      <div
-                        key={ord.id}
-                        className={`p-5 rounded-2xl border transition-all ${
-                          ord.status === "accepted"
-                            ? "bg-emerald-50 border-emerald-300"
-                            : ord.status === "rejected"
-                            ? "bg-gray-100 border-gray-200 opacity-50"
-                            : "bg-white border-gray-200 hover:border-[#16A34A]"
-                        }`}
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                            <h4 className="font-extrabold text-sm text-gray-900">
-                              {ord.customerName}
-                            </h4>
-                            <span className="text-xs text-gray-400">• {ord.time}</span>
+                    {incomingOrders.length === 0 ? (
+                      <p className="text-xs text-gray-500 py-4 text-center">No pending doorstep orders.</p>
+                    ) : (
+                      incomingOrders.map((ord) => (
+                        <div
+                          key={ord.id}
+                          className={`p-5 rounded-2xl border transition-all ${
+                            ord.status === "accepted"
+                              ? "bg-emerald-50 border-emerald-300"
+                              : ord.status === "rejected"
+                              ? "bg-gray-100 border-gray-200 opacity-50"
+                              : "bg-white border-gray-200 hover:border-[#16A34A]"
+                          }`}
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                            <div className="flex items-center gap-2">
+                              {ord.status === "pending" && (
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                              )}
+                              <h4 className="font-extrabold text-sm text-gray-900">
+                                {ord.customerName}
+                              </h4>
+                              <span className="text-xs text-gray-400">• {ord.time}</span>
+                            </div>
+                            <span className="text-xs font-extrabold text-[#16A34A] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                              📍 {ord.distance}
+                            </span>
                           </div>
-                          <span className="text-xs font-extrabold text-[#16A34A] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                            📍 {ord.distance}
-                          </span>
+
+                          <p className="text-xs text-gray-700 font-medium mb-3">
+                            <strong>Requested Items:</strong> {ord.items} •{" "}
+                            <span className="font-bold text-gray-900">Total: ₹{ord.total}</span>
+                          </p>
+
+                          {ord.status === "pending" && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleOrderAction(ord.id, "accepted")}
+                                className="bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-black px-4 py-2 rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
+                              >
+                                ✓ {t("acceptBtn")}
+                              </button>
+                              <button
+                                onClick={() => handleOrderAction(ord.id, "rejected")}
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl cursor-pointer"
+                              >
+                                ✕ {t("rejectBtn")}
+                              </button>
+                            </div>
+                          )}
+
+                          {ord.status === "accepted" && (
+                            <div className="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5">
+                              <CheckCircle className="w-4 h-4 text-emerald-600" />
+                              <span>Accepted! Navigation route live on your phone. Deliver to doorstep.</span>
+                            </div>
+                          )}
                         </div>
+                      ))
+                    )}
+                  </div>
+                </div>
 
-                        <p className="text-xs text-gray-700 font-medium mb-3">
-                          <strong>Requested Items:</strong> {ord.items} •{" "}
-                          <span className="font-bold text-gray-900">Total: ₹{ord.total}</span>
-                        </p>
-
-                        {ord.status === "pending" && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleOrderAction(ord.id, "accepted")}
-                              className="bg-[#16A34A] hover:bg-[#15803D] text-white text-xs font-black px-4 py-2 rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
-                            >
-                              ✓ {t("acceptBtn")}
-                            </button>
-                            <button
-                              onClick={() => handleOrderAction(ord.id, "rejected")}
-                              className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2 rounded-xl cursor-pointer"
-                            >
-                              ✕ {t("rejectBtn")}
-                            </button>
-                          </div>
-                        )}
-
-                        {ord.status === "accepted" && (
-                          <div className="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5">
-                            <CheckCircle className="w-4 h-4 text-emerald-600" />
-                            <span>Accepted! Navigation route live on your phone.</span>
-                          </div>
-                        )}
+                {/* Section 2: Live Bulao Thela Pings */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-sm">
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Radio className="w-5 h-5 text-amber-500 animate-pulse" />
+                        <h3 className="text-xl sm:text-2xl font-black text-[#111111]">
+                          Live &quot;Bulao Thela&quot; Demand Pings
+                        </h3>
+                        <span className="text-xs font-black bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">
+                          {livePings.filter((p) => p.status !== "accepted").length} Live
+                        </span>
                       </div>
-                    ))}
+                      <p className="text-xs text-gray-600 mt-1">
+                        Aas-paas ke mohalla grahak jo thela apni gali me bulana chahte hain. Sweekar karein aur rasta dekhein.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {livePings.length === 0 ? (
+                      <p className="text-xs text-gray-500 py-4 text-center">No active demand pings.</p>
+                    ) : (
+                      livePings.map((ping) => (
+                        <div
+                          key={ping.id}
+                          className={`p-5 rounded-2xl border transition-all ${
+                            ping.status === "accepted"
+                              ? "bg-amber-50/70 border-amber-300"
+                              : "bg-white border-amber-200 hover:border-amber-400"
+                          }`}
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                            <div className="flex items-center gap-2">
+                              {ping.status !== "accepted" && (
+                                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+                              )}
+                              <h4 className="font-extrabold text-sm text-gray-900">
+                                {ping.consumerName || "Mohalla Grahak"}
+                              </h4>
+                              <span className="text-xs text-gray-400">• {ping.time}</span>
+                            </div>
+                            <span className="text-xs font-extrabold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200">
+                              📍 Pincode: {ping.pin || "110075"}
+                            </span>
+                          </div>
+
+                          <div className="text-xs text-gray-800 font-medium space-y-1 mb-3">
+                            <p>
+                              <strong>Chahiye:</strong> {ping.item} {ping.quantity && `(${ping.quantity})`}
+                            </p>
+                            {ping.notes && (
+                              <p className="text-gray-500 italic">
+                                &quot;{ping.notes}&quot;
+                              </p>
+                            )}
+                          </div>
+
+                          {ping.status !== "accepted" ? (
+                            <button
+                              onClick={() => handleAcceptPing(ping.id)}
+                              className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-black px-4 py-2 rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1.5"
+                            >
+                              ✓ Sweekar Karein & Thela Le Jaayein (Accept & Go)
+                            </button>
+                          ) : (
+                            <div className="text-xs font-extrabold text-amber-800 flex items-center gap-1.5">
+                              <CheckCircle className="w-4 h-4 text-emerald-600" />
+                              <span>Accepted! Grahak ko notify kar diya gaya hai. ETA ~3 mins.</span>
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
