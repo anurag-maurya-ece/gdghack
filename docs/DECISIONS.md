@@ -120,5 +120,14 @@ Context: User requested building production-grade authentication from scratch wi
 Options: 1) NextAuth / Auth.js 2) Custom self-owned auth engine with Argon2id, Jose JWTs, cryptographic token hashing, rotating refresh tokens with family tracking, progressive lockout, and constant-time execution against non-existent accounts.
 Chosen: 2. Built `src/server/auth/password.ts`, `src/server/auth/tokens.ts`, `src/server/auth/rate-limiter.ts`, `src/server/auth/cookies.ts`, and `src/server/auth/service.ts`.
 Why: Custom auth gives 100% control over session lifetime, token rotation, reuse detection (revoking entire token families upon stolen token replay), timing-attack resistance via constant-time dummy verification, progressive lockout, and strictly decoupled RBAC without third-party vendor lock-in.
-Trade-off: Requires maintaining session rotation and token revocation logic in-house.
 Revisit if: WebAuthn / Passkeys or enterprise SAML/SSO are required.
+
+## D-016: Phase 3 Authorization Layer, RBAC, IDOR Protection & Next.js Security Middleware
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested replacing Firebase security rules with an explicit authorization matrix (role x resource x action), route protection middleware, IDOR protection, CSRF mitigation, and standardized API response wrappers.
+Options: 1) Client-side only guards 2) Double protection: Edge middleware for security headers & CSRF validation PLUS server-side `requireAuth()`, `requireRole()`, and `assertOwnership()` in handlers.
+Chosen: 2. Built `src/server/auth/rbac.ts`, `middleware.ts`, and full REST routes under `app/api/auth/{signup,login,refresh,logout,me,verify-email,forgot-password,reset-password}`.
+Why: Client-side guards are trivially bypassable; edge middleware enforces security headers (CSP, HSTS, X-Frame-Options: DENY, Referrer-Policy, Permissions-Policy) and CSRF Origin matching, while server-side handler guards re-verify active database status, banned flags, and resource ownership (preventing IDOR).
+Trade-off: Edge middleware inspects cookie presence and Origin on mutating routes; external webhooks (e.g. WhatsApp) are safely bypassed from CSRF origin checks.
+Revisit if: Granular permission flags (beyond role enums) are introduced.
+

@@ -6,6 +6,7 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
+    fileParallelism: false,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
@@ -13,9 +14,9 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "./"),
-      "@/server": path.resolve(import.meta.dirname, "./src/server"),
-    },
+    alias: [
+      { find: "@/server", replacement: path.resolve(import.meta.dirname, "./src/server") },
+      { find: "@", replacement: path.resolve(import.meta.dirname, "./") },
+    ],
   },
 });

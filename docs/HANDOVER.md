@@ -1,5 +1,44 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 2: Custom Auth Engine, Argon2id, Rotating Refresh Tokens, Reuse Detection & 25 Edge-Case Tests)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 3: Authorization Matrix, RBAC, IDOR Protection, Edge Middleware & REST Auth Handlers)
+Done:
+- **Phase 3 Authorization Matrix & Middleware Architecture Complete**:
+  - `src/server/auth/rbac.ts`:
+    - `requireAuth(req)`: Extract Bearer token or `access_token` cookie, verify JWT, validate active database user, enforce banned/suspended account rejection (403).
+    - `requireRole(req, allowedRoles)`: Enforce strict role matrix (CUSTOMER, VENDOR, ADMIN) with automatic admin pass-through.
+    - `assertOwnership(currentUserId, resourceOwnerId, currentUserRole)`: Resource-level ownership checks with admin override to eliminate IDOR vulnerabilities.
+    - Standardized API response format: `apiSuccess(data, status)` and `apiError(status, code, message, details)`.
+  - `middleware.ts`:
+    - Strict security headers injection: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, and production `Strict-Transport-Security`.
+    - CSRF protection: Validates Origin/Host headers on mutating HTTP methods (`POST`, `PUT`, `DELETE`, `PATCH`) with cookie sessions, safely exempting external webhooks (`/api/whatsapp/webhook`).
+  - **Full Auth REST Handlers**:
+    - `app/api/auth/signup/route.ts`: Zod schema validation, Argon2id registration, 201 response.
+    - `app/api/auth/login/route.ts`: Rate-limited login, attaches httpOnly + sameSite: lax cookies.
+    - `app/api/auth/refresh/route.ts`: Rotating refresh token handler updating cookies.
+    - `app/api/auth/logout/route.ts`: Database session revocation and cookie purge.
+    - `app/api/auth/me/route.ts`: Authenticated identity query endpoint.
+    - `app/api/auth/verify-email/route.ts`: Single-use token email validation.
+    - `app/api/auth/forgot-password/route.ts`: Non-enumerating reset token generator.
+    - `app/api/auth/reset-password/route.ts`: Token consumption, password update, and session purge.
+- **Verification & Testing (Mandatory Test-Fix Loop)**:
+  - `npx vitest run --coverage`: **58/58 tests PASSING** across 5 test suites (`auth.test.ts`, `rbac.test.ts`, `routes.test.ts`, `db.test.ts`, `env.test.ts`).
+  - Coverage: **92.67% line coverage on `src/server/auth`** (`rbac.ts` at 100% line coverage!), **92.49% overall**.
+  - Mutation check: Deliberately breaking the ownership check in `rbac.ts` caused `rbac.test.ts` to immediately fail on IDOR rejection, and revert passed.
+  - `npx tsc --noEmit`: 0 errors.
+  - `npm run build`: Compiled 30/30 pages and routes with Turbopack in 3.9s with 0 errors.
+In progress:
+- Phase 4: Feature APIs replacing Firestore (`/api/vendors`, `/api/locations`, `/api/products`, `/api/orders`, `/api/demand`).
+Broken/risky:
+- None.
+Next:
+- Phase 4: Build feature services and route handlers in `src/server/services/` and `app/api/` replacing legacy Firebase Firestore endpoints.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npx vitest run --coverage`
+- `npx tsc --noEmit`
+- `npm run build`
+
+## Previous session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 2: Custom Auth Engine, Argon2id, Rotating Refresh Tokens, Reuse Detection & 25 Edge-Case Tests)
 Done:
 - **Phase 2 Complete Auth Engine Built from Scratch**:
   - `src/server/auth/password.ts`: OWASP-compliant Argon2id hashing (`memoryCost: 65536, timeCost: 3, parallelism: 4`), `verifyPassword`, and `dummyVerifyPassword` ensuring constant execution time against non-existent accounts to eliminate timing attacks.
