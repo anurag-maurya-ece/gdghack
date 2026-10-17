@@ -87,7 +87,14 @@ Options: 1) Cloud Function webhook only 2) Unified AI wrapper + Meta-compatible 
 Chosen: 2. Implemented `lib/ai-wrapper.js` for speech intent extraction and translation, `app/api/whatsapp/webhook/route.js` for Meta Cloud API verification and message handling with rate limiting, and `app/whatsapp/page.jsx` as an interactive visual WhatsApp simulator.
 Why: Ensures official webhook compatibility with Meta WhatsApp Cloud API while providing an infallible, fail-safe visual demonstration environment for judges even if external webhook tunnels fail.
 Trade-off: In-memory rate limiting and mock store sync for local demo; production requires Redis or Firestore rate limit backend.
-Revisit if: live Meta Business Manager production credentials are provided.
+## D-012: Live Phone Testing via Meta Cloud API & Twilio WhatsApp Sandbox
+Date: 2026-10-17 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested connecting the bot to real WhatsApp so it can be tested from a real phone rather than just the web simulator.
+Options: 1) Meta WhatsApp Cloud API exclusively 2) Twilio WhatsApp Sandbox exclusively 3) Dual webhook supporting both Meta Graph API outbound dispatch and Twilio TwiML XML.
+Chosen: 3. Augmented `app/api/whatsapp/webhook/route.js` to inspect incoming Content-Type: `application/x-www-form-urlencoded` triggers instant TwiML XML replies for zero-configuration testing via Twilio Sandbox on any personal phone; while standard JSON triggers Meta Cloud API graph dispatch if access tokens exist, with graceful fallback to simulator JSON response. Added 1/2 number reply shortcuts for frictionless mobile interaction.
+Why: Twilio Sandbox allows the developer to test immediately on their personal WhatsApp within 2 minutes without waiting for Meta Business Manager verification or submitting message templates.
+Trade-off: Twilio Sandbox requires sending a join code once from the test phone.
+Revisit if: dedicated production WhatsApp Business Number is approved.
 
 
 

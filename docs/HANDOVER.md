@@ -1,29 +1,28 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (WhatsApp Cloud API Webhook, AI Intent Parser & Visual Bot Simulator)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Live WhatsApp on Real Phone: Meta Cloud API + Twilio Sandbox TwiML)
 Done:
-- **WhatsApp Bot Suite for Street Vendors ("whatsapp bot bna do")**:
-  - **AI Voice & Intent Wrapper (`lib/ai-wrapper.js`)**:
-    - `parseVoiceIntent(transcript)`: Extracts structured inventory products (`name`, `price`, `unit`, `inStock`) from raw Hindi/Hinglish/English voice notes (e.g. *"aaj aloo 20 rupaye kilo, pyaaz 35"*), detects demand routing queries (*"kahan jaun?"*), and location triggers (*"thela on"* / *"thela off"*).
-    - `translateMessage(text, targetLang)`: Dual-direction street commerce translation with offline phrasebook and non-blocking tag.
-  - **Meta Cloud API Webhook Handler (`app/api/whatsapp/webhook/route.js`)**:
-    - Implemented GET endpoint with official Meta verification handshake (`hub.mode`, `hub.verify_token`, `hub.challenge`).
-    - Implemented POST endpoint processing incoming WhatsApp text, voice notes, live location coordinates, and 2-tap interactive button replies ("Sahi Hai", "Dobara Bolo", "Kahan Jaun?").
-    - Rate limiting per sender (`RATE_LIMIT_WINDOW_MS = 2000`) and live demand routing integration.
-  - **In-Browser WhatsApp Simulator (`app/whatsapp/page.jsx`)**:
-    - Authentic WhatsApp light theme interface (`#075E54` header, `#EFEAE2` chat background, light-green `#D9FDD3` outgoing bubbles, double blue checkmarks).
-    - 1-tap demo voice triggers: *"Aloo 20, Pyaaz 35"*, *"Kahan Jaun?"*, *"Thela ON (GPS)"*.
-    - Interactive 2-tap WhatsApp confirmation buttons with instant inventory updates.
-    - Added direct link in `components/VendorSidebar.jsx` ("Open WhatsApp Bot").
+- **Real Phone WhatsApp Testing Support**:
+  - Upgraded `app/api/whatsapp/webhook/route.js` to support both:
+    1. **Meta WhatsApp Cloud API**: Inbound parsing + automatic outbound dispatch via `https://graph.facebook.com/v20.0/${WHATSAPP_PHONE_NUMBER_ID}/messages` when credentials are provided in env.
+    2. **Twilio WhatsApp Sandbox**: Inbound `x-www-form-urlencoded` parsing + instant outbound delivery via standard TwiML XML (`<Response><Message>...</Message></Response>`). Zero setup or approval delay for testing on personal phones!
+    3. Added 1-tap/number shortcuts ("1" or "sahi hai" to confirm, "2" or "dobara bolo" to retry, "3" or "kahan jaun" for demand zones) so vendors can use number replies on phones where interactive buttons are plain text.
+  - Updated `.env.example` with WhatsApp Cloud API and Twilio Sandbox env var names.
 - **Verification**:
-  - `scripts/smoke.mjs`: 17/17 tests passing! Verified `/whatsapp`, webhook GET challenge verification handshake, and webhook POST voice parsing.
-  - `npm run build`: Compiled all 22 routes (13 static + 9 dynamic) with 0 errors in 1536ms.
-  - Verified live in Chrome DevTools MCP: simulated voice note -> parsed items -> tapped [Sahi Hai] -> confirmed inventory live update.
+  - `scripts/smoke.mjs`: 18/18 tests passing (including Meta GET handshake, Meta POST JSON extraction, and Twilio POST TwiML XML generation).
+  - Production build compiled all 22 routes cleanly.
 In progress:
 - Server running daemon on 0.0.0.0:3000.
 Broken/risky:
 - None.
 Next:
-- Prepare presentation and whiteboard explanation for hackathon judges.
+- Connect live tunnel (`npx localtunnel --port 3000` or ngrok) to test directly from user's personal WhatsApp phone.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `node scripts/smoke.mjs`
+
+## Previous session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (WhatsApp Cloud API Webhook, AI Intent Parser & Visual Bot Simulator)
 Do not touch:
 - Secrets, `.env`, live deployment.
 Run/test commands:

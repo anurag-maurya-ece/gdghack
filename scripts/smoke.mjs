@@ -136,3 +136,21 @@ assert.equal(webhookPostData.success, true);
 assert.equal(webhookPostData.action, "VOICE_CONFIRMATION_REQUIRED");
 console.log("PASS: /api/whatsapp/webhook POST voice/text extraction returns 200 with confirmation");
 
+// 11. WhatsApp Twilio Sandbox TwiML Check
+const twilioParams = new URLSearchParams();
+twilioParams.append("From", "whatsapp:+919876543210");
+twilioParams.append("To", "whatsapp:+14155238886");
+twilioParams.append("Body", "kahan jaun?");
+
+const twilioPostRes = await fetch(new URL("/api/whatsapp/webhook", base), {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  body: twilioParams.toString(),
+});
+assert.equal(twilioPostRes.status, 200);
+const twilioXml = await twilioPostRes.text();
+assert.match(twilioXml, /<Response>/);
+assert.match(twilioXml, /<Message>/);
+assert.match(twilioXml, /High Demand Zones/);
+console.log("PASS: /api/whatsapp/webhook POST Twilio form returns valid TwiML XML with recommendations");
+
