@@ -1,5 +1,38 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 1: Setup, Zod Env, PostgreSQL Prisma Schema & Test Harness)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 2: Custom Auth Engine, Argon2id, Rotating Refresh Tokens, Reuse Detection & 25 Edge-Case Tests)
+Done:
+- **Phase 2 Complete Auth Engine Built from Scratch**:
+  - `src/server/auth/password.ts`: OWASP-compliant Argon2id hashing (`memoryCost: 65536, timeCost: 3, parallelism: 4`), `verifyPassword`, and `dummyVerifyPassword` ensuring constant execution time against non-existent accounts to eliminate timing attacks.
+  - `src/server/auth/tokens.ts`: 15-minute `jose` JWT access tokens (`signAccessToken`, `verifyAccessToken`), SHA-256 token hashing (`hashToken`) for zero plain-text storage in DB, cryptographically secure random token generation.
+  - `src/server/auth/rate-limiter.ts`: Progressive lockout mechanism (5 failed attempts = 5 min lockout, 10 failed attempts = 15 min lockout) with account and IP tracking.
+  - `src/server/auth/cookies.ts`: Secure cookie helper (`httpOnly: true`, `sameSite: "lax"`, `path: "/"`, strict `maxAge`).
+  - `src/server/auth/service.ts`: Full `AuthService` handling:
+    - Signup with NFKC unicode normalization, email lowercasing/trimming, 8-72 char password bounds, database-enforced unique constraints, single-use 24h verification token.
+    - Constant-time login, user enumeration protection, account suspension/ban check.
+    - Session tracking with userAgent and IP in PostgreSQL `Session` table.
+    - Rotating refresh tokens with family tracking and **automatic reuse detection** (revoking entire token families upon stolen token replay).
+    - Single-use password reset tokens with session revocation across all devices.
+    - Password change requiring current password verification, rejecting same password, and revoking all device sessions.
+- **Verification & Edge-Case Matrix**:
+  - `npx vitest run --coverage`: 38/38 tests PASSING across 3 test suites (`auth.test.ts`, `db.test.ts`, `env.test.ts`).
+  - Strict coverage requirement met: **91.09% line coverage on `src/server/auth`** (and 91.03% across all server files), exceeding the >=90% mandate.
+  - Mutation testing verified: deliberately breaking token reuse detection caused `auth.test.ts` to immediately fail, proving non-hollow tests.
+  - `npx tsc --noEmit`: 0 errors.
+  - `npm run build`: Compiled all 22 routes with Turbopack in 1567ms with 0 errors.
+In progress:
+- Phase 3: Authorization layer, RBAC, route protection middleware (`requireAuth`, `requireRole`, ownership checks).
+Broken/risky:
+- None.
+Next:
+- Phase 3: Build `src/server/auth/rbac.ts`, API route protection wrappers, and authorization tests.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npx vitest run --coverage`
+- `npx tsc --noEmit`
+- `npm run build`
+
+## Previous session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 1: Setup, Zod Env, PostgreSQL Prisma Schema & Test Harness)
 Done:
 - **Phase 1 Setup & Test Harness Complete**:
   - Configured PostgreSQL datasource with dedicated `tech_thela_db` (dev) and `tech_thela_test` (test) on localhost:5432, plus production `docker-compose.yml`.

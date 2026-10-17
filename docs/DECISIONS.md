@@ -114,5 +114,11 @@ Why: Matches non-negotiable directive for real test PostgreSQL (not mocks) and s
 Trade-off: Requires local PostgreSQL server on port 5432 or Docker.
 Revisit if: cloud connection pooler (e.g. PgBouncer / Neon / Supabase) is deployed.
 
-
-
+## D-015: Phase 2 Auth Engine — Argon2id, Rotating Refresh Tokens, Reuse Detection, and Progressive Lockout
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested building production-grade authentication from scratch without Firebase Auth or third-party auth providers, satisfying a rigorous 6-category edge case matrix with >=90% test coverage and mutation testing.
+Options: 1) NextAuth / Auth.js 2) Custom self-owned auth engine with Argon2id, Jose JWTs, cryptographic token hashing, rotating refresh tokens with family tracking, progressive lockout, and constant-time execution against non-existent accounts.
+Chosen: 2. Built `src/server/auth/password.ts`, `src/server/auth/tokens.ts`, `src/server/auth/rate-limiter.ts`, `src/server/auth/cookies.ts`, and `src/server/auth/service.ts`.
+Why: Custom auth gives 100% control over session lifetime, token rotation, reuse detection (revoking entire token families upon stolen token replay), timing-attack resistance via constant-time dummy verification, progressive lockout, and strictly decoupled RBAC without third-party vendor lock-in.
+Trade-off: Requires maintaining session rotation and token revocation logic in-house.
+Revisit if: WebAuthn / Passkeys or enterprise SAML/SSO are required.
