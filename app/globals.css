@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-navy: #0f172a;
+  --color-green: #22c55e;
+  --color-teal: #0b6b6b;
+  --color-lavender: #d9c8f5;
+  --color-card: #f8f4ff;
+  --color-page: #ffffff;
+  --color-ink: #111111;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --spacing: 0.25rem;
+  --radius-card: 1.5rem;
+  --shadow-card: 4px 4px 0 var(--color-ink);
+  --shadow-card-hover: 8px 8px 0 var(--color-ink);
+}
+
+@theme inline {
+  --font-sans: var(--font-outfit), var(--font-devanagari), sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+::selection {
+  background: var(--color-lavender);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-teal);
+  outline-offset: 4px;
+}
+
+.shell { width: min(100% - 3rem, 72rem); margin-inline: auto; }
+.hello-layout { display: grid; gap: 4rem; align-items: center; }
+.hello-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 600; line-height: 1.12; letter-spacing: -0.035em; }
+
+/* Green is a highlight surface: green text on white would fail AA contrast. */
+mark { background: var(--color-green); color: var(--color-ink); padding-inline: 0.5rem; border-radius: 0.5rem; }
+
+.outline-card { border: 2px solid var(--color-ink); border-radius: var(--radius-card); box-shadow: var(--shadow-card); background: var(--color-card); }
+.hello-card { padding: 2rem; }
+.thela-art { width: 100%; max-width: 24rem; margin: 1rem auto; }
+.about-section { border-top: 2px solid var(--color-ink); margin-top: 4rem; padding-top: 3rem; scroll-margin-top: 2rem; }
+
+.button {
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-green);
+  color: var(--color-ink);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+  transition: transform 160ms ease;
+}
+
+.button:active { transform: translateY(2px); box-shadow: none; }
+.skip-link { position: absolute; top: 1rem; left: 1rem; z-index: 10; transform: translateY(-200%); }
+.skip-link:focus { transform: translateY(0); }
+
+@media (hover: hover) {
+  .outline-card:hover, .button:hover { box-shadow: var(--shadow-card-hover); }
+}
+
+@media (min-width: 48rem) {
+  .hello-layout { grid-template-columns: 1.2fr 1fr; }
+  .hello-card { margin-top: 4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+  .button:active { transform: none; }
+}

@@ -4,24 +4,37 @@ WEkreta / Tech Thela bridges street vendors and online customers through a vendo
 
 ## Current status
 
-Documentation-only setup. No feature code, installed dependencies, package manifest, runtime scripts, test suite or deployment exists. The master Word document is the source of truth. Read AGENTS.md, then follow its Session START protocol. The user-authorized build-order clarification is D-002 in docs/DECISIONS.md.
+Local Next.js scaffold with brand tokens, a hello preview and a friendly 404 page. The full animated landing page, Firebase, vendor flows and deployment are still pending. The master Word document is the source of truth. Read AGENTS.md, then follow its Session START protocol. The user-authorized build-order clarification is D-002 in docs/DECISIONS.md.
 
 ## Confirmed stack
 
-Next.js (React), Tailwind, framer-motion, lucide-react; Firebase Firestore, Auth and Cloud Functions; Leaflet with OpenStreetMap; WhatsApp Cloud API or Twilio sandbox; one swappable speech/translation/intent API wrapper. Hosting target: Vercel for web and Firebase for functions. Providers and exact package versions remain to be approved. Optional 3D is not part of initial setup.
+Next.js (React), Tailwind, framer-motion, lucide-react; Firebase Firestore, Auth and Cloud Functions; Leaflet with OpenStreetMap; WhatsApp Cloud API or Twilio sandbox; one swappable speech/translation/intent API wrapper. Hosting target: Vercel for web and Firebase for functions. Installed foundation versions are pinned in package.json and package-lock.json; other packages are deferred until their tasks. WhatsApp and speech providers remain undecided. Optional 3D is not part of initial setup.
 
 ## Install, run and test
 
-These are intended commands after the application scaffold and scripts are approved and created; they are not runnable application checks at this stage. npm is a proposed package manager.
+Use Node.js 24.x and npm (verified locally with Node 24.13.0 and npm 11.6.2). Install exactly the committed lockfile:
 
 ```sh
-npm install
+npm ci
 npm run dev
-npm run build
-npm test
 ```
 
-The scaffold must define dev/build scripts. The test command requires a separately approved test setup. Do not interpret the commands above as successful test results. Node version, Firebase emulator setup and backend commands will be documented with the corresponding implementation task.
+Open http://127.0.0.1:3000. For a production build and local production server:
+
+```sh
+npm run build
+npm start
+```
+
+With that server running, use a second terminal for the HTTP smoke checks:
+
+```sh
+npm test
+# If the local server uses another port:
+npm test -- http://127.0.0.1:3100
+```
+
+Smoke checks exercise the actual home response, compiled CSS and 404 response using Node's built-in assertions. No test framework is installed. These do not validate future vendor, voice, security or Firebase flows. Fonts are downloaded from Google at build time by next/font and self-hosted by Next.js thereafter; the build requires network access for the first font download. Firebase emulator/backend commands remain pending.
 
 Current repository checks:
 

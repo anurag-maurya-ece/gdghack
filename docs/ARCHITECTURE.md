@@ -16,3 +16,10 @@ Vendor taps Accept -> Firestore -> realtime -> Customer sees status
 Chat message -> Function -> translate -> Firestore (messages) -> both users
 Orders + searches -> Demand engine -> cell scores -> Vendor asks where to go
 Trust boundaries (where outside input enters): WhatsApp webhook, customer chat and order forms, voice transcripts, location updates. Always validate these.
+
+## Implemented foundation (2026-10-17)
+- Next.js App Router with JavaScript server components: app/layout.jsx, app/page.jsx and app/not-found.jsx.
+- Tailwind v4 via PostCSS; app/globals.css owns the exact brand palette, font, card, button, focus and reduced-motion styles.
+- next/font downloads Outfit and Noto Sans Devanagari during build and serves them locally. Two font weights: 400 and 600.
+- functions/ and lib/ are placeholders only. No Firebase client, backend, auth or external application API calls exist yet.
+- scripts/smoke.mjs checks a running localhost server through real HTTP; no test-framework dependency.

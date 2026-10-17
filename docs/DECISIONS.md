@@ -24,3 +24,21 @@ Chosen: 1. Preserve the master DOCX in the repository; add documentation and sec
 Why: Application scaffolding, dependency installation, Firebase configuration, and deployment require the next approved task.
 Trade-off: No installable app, build, or test suite exists yet. Environment names are provisional Firebase web configuration names only; add provider-specific names when those providers are selected.
 Revisit if: the first implementation task is approved.
+
+## D-004: Minimal local scaffold using the approved stack
+Date: 2026-10-17 Tool/model: Codex / GPT-6
+Context: User approved Next.js/Tailwind scaffold, design tokens and a local hello page.
+Options: 1) Minimal manual JavaScript App Router scaffold 2) Generated template with additional tooling and boilerplate.
+Chosen: 1. npm with exact dependency versions and lockfile; Node 24.x. Next 16.4.2, React/react-dom 19.3.1, lucide-react 1.59.0; Tailwind/@tailwindcss/postcss 4.3.3 and PostCSS 8.5.30 as build tooling. Versions obtained from npm registry before installation.
+Why: Uses the approved stack without unrelated template UI, additional test frameworks or TypeScript tooling. Native Node assertions provide HTTP smoke checks.
+Trade-off: JavaScript has no compile-time type checks; no linter installed. Fonts use next/font Google downloads at build time. Full landing motion and Firebase remain separate tasks.
+Revisit if: the user approves stronger type/lint tooling or offline build requirements.
+
+## D-005: Accessible green highlight and honest hello preview
+Date: 2026-10-17 Tool/model: Codex / GPT-6
+Context: Exact brand green is too light for normal text on white; this task is a hello preview, not the full landing or a vendor flow.
+Options: 1) Ink text over exact green highlight 2) Green text over white.
+Chosen: 1. Keep the prescribed palette and highlight one heading word using green as its background. Use a static custom flat cart illustration and real in-page link.
+Why: Keeps the design identity while preserving contrast and avoiding fake feature controls.
+Trade-off: Full tilt/parallax, language picker and recording controls are deferred to their actual landing/vendor tasks. A two-language voice check cannot run before voice features exist; it remains outstanding, not passed.
+Revisit if: the complete landing task is approved.
