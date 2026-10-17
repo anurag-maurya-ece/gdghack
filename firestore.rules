@@ -1,7 +1,0 @@
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Closed until each feature defines its own validated, least-privilege access.
-    match /{document=**} { allow read, write: if false; }
-  }
-}

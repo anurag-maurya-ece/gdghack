@@ -1,24 +1,34 @@
-# ARCHITECTURE
+## Production Self-Owned Architecture (Post-Firebase Migration)
 
-## Firebase foundation
-firebase.json binds Auth 9099, Firestore 8080 and Functions 5001 to 127.0.0.1, project demo-tech-thela. functions/index.js exposes health; database rules deny unspecified access. scripts/emulators.mjs selects ignored workspace Java 21 and Node 22 runtimes. No live Firebase project has been configured.
+Tech Thela is 100% migrated off Google Firebase to a self-owned, enterprise-grade Next.js App Router backend powered by PostgreSQL, Prisma ORM, Argon2id, and S3-compatible object storage.
 
-5. Architecture (high level)
-Modules and what each owns
-WhatsApp Bot service (/functions): receives webhooks, verifies them, routes voice/text to the intent parser, replies in the vendor's language.
-AI wrapper (/lib/ai): one place for speech-to-text, translation and intent extraction. Swap providers here only.
-Web app (/app): customer map, cart, orders, chat; vendor dashboard (orders, products, demand tab).
-Firestore: source of truth and realtime layer.
-Demand engine (/functions/demand): scheduled job that recomputes grid-cell scores.
-Data flow
-Vendor voice note -> WhatsApp -> Webhook (verify) -> Speech-to-text -> Intent parser
-   -> confirm with vendor -> Firestore (products)
-Vendor live location -> Firestore (locations) -> realtime -> Customer map
-Customer order -> Firestore (orders) -> Cloud Function -> WhatsApp message to vendor
-Vendor taps Accept -> Firestore -> realtime -> Customer sees status
-Chat message -> Function -> translate -> Firestore (messages) -> both users
-Orders + searches -> Demand engine -> cell scores -> Vendor asks where to go
-Trust boundaries (where outside input enters): WhatsApp webhook, customer chat and order forms, voice transcripts, location updates. Always validate these.
+### 1. Modules & Ownership
+- **WhatsApp Webhook Bot (`/api/whatsapp/webhook`)**: Receives Meta Cloud API / Twilio webhooks, verifies HMAC signature / verification tokens, parses voice notes and text, interfaces with AI service, and communicates back with vendors in regional languages.
+- **AI Wrapper (`/lib/ai`)**: Single swap-ready module for speech-to-text, translation, and intent parsing.
+- **Web App (`/app`)**: Customer discovery map, basket ordering, real-time demand radar, auto-translated chat, vendor operations dashboard (Thela ON/OFF, voice catalog, instant order acceptance, demand hotspots).
+- **Core Domain Services (`src/server/services`)**:
+  - `VendorService`: Profile CRUD, active status, geospatial nearest-vendor lookup using Haversine algorithm.
+  - `LocationService`: Real-time GPS coordinate streaming with automatic stale telemetry decay (offline if >15m).
+  - `ProductService`: Vendor catalog management, bulk voice listing creation with atomic commits.
+  - `OrderService`: Multi-item orders + chat thread initialization inside PostgreSQL transactions (`$transaction`), idempotency key tracking, strict status transition state machine.
+  - `DemandService`: "Bulao Thela" customer pings, dynamic demand hotspot grid scoring, and high-demand zone recommendations.
+  - `StorageService`: User-namespaced presigned S3/R2 direct upload generation, MIME type allowlist, 5MB quota check.
+  - `EmailService`: Transactional HTML email dispatcher for email verification and password reset.
+- **Database & Data Layer (`prisma/schema.prisma`, `src/server/lib/db.ts`)**: Relational PostgreSQL database managed via Prisma 6.4.1. Strict foreign key constraints, cascading lifecycle cleanup, unique constraints, and B-Tree indexes.
+- **Authentication & Security Engine (`src/server/auth`)**:
+  - Argon2id password hashing with constant-time dummy verification against timing attacks.
+  - Rotating dual-token session architecture: 15-minute access JWT + 7-day SHA-256 hashed refresh token in `httpOnly`, `SameSite: Lax`, `Secure` cookies.
+  - Stolen refresh token reuse detection with full token-family session revocation.
+  - Progressive brute-force lockout rate-limiting per account and IP.
+  - RBAC authorization (`requireAuth`, `requireRole`, `assertOwnership`) protecting against IDOR.
+  - Strict security middleware: CSP, HSTS, X-Frame-Options: DENY, Referrer-Policy, Permissions-Policy, CSRF origin verification.
+
+### 2. Data Flow
+- Vendor voice note -> WhatsApp Webhook -> STT -> Intent Parser -> JSON -> Confirmation ("Sahi Hai?") -> `ProductService.bulkCreateProducts` -> PostgreSQL
+- Vendor live location -> `LocationService.updateVendorLocation` -> PostgreSQL -> Customer Map API (`/api/vendor/nearby`)
+- Customer order -> `OrderService.createOrder` (`$transaction`) -> WhatsApp vendor notification
+- Vendor status update (`ACCEPTED` / `ENROUTE` / `DELIVERED`) -> `OrderService.updateOrderStatus` -> Realtime polling / customer live tracker
+- Customer "Bulao Thela" ping -> `DemandService.recordDemandPing` -> Demand hotspot aggregator -> Vendor suggestions
 
 ## Implemented foundation (2026-10-17)
 - Next.js App Router with JavaScript server components: app/layout.jsx, app/page.jsx and app/not-found.jsx.

@@ -1,37 +1,34 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 5: Presigned Storage S3/R2 & Email Dispatch Services)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 6 & 7: Firebase SDK Eradication, Seeding & Migration Pipeline)
 Done:
-- **Phase 5 Storage & Email Services Complete**:
-  - `src/server/services/storage.service.ts`:
-    - Generates user-namespaced S3/Cloudflare R2 presigned upload URLs (`uploads/{userId}/{uuid}-{cleanFileName}`).
-    - Strict content-type allowlisting: `image/jpeg`, `image/png`, `image/webp`, `image/avif` (rejects executables, HTML, scripts).
-    - File size validation enforcing 5MB max quota.
-    - Sanitizes file names against path traversal attacks.
-  - `app/api/storage/presigned-url/route.ts`:
-    - Authenticated endpoint (`requireAuth`) returning presigned upload target and public CDN retrieval URL.
-  - `src/server/services/email.service.ts`:
-    - Responsive HTML templates for account verification and password reset dispatch.
-    - Test harness queue inspection (`getSentEmails()`, `clearSentEmails()`).
+- **Phase 6 & 7 Complete: Firebase Eradication & Migration Pipeline**:
+  - Uninstalled 656 packages: `firebase`, `@firebase/rules-unit-testing`, `firebase-tools`.
+  - Deleted obsolete Firebase files: `firestore.rules`, `scripts/emulators.mjs`, `scripts/rules.test.mjs`.
+  - Cleaned `.env.example`: Removed all Firebase configuration keys; provided PostgreSQL, JWT, CDN, S3, and WhatsApp/Twilio environment templates.
+  - Implemented standalone PostgreSQL data seeding script: `scripts/seed-data.mjs` (`npm run db:seed`) creating demo users, vendor profiles, inventory catalogs, and demand zones.
+  - Implemented Firestore to PostgreSQL ETL migration script: `scripts/migrate-firebase-to-postgres.mjs` with `--dry-run`, checksum verification, and error recovery.
+  - Implemented database verification audit script: `scripts/verify-migration.mjs` validating record counts, foreign key relational integrity, and constraint enforcement.
 - **Verification & Testing (Mandatory Test-Fix Loop)**:
-  - `npx vitest run --coverage`: **83/83 tests PASSING** across 8 test suites.
+  - `npm run test:coverage`: **83/83 tests PASSING** across 8 test suites.
   - Strict coverage requirement met: **92.85% line coverage on `src/server/services`**, **92.67% on `src/server/auth`**, **92.62% overall**.
-  - Mutation testing verified: Deliberately bypassing `contentType` validation in `StorageService.generatePresignedUploadUrl` caused `storage-email.test.ts` to immediately fail, and revert passed.
-  - `npx tsc --noEmit`: 0 errors.
-  - `npm run build`: Compiled 34/34 pages and routes with Turbopack in 2.7s with 0 errors.
+  - `node scripts/smoke.mjs`: **18/18 checks PASSING**.
+  - `npx tsc --noEmit`: **0 errors**.
+  - `npm run build`: Compiled 34/34 pages and routes with Turbopack in 1.4s with **0 errors**.
 In progress:
-- Phase 6: Frontend Integration & Firebase SDK Removal (Update AuthContext, API client, replace Firebase client listeners, Playwright E2E tests).
+- Production deployment / live cutover verification.
 Broken/risky:
 - None.
 Next:
-- Phase 6: Update frontend auth hooks and forms to consume Next.js `/api/auth` endpoints and completely sever client-side Firebase SDK dependencies.
+- Production readiness cutover report and Whiteboard defense overview for hackathon judges.
 Do not touch:
 - Secrets, `.env`, live deployment.
 Run/test commands:
-- `npx vitest run --coverage`
+- `npm run test:coverage`
+- `node scripts/smoke.mjs`
 - `npx tsc --noEmit`
 - `npm run build`
 
-## Previous session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 4: Domain Feature Services Replacing Firestore with PostgreSQL Prisma)
+## Previous session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 5: Presigned Storage S3/R2 & Email Dispatch Services)
 Done:
 - **Phase 4 Domain Feature Services & API Routes Complete**:
   - `src/server/services/vendor.service.ts`:

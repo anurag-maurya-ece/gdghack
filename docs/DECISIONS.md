@@ -148,3 +148,12 @@ Chosen: 2. Built `src/server/services/storage.service.ts`, `app/api/storage/pres
 Why: Direct multipart file upload to Next.js servers creates memory bottlenecks and server exhaustion under scale; presigned URLs delegate direct secure binary streaming to S3/Cloudflare R2 edge while maintaining strict server-side authorization, quota, and namespace boundaries.
 Trade-off: Requires 2-step client upload (request presigned URL -> PUT binary payload).
 Revisit if: Multipart chunked resumable video uploads (>100MB) are introduced.
+
+## D-019: Firebase Complete Removal, Database Seeding & Migration Pipeline
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested complete removal of Firebase (Auth, Firestore, Storage, Cloud Functions, SDKs) and replacing it with a production-grade self-owned Next.js backend, verified via automated test loop.
+Options: 1) Keep Firebase SDK installed as optional fallback 2) Completely uninstall `firebase`, `@firebase/rules-unit-testing`, and `firebase-tools`, delete obsolete emulator scripts (`scripts/emulators.mjs`, `scripts/rules.test.mjs`, `firestore.rules`), clean `.env.example`, and implement standalone PostgreSQL seeding and idempotent migration scripts.
+Chosen: 2. Completely uninstalled 656 Firebase packages, removed emulator/rule files, provided `scripts/seed-data.mjs`, `scripts/migrate-firebase-to-postgres.mjs`, and `scripts/verify-migration.mjs`.
+Why: Meets non-negotiable requirement of 100% self-owned stack with zero reliance on proprietary vendor lock-in or Google Firebase infrastructure.
+Trade-off: Realtime updates now rely on polling / SSE architecture instead of Firebase `onSnapshot`.
+Revisit if: WebSockets are needed for ultra-low latency real-time telemetry.
