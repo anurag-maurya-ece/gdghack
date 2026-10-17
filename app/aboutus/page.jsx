@@ -21,7 +21,7 @@ export default function AboutUsPage() {
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-700 leading-relaxed font-medium">
-              WEkreta is aimed to solve the problems of street vendors by becoming a platform providing the ailment to all their daily problems.
+              Tech Thela is aimed to solve the problems of street vendors by becoming a platform providing modern technological empowerment to their daily work.
             </p>
 
             <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
@@ -45,7 +45,7 @@ export default function AboutUsPage() {
               width={500}
               height={500}
               className="w-full h-auto object-contain rounded-3xl"
-              alt="About WEkreta"
+              alt="About Tech Thela"
               unoptimized={true}
             />
           </div>

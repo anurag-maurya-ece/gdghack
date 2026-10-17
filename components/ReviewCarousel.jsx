@@ -38,7 +38,7 @@ const reviewsData = [
     designation: "Student",
     image: "cust3",
     comment:
-      "I am pursuing my Masters. As of now, I earn discount coupons by just reviewing the street vendors on their platform. I can certainly make a fresh purchase after verifying the fruits myself. Kudos to WEkreta!",
+      "I am pursuing my Masters. As of now, I earn discount coupons by just reviewing the street vendors on their platform. I can certainly make a fresh purchase after verifying the fruits myself. Kudos to Tech Thela!",
   },
 ];
 

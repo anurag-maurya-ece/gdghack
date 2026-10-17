@@ -8,11 +8,34 @@ assert.ok(["127.0.0.1", "localhost", "[::1]"].includes(base.hostname), "Smoke ch
 const homeRes = await fetch(base, { signal: AbortSignal.timeout(15_000) });
 assert.equal(homeRes.status, 200);
 const homeHtml = await homeRes.text();
-assert.match(homeHtml, /WEkreta/);
+assert.match(homeHtml, /Tech Thela/);
 assert.match(homeHtml, /START TO SUCCESS/);
 assert.match(homeHtml, /Empowering your long-lived/);
 assert.match(homeHtml, /Hear it from our customers/);
-console.log("PASS: home returns 200 with hero, stats, roles, and feedback carousel");
+console.log("PASS: home returns 200 with Tech Thela hero, stats, roles, and feedback carousel");
+
+// 1b. Vendor Login Check
+const vLoginRes = await fetch(new URL("/Vendorlogin", base), { signal: AbortSignal.timeout(15_000) });
+assert.equal(vLoginRes.status, 200);
+const vLoginHtml = await vLoginRes.text();
+assert.match(vLoginHtml, /Vendor Login/);
+assert.match(vLoginHtml, /Grow Your/);
+console.log("PASS: /Vendorlogin returns 200 with business sign-in form");
+
+// 1c. Customer Login Check
+const cLoginRes = await fetch(new URL("/Customerlogin", base), { signal: AbortSignal.timeout(15_000) });
+assert.equal(cLoginRes.status, 200);
+const cLoginHtml = await cLoginRes.text();
+assert.match(cLoginHtml, /Customer Login/);
+assert.match(cLoginHtml, /Fresh/);
+console.log("PASS: /Customerlogin returns 200 with customer sign-in form");
+
+// 1d. Questionnaire Form Check
+const formRes = await fetch(new URL("/form", base), { signal: AbortSignal.timeout(15_000) });
+assert.equal(formRes.status, 200);
+const formHtml = await formRes.text();
+assert.match(formHtml, /Let us know something about you/);
+console.log("PASS: /form returns 200 with customer household questionnaire");
 
 // 2. About Us Check
 const aboutRes = await fetch(new URL("/aboutus", base), { signal: AbortSignal.timeout(15_000) });

@@ -19,7 +19,7 @@ export default function PricingPage() {
             Designed for a smooth experience
           </h1>
           <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            Here at WEkreta we focus on bridging street commerce with technology, innovation, and trust to unlock long-term value.
+            Here at Tech Thela we focus on bridging street commerce with technology, innovation, and trust to unlock long-term value.
           </p>
         </div>
 

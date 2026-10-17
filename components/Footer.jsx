@@ -1,15 +1,22 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
     <footer className="p-6 sm:p-12 bg-gray-950 text-white border-t border-gray-800">
       <div className="max-w-screen-xl mx-auto md:flex md:justify-between items-start gap-10">
         <div className="mb-8 md:mb-0 max-w-sm">
-          <Link href="/" className="flex items-center">
-            <span className="self-center text-4xl font-extrabold whitespace-nowrap text-white">
-              <span className="text-green-500">WE</span>kreta
-            </span>
+          <Link href="/" className="flex items-center group">
+            <div className="relative h-12 w-44">
+              <Image
+                src="/assets/tech thela logo.png"
+                alt="Tech Thela"
+                fill
+                sizes="180px"
+                className="object-contain object-left group-hover:scale-105 transition-transform"
+              />
+            </div>
           </Link>
           <p className="mt-3 text-sm text-gray-400 leading-relaxed">
             Empowering street vendors (*thela wale*) with modern technology, live mapping, and voice-assisted commerce. Restoring the connection between vendors and consumers.
@@ -85,7 +92,7 @@ export default function Footer() {
       <hr className="my-8 border-gray-800" />
 
       <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-        <span>© 2026 WEkreta™. All Rights Reserved.</span>
+        <span>© 2026 Tech Thela™. All Rights Reserved.</span>
         <span>Built with pride for street vendors and local communities.</span>
       </div>
     </footer>

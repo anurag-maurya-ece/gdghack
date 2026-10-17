@@ -81,7 +81,7 @@ export default function Home() {
             width={650}
             height={650}
             className="w-full max-w-lg md:max-w-none h-auto object-contain relative z-10 drop-shadow-xl"
-            alt="WEkreta Hero Animation"
+            alt="Tech Thela Hero Animation"
             unoptimized={true}
             priority
           />
@@ -106,8 +106,8 @@ export default function Home() {
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#16A34A]/15 rounded-full blur-3xl pointer-events-none" />
           <p className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight max-w-4xl relative z-10">
             It&apos;s your time to make the move with{" "}
-            <span className="text-[#22C55E]">
-              WE<span className="text-white">kreta</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A34A] to-[#22C55E]">
+              Tech Thela™
             </span>
           </p>
           <p className="text-sm sm:text-base text-gray-400 mt-4 max-w-lg relative z-10">

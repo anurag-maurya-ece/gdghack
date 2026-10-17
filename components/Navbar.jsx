@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, MapPin, Store, Award, Info, Tag } from "lucide-react";
 
@@ -22,13 +23,17 @@ export default function Navbar() {
     <nav className="relative border-b border-gray-800 z-50 bg-gray-900 text-white">
       <div className="flex flex-wrap h-20 justify-between items-center mx-auto max-w-screen-xl px-4 md:px-8">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <span className="self-center text-3xl sm:text-4xl font-extrabold whitespace-nowrap text-white tracking-tight">
-            <span className="text-green-500">WE</span>kreta
-          </span>
-          <span className="text-[11px] font-bold bg-green-500/20 text-green-400 border border-green-500/40 px-2 py-0.5 rounded-full ml-1 hidden sm:inline-block">
-            Tech Thela
-          </span>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative h-11 w-36 sm:w-44 flex items-center">
+            <Image
+              src="/assets/tech thela logo.png"
+              alt="Tech Thela"
+              fill
+              priority
+              sizes="(max-width: 640px) 150px, 180px"
+              className="object-contain object-left group-hover:scale-105 transition-transform duration-200"
+            />
+          </div>
         </Link>
 
         {/* Desktop Links */}
