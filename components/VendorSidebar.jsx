@@ -29,7 +29,7 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
     },
     {
       id: "update",
-      label: t("voiceListingTitle"),
+      label: t("updateInventory"),
       icon: ShoppingCart,
       badge: "Voice/Text",
     },

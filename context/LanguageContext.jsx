@@ -10,14 +10,14 @@ export const SUPPORTED_LANGUAGES = [
 ];
 
 const LanguageContext = createContext({
-  lang: "hinglish",
+  lang: "en",
   setLang: () => {},
   t: (key) => key,
   supportedLanguages: SUPPORTED_LANGUAGES,
 });
 
 export function LanguageProvider({ children }) {
-  const [lang, setLangState] = useState("hinglish");
+  const [lang, setLangState] = useState("en");
 
   useEffect(() => {
     try {

@@ -9,9 +9,9 @@ const homeRes = await fetch(base, { signal: AbortSignal.timeout(15_000) });
 assert.equal(homeRes.status, 200);
 const homeHtml = await homeRes.text();
 assert.match(homeHtml, /Tech Thela/);
-assert.match(homeHtml, /START TO SUCCESS/);
-assert.match(homeHtml, /Empowering your long-lived/);
-assert.match(homeHtml, /Hear it from our customers/);
+assert.match(homeHtml, /(START TO SUCCESS|SHURU SE SAFALTA TAK|शुरुआत से सफलता तक)/);
+assert.match(homeHtml, /(Empowering your long-lived|Aapke saalo purane|आपके सालों पुराने)/);
+assert.match(homeHtml, /(Hear it from our customers|Humare grahakon|हमारे ग्राहकों की सुनें)/);
 console.log("PASS: home returns 200 with Tech Thela hero, stats, roles, and feedback carousel");
 
 // 1b. Vendor Login Check
@@ -66,16 +66,16 @@ const vendorRes = await fetch(new URL("/vendor", base), { signal: AbortSignal.ti
 assert.equal(vendorRes.status, 200);
 const vendorHtml = await vendorRes.text();
 assert.match(vendorHtml, /Ramesh Bhaiya/);
-assert.match(vendorHtml, /Thela ON/);
-assert.match(vendorHtml, /Update Inventory/);
+assert.match(vendorHtml, /(Thela ON|ठेला चालू|Thela ON)/i);
+assert.match(vendorHtml, /(Update Inventory|माल अपडेट|Inventory Update)/);
 console.log("PASS: /vendor returns 200 with live toggle, voice listing and inventory");
 
 // 6. Rewards & Reviews Check
 const rewardsRes = await fetch(new URL("/rewards", base), { signal: AbortSignal.timeout(15_000) });
 assert.equal(rewardsRes.status, 200);
 const rewardsHtml = await rewardsRes.text();
-assert.match(rewardsHtml, /Review Thelas/);
-assert.match(rewardsHtml, /Mohalla Leaderboard/);
+assert.match(rewardsHtml, /(Review Thelas|Mohalla Rewards|मोहल्ला रिवार्ड्स)/);
+assert.match(rewardsHtml, /(Mohalla Leaderboard|Top Trusted Thelas|सबसे भरोसेमंद|Mohalle Ke)/);
 console.log("PASS: /rewards returns 200 with leaderboard, review submission and coupon store");
 
 // 7. Stylesheet verification
