@@ -86,6 +86,42 @@ async function sendMetaWhatsAppMessage({ to, text, buttons = [] }) {
 }
 
 /**
+ * Dispatch outbound WhatsApp message via Twilio REST API if credentials are provided
+ */
+async function sendTwilioWhatsAppMessage({ to, text }) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioNumber = process.env.TWILIO_WHATSAPP_NUMBER || "whatsapp:+14155238886";
+
+  if (!accountSid || !authToken || !to) {
+    return null;
+  }
+
+  const recipient = to.startsWith("whatsapp:") ? to : `whatsapp:${to.replace(/[^0-9+]/g, "")}`;
+  const endpoint = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+
+  const params = new URLSearchParams();
+  params.append("To", recipient);
+  params.append("From", twilioNumber);
+  params.append("Body", text);
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: "Basic " + Buffer.from(`${accountSid}:${authToken}`).toString("base64"),
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params.toString(),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("[Twilio Proactive Outbound Error]", err);
+    return null;
+  }
+}
+
+/**
  * GET Handler: Meta WhatsApp Webhook Handshake Verification
  */
 export async function GET(request) {
