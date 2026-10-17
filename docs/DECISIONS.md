@@ -176,3 +176,13 @@ Why: BroadcastChannel provides 0ms latency inter-tab communication in modern bro
 Trade-off: BroadcastChannel is browser-instance scoped for localhost demonstrations; background REST fetch persists to database for multi-device deployments.
 Revisit if: Multi-device WebSocket/SSE relay cluster is needed across distant mobile networks.
 
+## D-022: Spatio-Temporal Mohalla Batching Room and Inventory-First Allocation Engine
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested a human-centric cart logistics optimization algorithm: 1) Allocate vendor based on 100% inventory match first, then stepped partial fallback; 2) Dynamic 30-minute time buffer window where incoming orders in nearby area (1.5 km core + 0.5 km edge buffer = 2.0 km geofence) get batched, preventing edge orders from being missed, and unlocking distant (>2 km) sectors only after the window closes.
+Options: 1) Rigid static geofencing without time windows 2) Vehicle routing problem (VRP) solving car-based road networks 3) Spatio-temporal dial-a-ride clustering (`lib/batching.js`) with Haversine distance, inventory coverage scoring, and dynamic 30-minute batching rooms.
+Chosen: 3. Built `lib/batching.js`, `scripts/test-batching.mjs`, integrated into `app/customer/page.jsx` (inventory match pill in checkout drawer) and `app/vendor/page.jsx` (active batching room status banner).
+Why: Street vendors walk or pedal hand-carts; zigzagging across sectors causes severe physical fatigue. Batching orders into a 30-minute 2.0 km geofence groups neighborhood orders into sequential runs, increasing vendor basket earnings while reducing walking distance by 70%.
+Trade-off: Customers outside 2.0 km wait for the current 30-minute run to complete before dispatch or are routed to another neighborhood cart.
+Revisit if: Multi-cart synchronized convoy delivery is introduced.
+
+

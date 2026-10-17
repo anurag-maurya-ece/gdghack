@@ -34,6 +34,7 @@ import {
   ShieldCheck,
   Check,
   X,
+  Clock,
 } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import {
@@ -44,6 +45,7 @@ import {
   subscribeSync,
   playChime,
 } from "../../lib/sync";
+import { getActiveBatchingRoom, BATCHING_CONFIG } from "../../lib/batching";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
 const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
@@ -123,6 +125,19 @@ export default function VendorDashboard() {
 
   // Toast notification for incoming orders / pings
   const [toastNotification, setToastNotification] = useState(null);
+
+  // 30-Minute Mohalla Batching Room state
+  const [batchingRoom, setBatchingRoom] = useState(null);
+
+  useEffect(() => {
+    const checkRoom = () => {
+      const room = getActiveBatchingRoom("v1") || getActiveBatchingRoom("vendor-ramesh");
+      setBatchingRoom(room);
+    };
+    checkRoom();
+    const interval = setInterval(checkRoom, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Real-time synchronization with Customer portal
   useEffect(() => {
@@ -398,6 +413,44 @@ export default function VendorDashboard() {
             </div>
           </div>
         )}
+        {/* 30-Minute Mohalla Batching Room Status Banner */}
+        <div className="mb-6 p-4 rounded-3xl bg-white border border-emerald-200/90 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5 text-[#16A34A] animate-spin" style={{ animationDuration: "10s" }} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                  batchingRoom
+                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                    : "bg-gray-100 text-gray-700 border-gray-300"
+                }`}>
+                  {batchingRoom ? "● Room Active (Batching Live)" : "● Standby (Ready to Batch)"}
+                </span>
+                <span className="text-xs font-bold text-gray-500">• 1.5 km Core + 0.5 km Buffer</span>
+              </div>
+              <h4 className="text-base font-black text-gray-900 mt-0.5">
+                {batchingRoom
+                  ? `Mohalla Batching Room: ${batchingRoom.timeLeftMinutes || 28} mins remaining`
+                  : "Mohalla 30-Minute Dynamic Batching Window"}
+              </h4>
+              <p className="text-xs text-gray-600">
+                {batchingRoom
+                  ? `Orders within 2.0 km geofence are batched to your active run. Next sector (>2 km) unlocks after window ends.`
+                  : "First incoming customer order starts a 30-min window, grouping all orders within 2.0 km into your active route."}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="text-right">
+              <span className="text-xl font-black text-gray-900">
+                {batchingRoom?.orders?.length || incomingOrders.length} Orders
+              </span>
+              <p className="text-[10px] text-gray-400 font-bold">Batched in Current Run</p>
+            </div>
+          </div>
+        </div>
 
         {/* Top Stat Cards matching The-Hashira---tech-thela */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

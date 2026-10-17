@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../../context/LanguageContext";
 import { saveNewOrder, saveNewPing, subscribeSync, playChime } from "../../lib/sync";
+import { matchVendorInventory, startBatchingRoom } from "../../lib/batching";
 
 // Dynamically load the Leaflet map to avoid server-side window errors
 const LeafletMap = dynamic(() => import("../../components/LeafletMap"), {
@@ -168,6 +169,11 @@ export default function CustomerPage() {
     0
   );
 
+  // Compute smart inventory-first match across online vendors
+  const inventoryMatch = useMemo(() => {
+    return matchVendorInventory(cartItemsList, vendors, { lat: 28.6304, lng: 77.2177 });
+  }, [cartItemsList, vendors]);
+
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const [currentPingId, setCurrentPingId] = useState(null);
 
@@ -216,18 +222,31 @@ export default function CustomerPage() {
     setCurrentOrderId(orderId);
     setOrderStatus("placed");
 
+    const allottedVendor = inventoryMatch?.bestVendor || activeVendor;
+    const vendorId = allottedVendor?.id || "v1";
+    const vendorName = allottedVendor?.name || "Ramesh Bhaiya";
+
+    // Initialize 30-minute Mohalla Batching Room for the vendor at this cluster center
+    startBatchingRoom(vendorId, { lat: 28.6304, lng: 77.2177 }, orderId);
+
     const orderPayload = {
       id: orderId,
       customerId: "cust-oberoi",
       customerName: "Mr. Oberoi (Pocket B, Gate 2)",
-      vendorId: activeVendor?.id || "vendor-ramesh",
-      vendorName: activeVendor?.name || "Ramesh Bhaiya",
-      distance: `${activeVendor?.distance || 140}m away`,
+      vendorId: vendorId,
+      vendorName: vendorName,
+      distance: `${allottedVendor?.distanceMeters || 140}m away`,
       items: cartItemsList.map((c) => `${c.quantity}x ${c.item.name}`).join(", "),
       total: totalCartPrice,
       time: "Just now",
       status: "pending",
       deliveryAddress: `Pincode ${selectedPin}, Gate 2, Flat 302`,
+      batchingInfo: {
+        roomActive: true,
+        windowMinutes: 30,
+        coreRadiusKm: 1.5,
+        bufferRadiusKm: 0.5,
+      },
       createdAt: new Date().toISOString(),
     };
 
@@ -938,6 +957,40 @@ export default function CustomerPage() {
                 </div>
               ))}
             </div>
+
+            {/* Smart Inventory-First Allotment Banner */}
+            {cartItemsList.length > 0 && inventoryMatch && (
+              <div className="my-3 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-green-50 border border-emerald-200 text-xs space-y-1.5 shadow-xs">
+                <div className="flex items-center justify-between font-black text-emerald-950">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#16A34A]" />
+                    {inventoryMatch.matchType === "100_percent_match"
+                      ? "100% Single Thela Match"
+                      : `${inventoryMatch.coveragePercentage}% Stepped Allotment`}
+                  </span>
+                  <span className="bg-[#16A34A] text-white text-[10px] px-2.5 py-0.5 rounded-full font-black">
+                    {inventoryMatch.distanceKm} km away
+                  </span>
+                </div>
+                <p className="text-gray-700 text-[11px] leading-relaxed">
+                  {inventoryMatch.matchType === "100_percent_match" ? (
+                    <>
+                      Allotted to <strong>{inventoryMatch.bestVendor?.name}</strong>. All {cartItemsList.length} items available in stock on this single cart!
+                    </>
+                  ) : (
+                    <>
+                      Primary vendor <strong>{inventoryMatch.steppedRecommendation?.primaryVendor?.name}</strong> covers {inventoryMatch.coveragePercentage}% items.
+                      {inventoryMatch.steppedRecommendation?.secondaryVendor && (
+                        <> Remaining items matched with <strong>{inventoryMatch.steppedRecommendation.secondaryVendor.name}</strong>.</>
+                      )}
+                    </>
+                  )}
+                </p>
+                <div className="text-[10px] text-emerald-800 font-bold flex items-center gap-1 pt-0.5">
+                  <span>⏱️ 30-min Mohalla Batching Room: 1.5km core + 0.5km buffer applied</span>
+                </div>
+              </div>
+            )}
 
             <div className="pt-4 border-t border-gray-100">
               <div className="flex justify-between items-center mb-4">
