@@ -1,5 +1,37 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 4: Domain Feature Services Replacing Firestore with PostgreSQL Prisma)
+## Latest session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 5: Presigned Storage S3/R2 & Email Dispatch Services)
+Done:
+- **Phase 5 Storage & Email Services Complete**:
+  - `src/server/services/storage.service.ts`:
+    - Generates user-namespaced S3/Cloudflare R2 presigned upload URLs (`uploads/{userId}/{uuid}-{cleanFileName}`).
+    - Strict content-type allowlisting: `image/jpeg`, `image/png`, `image/webp`, `image/avif` (rejects executables, HTML, scripts).
+    - File size validation enforcing 5MB max quota.
+    - Sanitizes file names against path traversal attacks.
+  - `app/api/storage/presigned-url/route.ts`:
+    - Authenticated endpoint (`requireAuth`) returning presigned upload target and public CDN retrieval URL.
+  - `src/server/services/email.service.ts`:
+    - Responsive HTML templates for account verification and password reset dispatch.
+    - Test harness queue inspection (`getSentEmails()`, `clearSentEmails()`).
+- **Verification & Testing (Mandatory Test-Fix Loop)**:
+  - `npx vitest run --coverage`: **83/83 tests PASSING** across 8 test suites.
+  - Strict coverage requirement met: **92.85% line coverage on `src/server/services`**, **92.67% on `src/server/auth`**, **92.62% overall**.
+  - Mutation testing verified: Deliberately bypassing `contentType` validation in `StorageService.generatePresignedUploadUrl` caused `storage-email.test.ts` to immediately fail, and revert passed.
+  - `npx tsc --noEmit`: 0 errors.
+  - `npm run build`: Compiled 34/34 pages and routes with Turbopack in 2.7s with 0 errors.
+In progress:
+- Phase 6: Frontend Integration & Firebase SDK Removal (Update AuthContext, API client, replace Firebase client listeners, Playwright E2E tests).
+Broken/risky:
+- None.
+Next:
+- Phase 6: Update frontend auth hooks and forms to consume Next.js `/api/auth` endpoints and completely sever client-side Firebase SDK dependencies.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npx vitest run --coverage`
+- `npx tsc --noEmit`
+- `npm run build`
+
+## Previous session: 2026-10-18 — Antigravity / Gemini 3.8 Flash (Phase 4: Domain Feature Services Replacing Firestore with PostgreSQL Prisma)
 Done:
 - **Phase 4 Domain Feature Services & API Routes Complete**:
   - `src/server/services/vendor.service.ts`:

@@ -139,3 +139,12 @@ Chosen: 2. Built `VendorService`, `LocationService`, `ProductService`, `OrderSer
 Why: Isolates business invariants, state transition rules (`PLACED` -> `ACCEPTED` -> `ENROUTE` -> `DELIVERED`), Haversine distance computations, automatic offline location decay (satisfying AGENTS.md Hard Constraint: "Mark vendor offline if no update for N minutes"), idempotency caching, and transaction boundaries from HTTP transport.
 Trade-off: Route handlers remain thin adapters while all domain logic is 100% unit and integration testable.
 Revisit if: PostGIS extension is added for complex polygon spatial indexing.
+
+## D-018: Phase 5 Storage (S3/R2 Presigned URLs) and Email Services
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested completely removing Firebase Storage and implementing self-owned S3-compatible presigned storage and email dispatch.
+Options: 1) Uploading binary files directly through Next.js API server 2) S3/R2 presigned upload URLs with user-namespaced isolation (`uploads/{userId}/{uuid}-{cleanFileName}`), strict content-type allowlisting (`image/jpeg`, `image/png`, `image/webp`, `image/avif`), and 5MB size quota validation.
+Chosen: 2. Built `src/server/services/storage.service.ts`, `app/api/storage/presigned-url/route.ts`, and `src/server/services/email.service.ts`.
+Why: Direct multipart file upload to Next.js servers creates memory bottlenecks and server exhaustion under scale; presigned URLs delegate direct secure binary streaming to S3/Cloudflare R2 edge while maintaining strict server-side authorization, quota, and namespace boundaries.
+Trade-off: Requires 2-step client upload (request presigned URL -> PUT binary payload).
+Revisit if: Multipart chunked resumable video uploads (>100MB) are introduced.
