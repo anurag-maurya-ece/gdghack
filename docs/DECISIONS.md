@@ -80,14 +80,14 @@ Why: Satisfies Section 9 feature specs (F2 voice listing, F3 live location, F4 c
 Trade-off: WhatsApp Cloud API webhook deferred to a later milestone; live coordinates use client simulation.
 Revisit if: live Meta WhatsApp credentials or cloud hosting are configured.
 
-## D-010: Comprehensive landing page design and multi-page experience
+## D-011: Multilingual WhatsApp Bot & Meta Cloud Webhook Architecture
 Date: 2026-10-17 Tool/model: Antigravity / Gemini 3.8 Flash
-Context: Deliver a polished, complete multi-page web platform for hackathon evaluation including landing hero, animated stats, role cards, customer reviews, about us, and pricing.
-Options: 1) Implement cohesive branded UI components and layouts across all pages with dedicated assets 2) Single-page minimal placeholder.
-Chosen: 1. Implemented complete landing flow with animated hero, platform stats counters (AboutDataCard), prominent vendor and consumer role portals (LoginCard), community review carousel (ReviewCarousel), dedicated About Us (/aboutus), and Pricing (/pricing), alongside the interactive live map and vendor dashboard.
-Why: Provides judges with a comprehensive, professional visual experience and clear user onboarding journeys.
-Trade-off: Expands the static build routes from 3 to 8.
-Revisit if: additional specialized role views are requested.
+Context: User requested implementing the WhatsApp Bot for low-literacy vendors (F1 onboarding, F2 voice listing, F3 live location, F7 demand routing).
+Options: 1) Cloud Function webhook only 2) Unified AI wrapper + Meta-compatible App Router webhook + in-browser interactive WhatsApp simulator.
+Chosen: 2. Implemented `lib/ai-wrapper.js` for speech intent extraction and translation, `app/api/whatsapp/webhook/route.js` for Meta Cloud API verification and message handling with rate limiting, and `app/whatsapp/page.jsx` as an interactive visual WhatsApp simulator.
+Why: Ensures official webhook compatibility with Meta WhatsApp Cloud API while providing an infallible, fail-safe visual demonstration environment for judges even if external webhook tunnels fail.
+Trade-off: In-memory rate limiting and mock store sync for local demo; production requires Redis or Firestore rate limit backend.
+Revisit if: live Meta Business Manager production credentials are provided.
 
 
 

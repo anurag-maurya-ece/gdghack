@@ -112,3 +112,27 @@ assert.equal(apiReviewsRes.status, 200);
 const apiReviewsData = await apiReviewsRes.json();
 assert.equal(apiReviewsData.success, true);
 console.log("PASS: /api/reviews returns 200 with community reviews");
+
+// 10. WhatsApp Bot Simulator & Webhook Handshake Check
+const whatsappPageRes = await fetch(new URL("/whatsapp", base));
+assert.equal(whatsappPageRes.status, 200);
+assert.match(await whatsappPageRes.text(), /Tech Thela Bot/);
+console.log("PASS: /whatsapp returns 200 with WhatsApp Bot Simulator");
+
+const webhookVerifyUrl = new URL("/api/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=tech_thela_webhook_secret&hub.challenge=test_challenge_123", base);
+const webhookGetRes = await fetch(webhookVerifyUrl);
+assert.equal(webhookGetRes.status, 200);
+assert.equal(await webhookGetRes.text(), "test_challenge_123");
+console.log("PASS: /api/whatsapp/webhook GET verification handshake returns 200 with challenge");
+
+const webhookPostRes = await fetch(new URL("/api/whatsapp/webhook", base), {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ from: "9876543210", text: "aaj aloo 20 rupaye kilo, pyaaz 35" }),
+});
+assert.equal(webhookPostRes.status, 200);
+const webhookPostData = await webhookPostRes.json();
+assert.equal(webhookPostData.success, true);
+assert.equal(webhookPostData.action, "VOICE_CONFIRMATION_REQUIRED");
+console.log("PASS: /api/whatsapp/webhook POST voice/text extraction returns 200 with confirmation");
+

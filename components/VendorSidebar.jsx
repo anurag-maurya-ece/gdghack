@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
   Navigation,
   ShoppingCart,
@@ -13,6 +14,7 @@ import {
   Sparkles,
   LogOut,
   UserCheck,
+  MessageSquare,
 } from "lucide-react";
 
 export default function VendorSidebar({ activeTab = "locate_customer", onChangeTab = () => {} }) {
@@ -148,6 +150,14 @@ export default function VendorSidebar({ activeTab = "locate_customer", onChangeT
             Keep inventory updated to get <strong className="text-emerald-800 font-bold">2x more demand alerts</strong> on your route.
           </p>
         </div>
+
+        <Link
+          href="/whatsapp"
+          className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition-all"
+        >
+          <MessageSquare className="w-4 h-4" />
+          <span>Open WhatsApp Bot</span>
+        </Link>
       </div>
     </aside>
   );

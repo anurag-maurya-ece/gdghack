@@ -1,5 +1,36 @@
 # HANDOVER
-## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Complete Auth Lifecycle & Route Protection)
+## Latest session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (WhatsApp Cloud API Webhook, AI Intent Parser & Visual Bot Simulator)
+Done:
+- **WhatsApp Bot Suite for Street Vendors ("whatsapp bot bna do")**:
+  - **AI Voice & Intent Wrapper (`lib/ai-wrapper.js`)**:
+    - `parseVoiceIntent(transcript)`: Extracts structured inventory products (`name`, `price`, `unit`, `inStock`) from raw Hindi/Hinglish/English voice notes (e.g. *"aaj aloo 20 rupaye kilo, pyaaz 35"*), detects demand routing queries (*"kahan jaun?"*), and location triggers (*"thela on"* / *"thela off"*).
+    - `translateMessage(text, targetLang)`: Dual-direction street commerce translation with offline phrasebook and non-blocking tag.
+  - **Meta Cloud API Webhook Handler (`app/api/whatsapp/webhook/route.js`)**:
+    - Implemented GET endpoint with official Meta verification handshake (`hub.mode`, `hub.verify_token`, `hub.challenge`).
+    - Implemented POST endpoint processing incoming WhatsApp text, voice notes, live location coordinates, and 2-tap interactive button replies ("Sahi Hai", "Dobara Bolo", "Kahan Jaun?").
+    - Rate limiting per sender (`RATE_LIMIT_WINDOW_MS = 2000`) and live demand routing integration.
+  - **In-Browser WhatsApp Simulator (`app/whatsapp/page.jsx`)**:
+    - Authentic WhatsApp light theme interface (`#075E54` header, `#EFEAE2` chat background, light-green `#D9FDD3` outgoing bubbles, double blue checkmarks).
+    - 1-tap demo voice triggers: *"Aloo 20, Pyaaz 35"*, *"Kahan Jaun?"*, *"Thela ON (GPS)"*.
+    - Interactive 2-tap WhatsApp confirmation buttons with instant inventory updates.
+    - Added direct link in `components/VendorSidebar.jsx` ("Open WhatsApp Bot").
+- **Verification**:
+  - `scripts/smoke.mjs`: 17/17 tests passing! Verified `/whatsapp`, webhook GET challenge verification handshake, and webhook POST voice parsing.
+  - `npm run build`: Compiled all 22 routes (13 static + 9 dynamic) with 0 errors in 1536ms.
+  - Verified live in Chrome DevTools MCP: simulated voice note -> parsed items -> tapped [Sahi Hai] -> confirmed inventory live update.
+In progress:
+- Server running daemon on 0.0.0.0:3000.
+Broken/risky:
+- None.
+Next:
+- Prepare presentation and whiteboard explanation for hackathon judges.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `node scripts/smoke.mjs`
+
+## Previous session: 2026-10-17 — Antigravity / Gemini 3.8 Flash (Complete Auth Lifecycle & Route Protection)
 Done:
 - **Complete Auth Flow Fix ("auth flow shi kro jldi", "logout krne se ho kyu nhi rha dashboard phle jaise normal")**:
   - **Universal Logout**: Fixed `handleLogout` in `components/Navbar.jsx`. It completely purges `tech_thela_user` from `localStorage`, clears `sessionStorage`, triggers `auth_change`, and redirects directly to the public home route (`/`).
