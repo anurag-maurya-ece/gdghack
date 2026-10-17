@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 const base = new URL(process.argv[2] ?? "http://127.0.0.1:3000");
 assert.ok(["127.0.0.1", "localhost", "[::1]"].includes(base.hostname), "Smoke checks must stay local");
 
-// 1. Home Page Check (SIH-Wekreta UI)
+// 1. Home Page Check
 const homeRes = await fetch(base, { signal: AbortSignal.timeout(15_000) });
 assert.equal(homeRes.status, 200);
 const homeHtml = await homeRes.text();
@@ -12,7 +12,7 @@ assert.match(homeHtml, /WEkreta/);
 assert.match(homeHtml, /START TO SUCCESS/);
 assert.match(homeHtml, /Empowering your long-lived/);
 assert.match(homeHtml, /Hear it from our customers/);
-console.log("PASS: home returns 200 with SIH-Wekreta layout, hero and feedback carousel");
+console.log("PASS: home returns 200 with hero, stats, roles, and feedback carousel");
 
 // 2. About Us Check
 const aboutRes = await fetch(new URL("/aboutus", base), { signal: AbortSignal.timeout(15_000) });

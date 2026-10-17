@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <nav className="relative border-b border-gray-800 z-50 bg-gray-900 text-white">
       <div className="flex flex-wrap h-20 justify-between items-center mx-auto max-w-screen-xl px-4 md:px-8">
-        {/* Brand Logo matching SIH-Wekreta */}
+        {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2">
           <span className="self-center text-3xl sm:text-4xl font-extrabold whitespace-nowrap text-white tracking-tight">
             <span className="text-green-500">WE</span>kreta

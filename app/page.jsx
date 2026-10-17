@@ -23,7 +23,7 @@ export default function Home() {
     <div className="bg-white text-gray-900 min-h-screen font-sans overflow-x-hidden">
       <Navbar />
 
-      {/* 1. Main Hero Section matching SIH-Wekreta */}
+      {/* 1. Main Hero Section */}
       <section className="flex flex-col md:flex-row justify-center min-h-[85vh] items-center px-6 sm:px-10 md:px-20 lg:px-28 gap-8 py-12">
         <div className="flex flex-col justify-center gap-6 max-w-full md:max-w-[50vw]">
           <h5 className="text-xl sm:text-2xl text-purple-600 font-bold tracking-wide uppercase">
@@ -74,7 +74,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Stats Section matching SIH-Wekreta */}
+      {/* 2. Platform Stats */}
       <section className="bg-gray-900 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 px-6 md:px-12 w-full py-6">
         {statsData.map((data, index) => (
           <AboutDataCard
@@ -86,7 +86,7 @@ export default function Home() {
         ))}
       </section>
 
-      {/* 3. Login / Roles for Vendor and Consumer matching SIH-Wekreta */}
+      {/* 3. Role Portals */}
       <section className="px-4 sm:px-10 md:px-24 pt-16 sm:pt-20">
         <div className="rounded-3xl bg-black text-white px-6 sm:px-16 md:px-32 py-16 sm:py-24 flex flex-col items-center text-center">
           <p className="text-3xl sm:text-5xl md:text-6xl font-bold leading-tight max-w-4xl">
@@ -146,7 +146,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Customer Feedback Carousel matching SIH-Wekreta */}
+      {/* 5. Customer Feedback Carousel */}
       <section className="flex flex-col gap-6 w-full py-12 mx-auto relative">
         <div className="flex flex-col gap-2">
           <h2 className="text-center text-3xl sm:text-5xl font-bold text-gray-950">

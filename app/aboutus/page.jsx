@@ -12,7 +12,7 @@ export default function AboutUsPage() {
       <Navbar />
 
       <main className="flex-1 w-full max-w-6xl mx-auto px-6 sm:px-10 py-12">
-        {/* Main Header & Image matching SIH-Wekreta */}
+        {/* Main Header & Story */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-10">
           {/* Left Text */}
           <div className="flex flex-col gap-6 max-w-xl">

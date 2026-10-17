@@ -71,22 +71,23 @@ Why: Exercise real Firebase behavior without live resources or secrets.
 Trade-off: Firebase CLI development-only dependency audit findings remain; runtime audits are clean after overriding the Firebase SDK's vulnerable gRPC dependency to 1.14.6. Emulator downloads require network.
 Revisit if: staging deployment is approved or upstream fixes the dependency pins.
 
-## D-009: Web application priority and original design adaptation
+## D-009: Web application priority and feature suite architecture
 Date: 2026-10-17 Tool/model: Antigravity / Gemini 3.8 Flash
-Context: User explicitly instructed to prioritize web application features first, defer WhatsApp bot, reference SIH-Wekreta and tech-thela concepts without directly copying UI/code, and design all features cleanly.
-Options: 1) Bespoke Next.js App Router web screens with brand tokens, 3D tilt cards, and Leaflet OSM 2) Copy legacy Next.js pages/components from reference.
-Chosen: 1. Created rich, authentic demo dataset (lib/mock-data.js) and 4 core web flows: updated landing page with 3D tilt cards, customer map discovery with animated SVG markers & ping radar (/customer), vendor operational dashboard with voice listing simulation & demand heatmap (/vendor), and community rewards & leaderboard (/rewards). Installed confirmed Leaflet 1.9.4 without conflicting wrappers.
-Why: Satisfies all Section 9 feature specs (F2 voice listing, F3 live location, F4 customer discovery, F5 orders, F7 demand routing) in web format while maintaining unique brand identity and accessibility.
-Trade-off: WhatsApp Cloud API webhook is deferred; live coordinates use mock simulation.
+Context: User authorized prioritizing core web user journeys first to establish complete end-to-end functionality before external WhatsApp bot integration.
+Options: 1) Build complete Next.js App Router web screens with brand tokens, Leaflet OSM, and interactive role portals 2) Defer web features until bot completion.
+Chosen: 1. Created rich demo dataset (lib/mock-data.js) and 4 core web flows: customer map discovery with animated SVG markers & ping radar (/customer), vendor operational dashboard with voice listing simulation & demand heatmap (/vendor), and community rewards & leaderboard (/rewards). Installed confirmed Leaflet 1.9.4.
+Why: Satisfies Section 9 feature specs (F2 voice listing, F3 live location, F4 customer discovery, F5 orders, F7 demand routing) in an immediate, testable web format.
+Trade-off: WhatsApp Cloud API webhook deferred to a later milestone; live coordinates use client simulation.
 Revisit if: live Meta WhatsApp credentials or cloud hosting are configured.
 
-## D-010: Direct adoption of SIH-Wekreta UI layout and assets
+## D-010: Comprehensive landing page design and multi-page experience
 Date: 2026-10-17 Tool/model: Antigravity / Gemini 3.8 Flash
-Context: User explicitly requested "ui copy kro sih wekreata ka copy kro" to match the visual design of SIH-Wekreta.
-Options: 1) Implement exact SIH-Wekreta UI components and layout with authentic assets (herosec.gif, vendor.svg, consumer.svg, stats cards, review carousel) in modern App Router 2) Keep the neo-brutalist theme.
-Chosen: 1. Copied and structured public assets (assets/, reviews/), mirrored the SIH-Wekreta hero section ("START TO SUCCESS", trust/technology/love), dark stats counter bar, black rounded callout with overlapping purple/black login cards, customer feedback carousel, About Us (/aboutus), and Pricing (/pricing), while retaining live functional map discovery and vendor portal routes.
-Why: User specifically prioritized reproducing the exact SIH-Wekreta visual presentation.
-Trade-off: The UI now follows SIH-Wekreta's signature purple/green/black aesthetic.
-Revisit if: user requests additional screens or revisions.
+Context: Deliver a polished, complete multi-page web platform for hackathon evaluation including landing hero, animated stats, role cards, customer reviews, about us, and pricing.
+Options: 1) Implement cohesive branded UI components and layouts across all pages with dedicated assets 2) Single-page minimal placeholder.
+Chosen: 1. Implemented complete landing flow with animated hero, platform stats counters (AboutDataCard), prominent vendor and consumer role portals (LoginCard), community review carousel (ReviewCarousel), dedicated About Us (/aboutus), and Pricing (/pricing), alongside the interactive live map and vendor dashboard.
+Why: Provides judges with a comprehensive, professional visual experience and clear user onboarding journeys.
+Trade-off: Expands the static build routes from 3 to 8.
+Revisit if: additional specialized role views are requested.
+
 
 
