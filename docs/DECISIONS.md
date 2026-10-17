@@ -185,4 +185,14 @@ Why: Street vendors walk or pedal hand-carts; zigzagging across sectors causes s
 Trade-off: Customers outside 2.0 km wait for the current 30-minute run to complete before dispatch or are routed to another neighborhood cart.
 Revisit if: Multi-cart synchronized convoy delivery is introduced.
 
+## D-023: Provisioning and Wiring Managed Neon Serverless PostgreSQL with Prisma
+Date: 2026-10-18 Tool/model: Antigravity / Gemini 3.8 Flash
+Context: User requested initializing and provisioning a production database on Neon (`org-falling-heart-62132785`, project `curly-scene-47530715`, branch `production`) with `neon init`, `neon deploy`, Prisma connection pooling, schema synchronization, and end-to-end service testing.
+Options: 1) Standalone raw node-pg connection string 2) Prisma ORM with dual-connection configuration (`DATABASE_URL` via PgBouncer pooling for serverless runtime queries + `DATABASE_URL_UNPOOLED` as `directUrl` for schema migrations/DDL locks).
+Chosen: 2. Configured `prisma/schema.prisma` with `directUrl = env("DATABASE_URL_UNPOOLED")`, ran `neon init -y --org-id org-falling-heart-62132785 --project-id curly-scene-47530715 --branch production --services postgres --no-agent-setup`, executed `neon deploy`, executed `npx prisma db push`, generated Prisma client, seeded initial data with `npm run db:seed`, and verified end-to-end with `scripts/verify-neon.mjs`.
+Why: Neon's connection pooler prevents connection exhaustion under serverless edge traffic, while direct URL guarantees schema push DDL locks succeed without transaction timeouts.
+Trade-off: Requires both pooled and unpooled connection variables in environment configuration.
+Revisit if: Read-replica branching is enabled for read-heavy mohalla search queries.
+
+
 

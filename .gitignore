@@ -10,3 +10,4 @@ coverage/
 *.tsbuildinfo
 .tools/
 firebase-export-*/
+.neon
