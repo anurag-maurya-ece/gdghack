@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { VendorService } from "@/server/services/vendor.service";
 import { INITIAL_VENDORS } from "@/lib/mock-data";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { aiWrapper } from "../../../../lib/ai-wrapper";
 import { DEMAND_ZONES } from "../../../../lib/mock-data";

@@ -4,17 +4,24 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    datasources: {
-      db: {
-        url:
-          process.env.DATABASE_URL ||
-          "postgresql://postgres:postgres@localhost:5432/tech_thela_db?schema=public",
-      },
-    },
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
+function getPrismaClient(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient({
+      log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+    });
+  }
+  return globalForPrisma.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Lazy proxy prevents build-time database connection attempts during Next.js page collection on Vercel
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    const client = getPrismaClient();
+    const value = (client as any)[prop];
+    if (typeof value === "function") {
+      return value.bind(client);
+    }
+    return value;
+  },
+});
+

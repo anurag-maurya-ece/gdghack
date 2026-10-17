@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest } from "next/server";
 import { StorageService, StorageError } from "@/server/services/storage.service";
 import { requireAuth, apiSuccess, apiError, AuthContextError } from "@/server/auth/rbac";

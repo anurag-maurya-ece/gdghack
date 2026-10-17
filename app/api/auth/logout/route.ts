@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest } from "next/server";
 import { AuthService } from "@/server/auth/service";
 import { createAuthCookies } from "@/server/auth/cookies";

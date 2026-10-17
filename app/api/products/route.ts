@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { ProductService, ProductServiceError } from "@/server/services/product.service";
 import { apiSuccess, apiError } from "@/server/auth/rbac";
