@@ -265,50 +265,52 @@ export default function PricingPage() {
                 </Link>
               </div>
 
-              {/* Vendor Plan 2: B2B Mandi Wholesale Partnership */}
-              <div className="flex flex-col p-8 bg-white rounded-3xl border-2 border-gray-200 shadow-md justify-between hover:border-gray-400 transition-all">
+              {/* Vendor Plan 2: B2B Mandi Wholesale Partnership (Coming Soon) */}
+              <div className="flex flex-col p-8 bg-gray-50/70 rounded-3xl border-2 border-dashed border-gray-300 shadow-xs justify-between relative">
+                <div className="absolute -top-3.5 right-6 bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest px-3.5 py-1 rounded-full shadow-xs">
+                  Coming Soon • Phase 2
+                </div>
+
                 <div>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-purple-900 bg-purple-100 px-3 py-1 rounded-full">
-                    Wholesale Aggregation
-                  </span>
-                  <h3 className="mt-3 mb-2 text-2xl font-black text-gray-950">B2B Mandi Supply</h3>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-purple-900 bg-purple-100 px-3 py-0.5 rounded-full">
+                      Wholesale Aggregation
+                    </span>
+                  </div>
+                  <h3 className="mt-2 mb-2 text-2xl font-black text-gray-950">B2B Mandi Supply</h3>
                   <p className="text-xs text-gray-600 font-medium mb-6">
                     Bulk-procured fresh produce delivered directly to your thela at dawn. Cheaper than local retail mandis.
                   </p>
 
-                  <div className="my-6 pb-6 border-b border-gray-100">
-                    <span className="text-5xl font-black text-gray-950">5% OFF</span>
+                  <div className="my-6 pb-6 border-b border-gray-200">
+                    <span className="text-5xl font-black text-gray-800">5% OFF</span>
                     <span className="text-xs text-gray-500 font-bold ml-1">below retail mandi rates</span>
-                    <p className="text-[11px] text-purple-700 font-extrabold mt-1">Free delivery to your morning location</p>
+                    <p className="text-[11px] text-purple-700 font-extrabold mt-1">Direct morning delivery to your route</p>
                   </div>
 
-                  <ul className="text-left text-xs font-bold text-gray-700 flex flex-col gap-3.5 mb-8">
+                  <ul className="text-left text-xs font-bold text-gray-600 flex flex-col gap-3.5 mb-8">
                     <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-purple-600 shrink-0" />
+                      <Check className="w-4 h-4 text-purple-500 shrink-0" />
                       <span>Direct APMC Mandi bulk purchasing</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-purple-600 shrink-0" />
+                      <Check className="w-4 h-4 text-purple-500 shrink-0" />
                       <span>Zero transit time: Fresh crates at 5:00 AM</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-purple-600 shrink-0" />
-                      <span>Based on advance pre-order booking demand</span>
+                      <Check className="w-4 h-4 text-purple-500 shrink-0" />
+                      <span>Demand aggregated from advance pre-orders</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-purple-600 shrink-0" />
-                      <span>Eligible for PM SVANidhi micro-working capital loans</span>
+                      <Check className="w-4 h-4 text-purple-500 shrink-0" />
+                      <span>PM SVANidhi collateral-free working capital tie-up</span>
                     </li>
                   </ul>
                 </div>
 
-                <Link
-                  href="/Vendorlogin"
-                  className="w-full text-center text-sm font-black bg-purple-50 hover:bg-purple-100 text-purple-950 py-3.5 rounded-2xl border border-purple-200 transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Learn Mandi Partnership</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                <div className="w-full text-center text-xs font-black uppercase tracking-wider bg-gray-200 text-gray-600 py-3.5 rounded-2xl border border-gray-300 cursor-not-allowed">
+                  Coming Soon (Mandi Pilot)
+                </div>
               </div>
 
             </div>
