@@ -1,5 +1,43 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity (Continuous Speech Recognition Loop & Gemini 2.5 Voice Pipeline)
+## Latest session: 2026-10-18 — Antigravity (Napkin-Style Newsroom PPTX, Blooper Reel Archive, and Production Clean State)
+Done:
+- **Napkin-Style Architecture Flowchart & Template Transformation**:
+  - Transformed user's downloaded template `C:\Users\HP\Downloads\Blue and Red Dynamic News Report Presentation.pptx` into a visual Napkin-style presentation.
+  - Slide 1: Newsroom Cover with `WEkreta / Tech Thela`, brand logo, and subhead pill.
+  - Slide 2: 2 Major Gaps Identified with side-by-side Napkin cards (Digital Literacy Wall vs Telemetry Invisibility Trap).
+  - Slide 3: 5W1H Investigation Infographic (Who, What, Where, When, Why, How).
+  - Slide 4: ⭐ **Master Napkin Flowchart & Architecture Blueprint** — 4 connected pipeline stages (`Voice Ingestion ➔ Gemini 2.5 Flash ➔ 30-Min Mohalla Batching ➔ Leaflet OSM & Neon DB`) with directional arrows and 3 metric flashcards (600ms latency, ₹0.0003 API cost, 94% OPEX savings).
+  - Slide 5: The Future — 3-Phase Roadmap (Phase 1 MVP ➔ Phase 2 Mandi Wholesale Pool ➔ Phase 3 100k Carts Scale).
+  - Slide 6: Impact & Unit Economics — Income boost, calibrated 5%+7% pricing, zero vendor fee, zero emissions, and unit economics flashcard.
+  - Slide 7: Conclusion with the legendary Antarctica Thela Blooper Reel callout and live demo links.
+  - Safe backup preserved at `C:\Users\HP\Downloads\Blue and Red Dynamic News Report Presentation_BACKUP.pptx`.
+  - Copies synced at `ppt/Blue_and_Red_Dynamic_News_Report_WEkreta.pptx` and `public/Blue_and_Red_Dynamic_News_Report_WEkreta.pptx`.
+- **Hackathon Blooper Reel & Video Capture (`docs/bloopers/`)**:
+  - Reproduced the famous *"Antarctica Me Dhaniya Bechta Thela"* Leaflet World Wrap bug.
+  - Recorded live 7.8 MB MP4 video using Chrome DevTools screencast: `docs/bloopers/antarctica_thela_bug.mp4`.
+  - Captured screenshots: `docs/bloopers/antarctica_bug_screenshot.png` and `docs/bloopers/delhi_debugged_screenshot.png`.
+  - Added documentation and story notes in `docs/bloopers/README.md`.
+- **100% Production Website Cleanup & Bug Fix**:
+  - Removed all bug simulation buttons/UI from `components/LeafletMap.jsx` — live website map is 100% clean, professional, and uncluttered.
+  - Enforced architectural bug fix `noWrap: true` on OpenStreetMap tile layer to prevent horizontal coordinate overflow.
+  - `npm run build` compiled 35 routes with 0 errors.
+- **Git Synchronization**:
+  - Clean working tree.
+  - Master and main branches synchronized on GitHub (`origin/master` and `origin/main`).
+In progress:
+- None.
+Broken/risky:
+- None.
+Next:
+- Presentation and whiteboard pitch rehearsal using `ppt/` and `docs/WHITEBOARD-DEFENSE.md`.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `npm start`
+- `node scripts/smoke.mjs`
+
+## Previous session: 2026-10-18 — Antigravity (Continuous Speech Recognition Loop & Gemini 2.5 Voice Pipeline)
 Done:
 - **SpeechRecognition Continuous Loop Engine (`app/vendor/page.jsx`)**:
   - Implemented continuous listening loop via `recognition.onend` with `isListeningRef.current`: does not abort or cut off on momentary pauses/silence.
