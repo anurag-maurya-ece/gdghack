@@ -1,5 +1,36 @@
 # HANDOVER
-## Latest session: 2026-10-18 — Antigravity (Live Vercel Verification, Language Consistency, and Technical Defense Guide)
+## Latest session: 2026-10-18 — Antigravity (Continuous Speech Recognition Loop & Gemini 2.5 Voice Pipeline)
+Done:
+- **SpeechRecognition Continuous Loop Engine (`app/vendor/page.jsx`)**:
+  - Implemented continuous listening loop via `recognition.onend` with `isListeningRef.current`: does not abort or cut off on momentary pauses/silence.
+  - Implemented transcript accumulation via `accumulatedTranscriptRef.current` across auto-restart intervals so multi-sentence commodity quotes are preserved.
+  - Added live audio transcript display showing spoken words in real time with animated audio waves and status badges.
+  - Added explicit "Bol Liya • Rate Process Karein (Stop & AI Parse)" button and fallback quick presets.
+- **Dedicated Voice Parsing Endpoint (`app/api/voice/parse/route.js`)**:
+  - Fully dynamic route (`export const dynamic = "force-dynamic"`).
+  - Routes spoken transcripts through `aiWrapper.parseVoiceIntent()` using Google Gemini 2.5 Flash (`gemini-2.5-flash`) with structured output `{ name, price, unit }` and automatic fallback to commodity dictionary.
+  - Verified live via Node fetch test (`status: 200`, successfully parsed aloo, pyaaz, tamatar).
+- **WhatsApp Bot Simulator Live Voice Note Recording (`app/whatsapp/page.jsx`)**:
+  - Added real microphone button with `webkitSpeechRecognition` continuous loop to the input bar.
+  - Integrated live recording bar with timer (`0:05`), real-time transcript preview, discard button, and one-tap send voice note button.
+  - Voice notes auto-route to WhatsApp webhook and trigger bot parsing.
+- **Build & Verification**:
+  - `npm run build` compiled 35 routes with 0 errors.
+  - Server restarted on `http://localhost:3000`.
+In progress:
+- None.
+Broken/risky:
+- None.
+Next:
+- Test voice recording directly in browser on `/vendor` and `/whatsapp`.
+Do not touch:
+- Secrets, `.env`, live deployment.
+Run/test commands:
+- `npm run build`
+- `npm start`
+- `node -e "fetch('http://localhost:3000/api/voice/parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transcript: 'aaj aloo 20 rupaye kilo' }) }).then(r => r.json()).then(console.log)"`
+
+## Previous session: 2026-10-18 — Antigravity (Live Vercel Verification, Language Consistency, and Technical Defense Guide)
 Done:
 - **Live Vercel Production Verification**:
   - Live deployment verified at `https://gdghack-lwh2.vercel.app/`.

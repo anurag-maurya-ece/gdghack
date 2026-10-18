@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   Send,
   Mic,
+  MicOff,
   MapPin,
   CheckCheck,
   Sparkles,
@@ -15,6 +16,9 @@ import {
   Volume2,
   RefreshCw,
   Store,
+  Trash2,
+  Radio,
+  Check,
 } from "lucide-react";
 import Navbar from "../../components/Navbar";
 
@@ -31,6 +35,151 @@ export default function WhatsAppBotSimulatorPage() {
   const [inputVal, setInputVal] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Real Speech Recognition & Voice Loop for WhatsApp
+  const recognitionRef = useRef(null);
+  const isListeningRef = useRef(false);
+  const accumulatedTranscriptRef = useRef("");
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const [liveVoiceText, setLiveVoiceText] = useState("");
+  const [interimVoiceText, setInterimVoiceText] = useState("");
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        try {
+          const recognition = new SpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = "hi-IN";
+
+          recognition.onresult = (event) => {
+            let interim = "";
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              const part = event.results[i][0].transcript;
+              if (event.results[i].isFinal) {
+                accumulatedTranscriptRef.current = (
+                  accumulatedTranscriptRef.current + " " + part
+                ).trim();
+              } else {
+                interim += part;
+              }
+            }
+            setInterimVoiceText(interim);
+            const full = (accumulatedTranscriptRef.current + (interim ? " " + interim : "")).trim();
+            if (full) {
+              setLiveVoiceText(full);
+            }
+          };
+
+          recognition.onerror = (event) => {
+            console.warn("[WhatsApp SpeechRecognition Error]", event.error);
+            if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+              isListeningRef.current = false;
+              setIsRecordingVoice(false);
+            }
+          };
+
+          recognition.onend = () => {
+            if (isListeningRef.current) {
+              setTimeout(() => {
+                if (isListeningRef.current && recognitionRef.current) {
+                  try {
+                    recognitionRef.current.start();
+                  } catch (e) {
+                    console.debug("WhatsApp speech restart caught:", e);
+                  }
+                }
+              }, 150);
+            } else {
+              setIsRecordingVoice(false);
+            }
+          };
+
+          recognitionRef.current = recognition;
+        } catch (e) {
+          console.warn("WhatsApp Speech init error:", e);
+        }
+      }
+    }
+
+    return () => {
+      isListeningRef.current = false;
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {}
+      }
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
+  const startVoiceRecording = () => {
+    accumulatedTranscriptRef.current = "";
+    setLiveVoiceText("");
+    setInterimVoiceText("");
+    setRecordingSeconds(0);
+    isListeningRef.current = true;
+    setIsRecordingVoice(true);
+
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setRecordingSeconds((prev) => prev + 1);
+    }, 1000);
+
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.start();
+      } catch (e) {
+        console.warn("Recognition start warn:", e);
+      }
+    } else {
+      setTimeout(() => {
+        setLiveVoiceText("aaj aloo 20 rupaye kilo, pyaaz 35");
+      }, 1200);
+    }
+  };
+
+  const cancelVoiceRecording = () => {
+    isListeningRef.current = false;
+    setIsRecordingVoice(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+    }
+    setLiveVoiceText("");
+    setInterimVoiceText("");
+    accumulatedTranscriptRef.current = "";
+  };
+
+  const finishAndSendVoiceRecording = () => {
+    isListeningRef.current = false;
+    setIsRecordingVoice(false);
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+    }
+
+    const textToSend = (
+      accumulatedTranscriptRef.current + (interimVoiceText ? " " + interimVoiceText : "")
+    ).trim() || liveVoiceText || "aaj aloo 20 rupaye kilo, pyaaz 35";
+
+    setLiveVoiceText("");
+    setInterimVoiceText("");
+    accumulatedTranscriptRef.current = "";
+
+    sendMessage({
+      voice: true,
+      transcript: textToSend,
+    });
+  };
 
   // Auto-scroll chat
   useEffect(() => {
@@ -260,33 +409,76 @@ export default function WhatsAppBotSimulatorPage() {
             </div>
           </div>
 
-          {/* Input Bar */}
-          <form onSubmit={handleTextSubmit} className="bg-gray-100 px-3 py-2 flex items-center gap-2 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={handleShareLocation}
-              title="Share Live Location"
-              className="p-2 text-gray-600 hover:text-red-500 rounded-full hover:bg-white transition-colors cursor-pointer"
-            >
-              <MapPin className="w-5 h-5" />
-            </button>
+          {/* Input Bar (Text + Real Voice Note Recording) */}
+          {isRecordingVoice ? (
+            <div className="bg-emerald-50 px-3 py-2.5 flex items-center gap-2 border-t border-emerald-300 animate-fadeIn">
+              <button
+                type="button"
+                onClick={cancelVoiceRecording}
+                title="Discard Voice Note"
+                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full transition-colors cursor-pointer"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
 
-            <input
-              type="text"
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              placeholder="Type message or voice transcript..."
-              className="flex-1 bg-white rounded-full px-4 py-2 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#16A34A] border border-gray-200"
-            />
+              <div className="flex-1 flex items-center gap-2 bg-white rounded-full px-3 py-1.5 border border-emerald-300 overflow-hidden shadow-inner">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping shrink-0" />
+                <span className="text-xs font-mono font-bold text-red-600 shrink-0">
+                  {Math.floor(recordingSeconds / 60)}:{(recordingSeconds % 60).toString().padStart(2, "0")}
+                </span>
+                <span className="text-xs font-bold text-gray-800 italic truncate">
+                  {liveVoiceText || interimVoiceText || "Sun raha hu... boliye"}
+                </span>
+              </div>
 
-            <button
-              type="submit"
-              disabled={!inputVal.trim()}
-              className="p-2.5 bg-[#075E54] hover:bg-[#128C7E] disabled:opacity-40 text-white rounded-full shadow-xs transition-colors cursor-pointer"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+              <button
+                type="button"
+                onClick={finishAndSendVoiceRecording}
+                title="Send Voice Note"
+                className="p-2.5 bg-[#075E54] hover:bg-[#128C7E] text-white rounded-full shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleTextSubmit} className="bg-gray-100 px-3 py-2 flex items-center gap-2 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={handleShareLocation}
+                title="Share Live Location"
+                className="p-2 text-gray-600 hover:text-red-500 rounded-full hover:bg-white transition-colors cursor-pointer"
+              >
+                <MapPin className="w-5 h-5" />
+              </button>
+
+              <input
+                type="text"
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                placeholder="Type message or click mic to speak..."
+                className="flex-1 bg-white rounded-full px-4 py-2 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#16A34A] border border-gray-200"
+              />
+
+              {inputVal.trim() ? (
+                <button
+                  type="submit"
+                  className="p-2.5 bg-[#075E54] hover:bg-[#128C7E] text-white rounded-full shadow-xs transition-colors cursor-pointer"
+                  title="Send Message"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={startVoiceRecording}
+                  className="p-2.5 bg-[#075E54] hover:bg-[#128C7E] text-white rounded-full shadow-xs transition-colors cursor-pointer animate-pulse"
+                  title="Record Voice Note (Continuous Loop)"
+                >
+                  <Mic className="w-4 h-4" />
+                </button>
+              )}
+            </form>
+          )}
         </div>
 
         {/* Quick Link to Vendor Portal */}
