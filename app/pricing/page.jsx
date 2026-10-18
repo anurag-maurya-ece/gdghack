@@ -147,11 +147,11 @@ export default function PricingPage() {
                   <ul className="text-left text-xs font-bold text-gray-800 flex flex-col gap-3.5 mb-8">
                     <li className="flex items-center gap-2 text-emerald-900 font-black">
                       <Percent className="w-4 h-4 text-[#16A34A] shrink-0" />
-                      <span>10% Flat Daily Discount on all Sabzi & Fruits</span>
+                      <span>5% Flat Daily Discount on all Sabzi & Fruits</span>
                     </li>
                     <li className="flex items-center gap-2 text-emerald-900 font-black">
                       <Clock className="w-4 h-4 text-[#16A34A] shrink-0" />
-                      <span>Extra 7% OFF on 1-Day Advance Pre-Orders (Total 17%)</span>
+                      <span>Extra +7% OFF on 1-Day Advance Pre-Orders (5% + 7% = 12% Total)</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-[#16A34A] shrink-0" />
@@ -172,7 +172,7 @@ export default function PricingPage() {
                   href="/customer"
                   className="w-full text-center text-sm font-black bg-[#16A34A] hover:bg-[#15803D] text-white py-3.5 rounded-2xl shadow-lg shadow-green-700/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>Claim 10% Daily Discount</span>
+                  <span>Claim 5% + 7% Daily Discount</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -187,7 +187,7 @@ export default function PricingPage() {
                   <span>How Advance Pre-Order Discount Works</span>
                 </div>
                 <h4 className="text-xl font-black text-gray-900">
-                  Book 1 day in advance &rarr; get up to 17% total discount!
+                  Book 1 day in advance &rarr; 5% Base + 7% Pre-Order = up to 12% total savings!
                 </h4>
                 <p className="text-xs text-gray-600 leading-relaxed font-medium">
                   When you order before 10 PM for tomorrow morning, the street vendor buys exactly what is needed directly from the APMC Mandi at dawn. This eliminates 100% of unsold food spoilage & waste for the thela — and that exact saved margin is given to you as a discount!
